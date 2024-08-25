@@ -1,0 +1,46 @@
+{
+  "name": "zerotoone.fun",
+  "version": "0.1.0",
+  "devDependencies": {
+    "husky": "^9.1.5",
+    "typescript": "^5.3.2"
+  },
+  "keywords": [
+    "zerotoone",
+    "ethereum",
+    "workspaces"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,sol}": [
+      "prettier --write"
+    ]
+  },
+  "private": false,
+  "scripts": {
+    "preinstall": "only-allow pnpm",
+    "prepare": "husky install",
+    "syncpack": "syncpack list-mismatches",
+    "update-deps": "pnpm update -i -r --latest",
+    "format": "prettier --ignore-path .prettierignore --write \"{*,**/*}.{ts,tsx,js,jsx,json,md,sol}\"",
+    "lint": "eslint --ignore-path .prettierignore \"./packages/**/*.{ts,tsx,js,jsx}\""
+  },
+  "workspaces": {
+    "nohoist": [
+      "**/@graphprotocol/graph-ts",
+      "**/@graphprotocol/graph-ts/**",
+      "**/@ethersproject/**",
+      "**/@docusaurus/**"
+    ],
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "dependencies": {
+    "only-allow": "^1.2.1"
+  }
+}
