@@ -4,6 +4,3 @@
 [submodule "packages/contracts/lib/openzeppelin-contracts"]
 	path = packages/contracts/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
-[submodule "packages/contracts/lib/smart-invoice-mono"]
-	path = packages/contracts/lib/smart-invoice-mono
-	url = https://github.com/onetreespace/smart-invoice-mono
