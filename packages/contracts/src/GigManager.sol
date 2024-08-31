@@ -2,12 +2,14 @@
 pragma solidity ^0.8.26;
 
 import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {IERC1271} from "@openzeppelin/contracts/interfaces/IERC1271.sol";
+import {ISmartInvoiceFactory} from "@smartinvoicexyz/contracts/interfaces/ISmartInvoiceFactory.sol";
 
 contract GigManager is EIP712 {
     struct Gig {
         uint256 gigId;
-        // string details;
+        bytes32 details;
         uint256 minPrice;
         uint256 maxPrice;
         address token;
@@ -19,19 +21,22 @@ contract GigManager is EIP712 {
     struct Proposal {
         uint256 proposalId;
         uint256 gigId;
-        uint256[] milestones;
+        bytes32 details;
+        uint256[] milestoneAmounts;
         address token;
-        // string details;
         address provider;
         bool isAccepted;
         uint256 deadline;
     }
 
-    address public escrowFactory;
+    address public immutable escrowFactory;
+    address public immutable escrowResolver;
+    address public immutable wrappedNativeToken;
 
-    constructor(address _escrowFactory) {
-        escrowFactory = _escrowFactory;
-    }
+    uint256 public constant ONE_YEAR = 365 * 24 * 60 * 60;
+    uint8 public constant escrowResolverType = 0;
+    bool public constant escrowNeedsVerification = false;
+    bytes32 public constant escrowType = bytes32(bytes("updatable"));
 
     mapping(uint256 => Gig) public gigs;
     mapping(uint256 => Proposal) public proposals;
@@ -40,13 +45,23 @@ contract GigManager is EIP712 {
     uint256 public gigCount;
     uint256 public proposalCount;
 
-    event GigCreated(uint256 gigId, string details);
-    event ProposalCreated(uint256 proposalId, string details);
-    event ProposalAccepted(uint256 proposalId);
-    event ProposalEdited(uint256 proposalId, string details);
+    constructor(
+        address _escrowFactory,
+        address _escrowResolver,
+        address _wrappedNativeToken
+    ) EIP712("GigManager", "1") {
+        escrowFactory = _escrowFactory;
+        escrowResolver = _escrowResolver;
+        wrappedNativeToken = _wrappedNativeToken;
+    }
+
+    event GigCreated(uint256 gigId);
+    event ProposalCreated(uint256 proposalId);
+    event ProposalAccepted(uint256 proposalId, address escrow);
+    event ProposalEdited(uint256 proposalId);
 
     function createGig(
-        string memory _details,
+        bytes32 _details,
         uint256 _minPrice,
         uint256 _maxPrice,
         address _token,
@@ -56,6 +71,7 @@ contract GigManager is EIP712 {
         gigCount++;
         gigs[gigCount] = Gig(
             gigCount,
+            _details,
             _minPrice,
             _maxPrice,
             _token,
@@ -63,14 +79,14 @@ contract GigManager is EIP712 {
             _client,
             _deadline
         );
-        emit GigCreated(gigCount, _details);
+        emit GigCreated(gigCount);
     }
 
     function createProposal(
         uint256 _gigId,
-        uint256[] memory _milestones,
+        uint256[] memory _milestoneAmounts,
         address _token,
-        string memory _details,
+        bytes32 _details,
         address _provider,
         uint256 _deadline
     ) public {
@@ -82,13 +98,14 @@ contract GigManager is EIP712 {
         proposals[proposalCount] = Proposal(
             proposalCount,
             _gigId,
-            _milestones,
+            _details,
+            _milestoneAmounts,
             _token,
             _provider,
             false,
             _deadline
         );
-        emit ProposalCreated(proposalCount, _details);
+        emit ProposalCreated(proposalCount);
     }
 
     // struct AcceptProposal {
@@ -165,18 +182,35 @@ contract GigManager is EIP712 {
         proposal.isAccepted = true;
         gig.isOpen = false;
 
-        // TODO: Create smart invoice
-        // address escrow = ISmartInvoiceFactory(escrowFactory).createSmartInvoice(proposal.milestones, proposal.token, proposal.provider, gig.client, proposal.deadline);
-        // escrows[_proposalId] = escrow;
+        bytes memory escrowData = abi.encode(
+            gig.client,
+            escrowResolverType,
+            escrowResolver,
+            proposal.token,
+            block.timestamp + ONE_YEAR,
+            wrappedNativeToken,
+            escrowNeedsVerification,
+            escrowFactory,
+            proposal.provider
+        );
 
-        emit ProposalAccepted(_proposalId);
+        address escrow = ISmartInvoiceFactory(escrowFactory).create(
+            proposal.provider,
+            proposal.milestoneAmounts, 
+            escrowData,
+            escrowType
+        );
+
+        escrows[_proposalId] = escrow;
+
+        emit ProposalAccepted(_proposalId, escrow);
     }
 
     function editProposal(
         uint256 _proposalId,
-        uint256[] memory _milestones,
+        uint256[] memory _milestoneAmounts,
         address _token,
-        string memory _details,
+        bytes32 _details,
         uint256 _deadline
     ) public {
         Proposal storage proposal = proposals[_proposalId];
@@ -190,11 +224,11 @@ contract GigManager is EIP712 {
             "Only provider or client can edit proposal"
         );
 
-        proposal.milestones = _milestones;
+        proposal.milestoneAmounts = _milestoneAmounts;
         proposal.token = _token;
         proposal.deadline = _deadline;
-        // proposal.details = _details;
+        proposal.details = _details;
 
-        emit ProposalEdited(_proposalId, _details);
+        emit ProposalEdited(_proposalId);
     }
 }
