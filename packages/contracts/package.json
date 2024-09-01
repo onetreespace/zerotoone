@@ -1,0 +1,17 @@
+{
+  "name": "@zerotoone/contracts",
+  "version": "0.1.0",
+  "devDependencies": {
+    "@openzeppelin/contracts": "^5.0.1",
+    "@openzeppelin/contracts-upgradeable": "^5.0.2",
+    "forge-std": "github:foundry-rs/forge-std#v1.8.1"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/yieldnest/yieldnest-cross-chain",
+  "scripts": {
+    "build": "yarn install && forge build",
+    "compile": "forge compile",
+    "format": "forge fmt --root .",
+    "test": "forge test"
+  }
+}
