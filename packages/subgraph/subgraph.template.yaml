@@ -1,0 +1,102 @@
+specVersion: 0.0.4
+description: Zero To One
+schema:
+  file: ./src/schema.graphql
+features:
+  - ipfsOnEthereumContracts
+  - nonFatalErrors
+dataSources:
+  - kind: ethereum/contract
+    name: SmartInvoiceFactory
+    network: {{network}}
+    source:
+      address: '{{SmartInvoiceFactory}}'
+      abi: SmartInvoiceFactory
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Invoice
+      abis:
+        - name: ERC20
+          file: ./src/abis/ERC20.json
+        - name: SmartInvoiceUpdatable
+          file: ./src/abis/SmartInvoiceUpdatable.json
+        - name: SmartInvoiceFactory
+          file: ./src/abis/SmartInvoiceFactory.json
+      eventHandlers:
+        - event: LogNewInvoice(indexed uint256,indexed address,uint256[],indexed bytes32,uint256)
+          handler: handleLogNewInvoice
+      file: ./src/mappings/smartinvoicexyz/factory.ts
+templates:
+  - kind: ethereum/contract
+    name: SmartInvoiceUpdatable
+    network: {{network}}
+    source:
+      abi: SmartInvoiceUpdatable
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Invoice
+        - Release
+        - Deposit
+        - Resolution
+        - Token
+      abis:
+        - name: ERC20
+          file: ./src/abis/ERC20.json
+        - name: SmartInvoiceUpdatable
+          file: ./src/abis/SmartInvoiceUpdatable.json
+        - name: SmartInvoiceFactory
+          file: ./src/abis/SmartInvoiceFactory.json
+      eventHandlers:
+        - event: Release(uint256,uint256)
+          handler: handleRelease
+        - event: Withdraw(uint256)
+          handler: handleWithdraw
+        - event: Lock(indexed address,string)
+          handler: handleLock
+        - event: Rule(indexed address,uint256,uint256,uint256)
+          handler: handleRule
+        - event: Resolve(indexed address,uint256,uint256,uint256,string)
+          handler: handleResolve
+        - event: Deposit(indexed address,uint256)
+          handler: handleDeposit
+        - event: Verified(indexed address,indexed address)
+          handler: handleVerified
+        - event: MilestonesAdded(indexed address,indexed address,uint256[])
+          handler: handleMilestonesAdded
+        - event: UpdatedClient(indexed address)
+          handler: handleUpdateClient
+        - event: UpdatedProvider(indexed address)
+          handler: handleUpdateProvider
+        - event: UpdatedProviderReceiver(indexed address)
+          handler: handleUpdateProviderReceiver
+      file: ./src/mappings/smartinvoicexyz/invoice.ts
+  - kind: ethereum/contract
+    name: ERC20
+    network: {{network}}
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Token
+        - Deposit
+      abis:
+        - name: ERC20
+          file: ./src/abis/ERC20.json
+        - name: SmartInvoiceUpdatable
+          file: ./src/abis/SmartInvoiceUpdatable.json
+        - name: SmartInvoiceFactory
+          file: ./src/abis/SmartInvoiceFactory.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mappings/token.ts
