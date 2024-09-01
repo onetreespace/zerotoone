@@ -27,6 +27,9 @@ importers:
       '@openzeppelin/contracts-upgradeable':
         specifier: ^5.0.2
         version: 5.0.2(@openzeppelin/contracts@5.0.2)
+      create3-factory:
+        specifier: github:ZeframLou/create3-factory
+        version: https://codeload.github.com/ZeframLou/create3-factory/tar.gz/6b834ad617902314521684e40e2f1ad73eb7ed13
       forge-std:
         specifier: github:foundry-rs/forge-std#v1.8.1
         version: https://codeload.github.com/foundry-rs/forge-std/tar.gz/bb4ceea94d6f10eeb5b41dc2391c6c8bf8e734ef
@@ -370,6 +373,10 @@ packages:
 
   concat-map@0.0.1:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+
+  create3-factory@https://codeload.github.com/ZeframLou/create3-factory/tar.gz/6b834ad617902314521684e40e2f1ad73eb7ed13:
+    resolution: {tarball: https://codeload.github.com/ZeframLou/create3-factory/tar.gz/6b834ad617902314521684e40e2f1ad73eb7ed13}
+    version: 0.0.0
 
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -1692,6 +1699,8 @@ snapshots:
   color-name@1.1.4: {}
 
   concat-map@0.0.1: {}
+
+  create3-factory@https://codeload.github.com/ZeframLou/create3-factory/tar.gz/6b834ad617902314521684e40e2f1ad73eb7ed13: {}
 
   cross-spawn@7.0.3:
     dependencies:

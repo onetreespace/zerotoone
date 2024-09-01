@@ -19,9 +19,11 @@ contract QuestChainToken is IQuestChainToken, ERC1155 {
     // solhint-disable-next-line style-guide-casing,immutable-vars-naming
     IQuestChainFactory public immutable questChainFactory;
 
-    /********************************
-     MAPPING STRUCTS EVENTS MODIFIER
-     *******************************/
+    /**
+     *
+     *  MAPPING STRUCTS EVENTS MODIFIER
+     *
+     */
 
     /// @notice Metadata URI for each token kind.
     mapping(uint256 => string) private _tokenURIs;
@@ -38,8 +40,9 @@ contract QuestChainToken is IQuestChainToken, ERC1155 {
     /// @dev Access control modifier for functions callable by token owners only.
     /// @param _tokenId The quest token ID.
     modifier onlyTokenOwner(uint256 _tokenId) {
-        if (msg.sender != _tokenOwners[_tokenId])
+        if (msg.sender != _tokenOwners[_tokenId]) {
             revert NotTokenOwner(_tokenId);
+        }
         _;
     }
 
@@ -48,27 +51,23 @@ contract QuestChainToken is IQuestChainToken, ERC1155 {
         questChainFactory = IQuestChainFactory(msg.sender);
     }
 
-    /*************************
-     ACCESS CONTROL FUNCTIONS
-     *************************/
+    /**
+     *
+     *  ACCESS CONTROL FUNCTIONS
+     *
+     */
 
     /// @notice Assigns quest chain ownership.
     /// @param _tokenId The quest NFT identifier.
     /// @param _questChain The address of the new QuestChain minimal proxy.
-    function setTokenOwner(
-        uint256 _tokenId,
-        address _questChain
-    ) public onlyFactory {
+    function setTokenOwner(uint256 _tokenId, address _questChain) public onlyFactory {
         _tokenOwners[_tokenId] = _questChain;
     }
 
     /// @notice Assigns the metadata location for a quest line.
     /// @param _tokenId The quest NFT identifier.
     /// @param _tokenURI The URI pointer for locating token metadata.
-    function setTokenURI(
-        uint256 _tokenId,
-        string memory _tokenURI
-    ) public onlyTokenOwner(_tokenId) {
+    function setTokenURI(uint256 _tokenId, string memory _tokenURI) public onlyTokenOwner(_tokenId) {
         _tokenURIs[_tokenId] = _tokenURI;
         emit URI(uri(_tokenId), _tokenId);
     }
@@ -76,10 +75,7 @@ contract QuestChainToken is IQuestChainToken, ERC1155 {
     /// @notice Mints a quest achievement token to the user.
     /// @param _user The address of a successful questing user.
     /// @param _tokenId The quest token identifier.
-    function mint(
-        address _user,
-        uint256 _tokenId
-    ) public onlyTokenOwner(_tokenId) {
+    function mint(address _user, uint256 _tokenId) public onlyTokenOwner(_tokenId) {
         if (balanceOf(_user, _tokenId) != 0) revert AlreadyMinted();
         _mint(_user, _tokenId, 1, "");
     }
@@ -87,17 +83,16 @@ contract QuestChainToken is IQuestChainToken, ERC1155 {
     /// @notice Burns a quest achievement token from the user.
     /// @param _user The address of a successful questing user.
     /// @param _tokenId The quest token identifier.
-    function burn(
-        address _user,
-        uint256 _tokenId
-    ) public onlyTokenOwner(_tokenId) {
+    function burn(address _user, uint256 _tokenId) public onlyTokenOwner(_tokenId) {
         if (balanceOf(_user, _tokenId) != 1) revert TokenNotFound();
         _burn(_user, _tokenId, 1);
     }
 
-    /*************************
-     VIEW AND PURE FUNCTIONS
-     *************************/
+    /**
+     *
+     *  VIEW AND PURE FUNCTIONS
+     *
+     */
 
     /// @notice Returns the owner address of a particular quest token.
     /// @param _tokenId The quest token identifier.
@@ -109,28 +104,18 @@ contract QuestChainToken is IQuestChainToken, ERC1155 {
     /// @notice Returns the metadata URI of a particular quest token.
     /// @param _tokenId The quest token identifier.
     /// @return The URI of the token.
-    function uri(
-        uint256 _tokenId
-    )
-        public
-        view
-        override(IERC1155MetadataURI, ERC1155)
-        returns (string memory)
-    {
+    function uri(uint256 _tokenId) public view override(IERC1155MetadataURI, ERC1155) returns (string memory) {
         return _tokenURIs[_tokenId];
     }
 
-    /*************************
-     OVERRIDES
-     *************************/
+    /**
+     *
+     *  OVERRIDES
+     *
+     */
 
     /// @dev Prevents transferring the tokens and thus makes them SoulBound.
-    function _update(
-        address _from,
-        address _to,
-        uint256[] memory _ids,
-        uint256[] memory _values
-    ) internal override {
+    function _update(address _from, address _to, uint256[] memory _ids, uint256[] memory _values) internal override {
         if (_to != address(0) && _from != address(0)) revert SoulBound();
         super._update(_from, _to, _ids, _values);
     }

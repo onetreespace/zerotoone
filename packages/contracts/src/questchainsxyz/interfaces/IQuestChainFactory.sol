@@ -14,6 +14,7 @@ enum QuestStatus {
     review, // Quest is under review.
     pass, // Quest has been successfully completed.
     fail // Quest has failed.
+
 }
 
 /// @notice Structure for holding quest details.
@@ -40,14 +41,9 @@ struct QuestChainInfo {
 }
 
 interface IQuestChainFactoryFunctions {
-    function create(
-        QuestChainInfo calldata _info,
-        bytes32 _salt
-    ) external returns (address);
+    function create(QuestChainInfo calldata _info, bytes32 _salt) external returns (address);
 
-    function getQuestChainAddress(
-        uint256 _index
-    ) external view returns (address);
+    function getQuestChainAddress(uint256 _index) external view returns (address);
 
     function questChainCount() external view returns (uint256);
 
@@ -97,7 +93,4 @@ interface IQuestChainFactorySignals {
 }
 
 // solhint-disable-next-line no-empty-blocks
-interface IQuestChainFactory is
-    IQuestChainFactoryFunctions,
-    IQuestChainFactorySignals
-{}
+interface IQuestChainFactory is IQuestChainFactoryFunctions, IQuestChainFactorySignals {}

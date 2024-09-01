@@ -18,10 +18,11 @@ import {QuestChainToken} from "./QuestChainToken.sol";
 /// @notice Factory contract for creating and managing quest chains.
 /// @dev This contract deploys new quest chain contracts and manages access control.
 contract QuestChainFactory is IQuestChainFactory, ReentrancyGuard {
-    /********************************
-     STATE VARIABLES
-     *******************************/
-
+    /**
+     *
+     *  STATE VARIABLES
+     *
+     */
     uint256 private constant ONE_DAY = 86400;
 
     /// @notice Immutable contract address for quest chain ERC1155 tokens.
@@ -44,9 +45,11 @@ contract QuestChainFactory is IQuestChainFactory, ReentrancyGuard {
     /// @notice Timestamp of the last admin proposal.
     uint256 public adminProposalTimestamp;
 
-    /********************************
-     MAPPING STRUCTS EVENTS MODIFIER
-     *******************************/
+    /**
+     *
+     *  MAPPING STRUCTS EVENTS MODIFIER
+     *
+     */
 
     /// @notice Mapping from quest chain counter to deployed quest chains.
     mapping(uint256 => address) private _questChains;
@@ -84,25 +87,22 @@ contract QuestChainFactory is IQuestChainFactory, ReentrancyGuard {
     /// @notice Constructor to set up the QuestChainFactory.
     /// @param _template The address of the quest chain template.
     /// @param _admin The address of the initial admin.
-    constructor(
-        address _template,
-        address _admin
-    ) nonZeroAddr(_template) nonZeroAddr(_admin) {
+    constructor(address _template, address _admin) nonZeroAddr(_template) nonZeroAddr(_admin) {
         questChainToken = new QuestChainToken();
         questChainTemplate = _template;
         admin = _admin;
         emit FactorySetup();
     }
 
-    /*************************
-     ACCESS CONTROL FUNCTIONS
-     *************************/
+    /**
+     *
+     *  ACCESS CONTROL FUNCTIONS
+     *
+     */
 
     /// @notice Proposes a new admin address.
     /// @param _admin The address of the new admin.
-    function proposeAdminReplace(
-        address _admin
-    )
+    function proposeAdminReplace(address _admin)
         external
         onlyAdmin
         nonZeroAddr(_admin)
@@ -131,19 +131,14 @@ contract QuestChainFactory is IQuestChainFactory, ReentrancyGuard {
     /// @param _info The initialization data struct for the new clone.
     /// @param _salt An arbitrary source of entropy.
     /// @return The address of the created quest chain.
-    function create(
-        QuestChainInfo calldata _info,
-        bytes32 _salt
-    ) external returns (address) {
+    function create(QuestChainInfo calldata _info, bytes32 _salt) external returns (address) {
         return _create(_info, _salt);
     }
 
     /// @notice Returns the address of a deployed quest chain proxy.
     /// @param _index The quest chain contract index.
     /// @return The address of the quest chain at the given index.
-    function getQuestChainAddress(
-        uint256 _index
-    ) external view returns (address) {
+    function getQuestChainAddress(uint256 _index) external view returns (address) {
         return _questChains[_index];
     }
 
@@ -151,10 +146,7 @@ contract QuestChainFactory is IQuestChainFactory, ReentrancyGuard {
     /// @param _info The initialization data struct for the new clone.
     /// @param _salt An arbitrary source of entropy.
     /// @return The address of the created quest chain.
-    function _create(
-        QuestChainInfo calldata _info,
-        bytes32 _salt
-    ) internal returns (address) {
+    function _create(QuestChainInfo calldata _info, bytes32 _salt) internal returns (address) {
         address questChainAddress = _newClone(_salt);
         _setupQuestChain(questChainAddress, _info);
         return questChainAddress;
@@ -170,10 +162,7 @@ contract QuestChainFactory is IQuestChainFactory, ReentrancyGuard {
     /// @dev Internal function initializes a new quest chain minimal proxy.
     /// @param _questChainAddress The new minimal proxy's address.
     /// @param _info The initialization parameters.
-    function _setupQuestChain(
-        address _questChainAddress,
-        QuestChainInfo calldata _info
-    ) internal {
+    function _setupQuestChain(address _questChainAddress, QuestChainInfo calldata _info) internal {
         questChainToken.setTokenOwner(questChainCount, _questChainAddress);
         IQuestChain(_questChainAddress).init(_info);
         _questChains[questChainCount] = _questChainAddress;

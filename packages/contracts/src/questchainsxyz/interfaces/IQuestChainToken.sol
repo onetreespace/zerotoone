@@ -44,7 +44,4 @@ interface IQuestChainTokenSignals {
 }
 
 // solhint-disable-next-line no-empty-blocks
-interface IQuestChainToken is
-    IQuestChainTokenFunctions,
-    IQuestChainTokenSignals
-{}
+interface IQuestChainToken is IQuestChainTokenFunctions, IQuestChainTokenSignals {}

@@ -11,9 +11,5 @@ interface ISmartInvoice {
      * @param _amounts An array of amounts representing payments or milestones.
      * @param _data Additional data needed for initialization, encoded as bytes.
      */
-    function init(
-        address _recipient,
-        uint256[] calldata _amounts,
-        bytes calldata _data
-    ) external;
+    function init(address _recipient, uint256[] calldata _amounts, bytes calldata _data) external;
 }

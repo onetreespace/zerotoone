@@ -111,18 +111,12 @@ contract MockWETH {
      * @param wad The amount of tokens to transfer.
      * @return A boolean value indicating whether the operation succeeded.
      */
-    function transferFrom(
-        address src,
-        address dst,
-        uint256 wad
-    ) public returns (bool) {
+    function transferFrom(address src, address dst, uint256 wad) public returns (bool) {
         if (balanceOf[src] < wad) {
             revert NotEnoughBalance();
         }
 
-        if (
-            src != msg.sender && allowance[src][msg.sender] != type(uint256).max
-        ) {
+        if (src != msg.sender && allowance[src][msg.sender] != type(uint256).max) {
             if (allowance[src][msg.sender] < wad) {
                 revert NotEnoughAllowance();
             }

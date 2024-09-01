@@ -15,16 +15,12 @@ import {ILimiter} from "./interfaces/ILimiter.sol";
 /// @title QuestChain Contract
 /// @notice Manages quests within a quest chain, including creation, editing, submission, and review of quests.
 /// @dev This contract interacts with IQuestChainToken and IQuestChainFactory to manage quest chain tokens and factory functions.
-contract QuestChain is
-    IQuestChain,
-    ReentrancyGuard,
-    Initializable,
-    Pausable,
-    AccessControl
-{
-    /********************************
-     CONSTANT VARIABLES
-     *******************************/
+contract QuestChain is IQuestChain, ReentrancyGuard, Initializable, Pausable, AccessControl {
+    /**
+     *
+     *  CONSTANT VARIABLES
+     *
+     */
 
     /// @notice Role key for the admin role.
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
@@ -33,9 +29,11 @@ contract QuestChain is
     /// @notice Role key for the reviewer role.
     bytes32 public constant REVIEWER_ROLE = keccak256("REVIEWER_ROLE");
 
-    /********************************
-     STATE VARIABLES
-     *******************************/
+    /**
+     *
+     *  STATE VARIABLES
+     *
+     */
 
     /// @notice Interface for interacting with the quest chain factory.
     IQuestChainFactory public questChainFactory;
@@ -55,9 +53,11 @@ contract QuestChain is
     /// @notice Mapping from user address to a mapping of quest ID to quest completion status.
     mapping(address => mapping(uint256 => QuestStatus)) private _questStatus;
 
-    /********************************
-     MODIFIERS
-     *******************************/
+    /**
+     *
+     *  MODIFIERS
+     *
+     */
 
     /// @dev Modifier to allow function call only by the factory contract.
     modifier onlyFactory() {
@@ -142,35 +142,32 @@ contract QuestChain is
 
     /// @notice Sets a limiter contract for the quest chain.
     /// @param _limiterContract Address of the limiter contract.
-    function setLimiter(
-        address _limiterContract
-    ) external onlyRole(ADMIN_ROLE) {
+    function setLimiter(address _limiterContract) external onlyRole(ADMIN_ROLE) {
         limiterContract = _limiterContract;
         emit SetLimiter(_limiterContract);
     }
 
     /// @notice Creates new quests in the quest chain.
     /// @param _questDetails List of URIs of off-chain details for new quests.
-    function addQuests(
-        QuestDetails[] calldata _questDetails
-    ) external onlyRole(EDITOR_ROLE) {
+    function addQuests(QuestDetails[] calldata _questDetails) external onlyRole(EDITOR_ROLE) {
         _addQuests(_questDetails);
     }
 
     /// @notice Configures quests in the quest chain.
     /// @param _questIdList List of quest IDs to be configured.
     /// @param _questDetails List of details for each quest.
-    function editQuests(
-        uint256[] calldata _questIdList,
-        QuestDetails[] calldata _questDetails
-    ) external onlyRole(EDITOR_ROLE) {
+    function editQuests(uint256[] calldata _questIdList, QuestDetails[] calldata _questDetails)
+        external
+        onlyRole(EDITOR_ROLE)
+    {
         uint256 _loopLength = _questIdList.length;
 
         if (_loopLength != _questDetails.length) revert InvalidParams();
 
-        for (uint256 i; i < _loopLength; ) {
-            if (_questIdList[i] == 0 || _questIdList[i] > questCount)
+        for (uint256 i; i < _loopLength;) {
+            if (_questIdList[i] == 0 || _questIdList[i] > questCount) {
                 revert QuestNotFound(_questIdList[i]);
+            }
 
             questDetails[_questIdList[i]] = QuestDetails(
                 _questDetails[i].disabled,
@@ -189,22 +186,16 @@ contract QuestChain is
     /// @notice Submits proofs for completing particular quests in the quest chain.
     /// @param _questIdList List of quest IDs for the quest submissions.
     /// @param _proofList List of off-chain proofs for each quest.
-    function submitProofs(
-        uint256[] calldata _questIdList,
-        string[] calldata _proofList
-    ) external whenNotPaused {
+    function submitProofs(uint256[] calldata _questIdList, string[] calldata _proofList) external whenNotPaused {
         if (limiterContract != address(0)) {
-            ILimiter(limiterContract).submitProofLimiter(
-                _msgSender(),
-                _questIdList
-            );
+            ILimiter(limiterContract).submitProofLimiter(_msgSender(), _questIdList);
         }
 
         uint256 _loopLength = _questIdList.length;
 
         if (_loopLength != _proofList.length) revert InvalidParams();
 
-        for (uint256 i; i < _loopLength; ) {
+        for (uint256 i; i < _loopLength;) {
             _submitProof(_questIdList[i]);
             unchecked {
                 ++i;
@@ -228,32 +219,23 @@ contract QuestChain is
         uint256 _loopLength = _questerList.length;
 
         if (
-            _loopLength != _questIdList.length ||
-            _loopLength != _successList.length ||
-            _loopLength != _detailsList.length
+            _loopLength != _questIdList.length || _loopLength != _successList.length
+                || _loopLength != _detailsList.length
         ) revert InvalidParams();
 
-        for (uint256 i; i < _loopLength; ) {
+        for (uint256 i; i < _loopLength;) {
             _reviewProof(_questerList[i], _questIdList[i], _successList[i]);
             unchecked {
                 ++i;
             }
         }
 
-        emit QuestProofsReviewed(
-            _msgSender(),
-            _questerList,
-            _questIdList,
-            _successList,
-            _detailsList
-        );
+        emit QuestProofsReviewed(_msgSender(), _questerList, _questIdList, _successList, _detailsList);
     }
 
     /// @notice Sets the token URI for the quest chain NFT.
     /// @param _tokenURI Off-chain token URI.
-    function setTokenURI(
-        string memory _tokenURI
-    ) external onlyRole(ADMIN_ROLE) {
+    function setTokenURI(string memory _tokenURI) external onlyRole(ADMIN_ROLE) {
         _setTokenURI(_tokenURI);
     }
 
@@ -265,15 +247,11 @@ contract QuestChain is
 
         for (uint256 _questId; _questId <= questCount; ++_questId) {
             if (
-                !questDetails[_questId].optional &&
-                !questDetails[_questId].disabled &&
-                _questStatus[_msgSender()][_questId] != QuestStatus.pass
+                !questDetails[_questId].optional && !questDetails[_questId].disabled
+                    && _questStatus[_msgSender()][_questId] != QuestStatus.pass
             ) revert ChainIncomplete();
 
-            if (
-                !atLeastOnePassed &&
-                _questStatus[_msgSender()][_questId] == QuestStatus.pass
-            ) atLeastOnePassed = true;
+            if (!atLeastOnePassed && _questStatus[_msgSender()][_questId] == QuestStatus.pass) atLeastOnePassed = true;
         }
 
         if (!atLeastOnePassed) revert NoSuccessfulReview();
@@ -290,20 +268,19 @@ contract QuestChain is
     /// @param _quester The address of the quester.
     /// @param _questId The ID of the quest.
     /// @return status The status of the quest.
-    function questStatus(
-        address _quester,
-        uint256 _questId
-    ) external view validQuest(_questId) returns (QuestStatus status) {
+    function questStatus(address _quester, uint256 _questId)
+        external
+        view
+        validQuest(_questId)
+        returns (QuestStatus status)
+    {
         status = _questStatus[_quester][_questId];
     }
 
     /// @notice Grants cascading roles to a user.
     /// @param _role The role to be granted.
     /// @param _account The address of the user.
-    function grantRole(
-        bytes32 _role,
-        address _account
-    ) public override onlyRole(getRoleAdmin(_role)) {
+    function grantRole(bytes32 _role, address _account) public override onlyRole(getRoleAdmin(_role)) {
         _grantRole(_role, _account);
         if (_role == DEFAULT_ADMIN_ROLE) {
             grantRole(ADMIN_ROLE, _account);
@@ -317,10 +294,7 @@ contract QuestChain is
     /// @notice Revokes cascading roles from a user.
     /// @param _role The role to be revoked.
     /// @param _account The address of the user.
-    function revokeRole(
-        bytes32 _role,
-        address _account
-    ) public override onlyRole(getRoleAdmin(_role)) {
+    function revokeRole(bytes32 _role, address _account) public override onlyRole(getRoleAdmin(_role)) {
         _revokeRole(_role, _account);
         if (_role == REVIEWER_ROLE) {
             revokeRole(EDITOR_ROLE, _account);
@@ -341,8 +315,9 @@ contract QuestChain is
     /// @param _questId The ID of the quest.
     function _submitProof(uint256 _questId) internal validQuest(_questId) {
         if (questDetails[_questId].disabled) revert QuestDisabled(_questId);
-        if (_questStatus[_msgSender()][_questId] == QuestStatus.pass)
+        if (_questStatus[_msgSender()][_questId] == QuestStatus.pass) {
             revert AlreadyPassed(_questId);
+        }
 
         questDetails[_questId].skipReview
             ? _questStatus[_msgSender()][_questId] = QuestStatus.pass
@@ -353,17 +328,12 @@ contract QuestChain is
     /// @param _quester The address of the quester.
     /// @param _questId The ID of the quest.
     /// @param _success Boolean indicating if the proof was accepted or rejected.
-    function _reviewProof(
-        address _quester,
-        uint256 _questId,
-        bool _success
-    ) internal validQuest(_questId) {
-        if (_questStatus[_quester][_questId] != QuestStatus.review)
+    function _reviewProof(address _quester, uint256 _questId, bool _success) internal validQuest(_questId) {
+        if (_questStatus[_quester][_questId] != QuestStatus.review) {
             revert QuestNotInReview(_questId);
+        }
 
-        _questStatus[_quester][_questId] = _success
-            ? QuestStatus.pass
-            : QuestStatus.fail;
+        _questStatus[_quester][_questId] = _success ? QuestStatus.pass : QuestStatus.fail;
     }
 
     /// @dev Internal function to set the token URI.
@@ -374,7 +344,7 @@ contract QuestChain is
     }
 
     function _addQuests(QuestDetails[] calldata _questDetails) internal {
-        for (uint256 i; i < _questDetails.length; ) {
+        for (uint256 i; i < _questDetails.length;) {
             questDetails[questCount + i + 1] = QuestDetails(
                 _questDetails[i].disabled,
                 _questDetails[i].optional,

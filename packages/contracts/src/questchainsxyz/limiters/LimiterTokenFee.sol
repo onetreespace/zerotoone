@@ -27,11 +27,7 @@ contract LimiterTokenFee is ILimiter {
     mapping(address => QuestChainDetails) public questChainDetails;
 
     event AddQuestChainDetails(
-        address _questChain,
-        address _tokenAddress,
-        address _treasuryAddress,
-        uint256 _feeAmount,
-        address _sender
+        address _questChain, address _tokenAddress, address _treasuryAddress, uint256 _feeAmount, address _sender
     );
 
     error Limited();
@@ -48,39 +44,18 @@ contract LimiterTokenFee is ILimiter {
         if (!IAccessControl(_questChain).hasRole(ADMIN_ROLE, msg.sender)) {
             revert OnlyAdmin();
         }
-        questChainDetails[_questChain] = QuestChainDetails(
-            _tokenAddress,
-            _category,
-            _nftId,
-            _treasuryAddress,
-            _feeAmount
-        );
-        emit AddQuestChainDetails(
-            _questChain,
-            _tokenAddress,
-            _treasuryAddress,
-            _feeAmount,
-            msg.sender
-        );
+        questChainDetails[_questChain] =
+            QuestChainDetails(_tokenAddress, _category, _nftId, _treasuryAddress, _feeAmount);
+        emit AddQuestChainDetails(_questChain, _tokenAddress, _treasuryAddress, _feeAmount, msg.sender);
     }
 
-    function submitProofLimiter(
-        address _sender,
-        uint256[] calldata /* _questIdList */
-    ) external {
+    function submitProofLimiter(address _sender, uint256[] calldata /* _questIdList */ ) external {
         QuestChainDetails memory _details = questChainDetails[msg.sender];
 
-        MultiToken.Asset memory _asset = MultiToken.Asset(
-            _details.tokenAddress,
-            _details.category,
-            _details.feeAmount,
-            _details.nftId
-        );
+        MultiToken.Asset memory _asset =
+            MultiToken.Asset(_details.tokenAddress, _details.category, _details.feeAmount, _details.nftId);
 
-        bool success = _asset.transferAssetFrom(
-            _sender,
-            _details.treasuryAddress
-        );
+        bool success = _asset.transferAssetFrom(_sender, _details.treasuryAddress);
         if (!success) {
             revert Limited();
         }

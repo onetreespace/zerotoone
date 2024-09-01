@@ -25,12 +25,7 @@ contract LimiterTokenGated is ILimiter {
 
     mapping(address => QuestChainDetails) public questChainDetails;
 
-    event AddQuestChainDetails(
-        address _questChain,
-        address _tokenAddress,
-        uint256 _minBalance,
-        address _sender
-    );
+    event AddQuestChainDetails(address _questChain, address _tokenAddress, uint256 _minBalance, address _sender);
 
     error OnlyAdmin();
     error Limited();
@@ -45,35 +40,16 @@ contract LimiterTokenGated is ILimiter {
         if (!IAccessControl(_questChain).hasRole(ADMIN_ROLE, msg.sender)) {
             revert OnlyAdmin();
         }
-        questChainDetails[_questChain] = QuestChainDetails(
-            _tokenAddress,
-            _category,
-            _nftId,
-            _minBalance
-        );
-        emit AddQuestChainDetails(
-            _questChain,
-            _tokenAddress,
-            _minBalance,
-            msg.sender
-        );
+        questChainDetails[_questChain] = QuestChainDetails(_tokenAddress, _category, _nftId, _minBalance);
+        emit AddQuestChainDetails(_questChain, _tokenAddress, _minBalance, msg.sender);
     }
 
-    function submitProofLimiter(
-        address _sender,
-        uint256[] calldata /* _questIdList */
-    ) external view {
+    function submitProofLimiter(address _sender, uint256[] calldata /* _questIdList */ ) external view {
         QuestChainDetails memory _details = questChainDetails[msg.sender];
 
         if (
-            MultiToken
-                .Asset(
-                    _details.tokenAddress,
-                    _details.category,
-                    0,
-                    _details.nftId
-                )
-                .balanceOf(_sender) < _details.minTokenBalance
+            MultiToken.Asset(_details.tokenAddress, _details.category, 0, _details.nftId).balanceOf(_sender)
+                < _details.minTokenBalance
         ) {
             revert Limited();
         }

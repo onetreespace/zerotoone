@@ -31,18 +31,12 @@ interface IQuestChainFunctions {
     /// @notice Configures quests in the quest chain.
     /// @param _questIdList List of quest IDs to be configured.
     /// @param _questDetails List of details for each quest.
-    function editQuests(
-        uint256[] calldata _questIdList,
-        QuestDetails[] calldata _questDetails
-    ) external;
+    function editQuests(uint256[] calldata _questIdList, QuestDetails[] calldata _questDetails) external;
 
     /// @notice Submits proofs for completing particular quests in the quest chain.
     /// @param _questIdList List of quest IDs for the quest submissions.
     /// @param _proofList List of off-chain proofs for each quest.
-    function submitProofs(
-        uint256[] calldata _questIdList,
-        string[] calldata _proofList
-    ) external;
+    function submitProofs(uint256[] calldata _questIdList, string[] calldata _proofList) external;
 
     /// @notice Reviews proofs submitted by questers for the quest chain.
     /// @param _questerList List of questers whose submissions are being reviewed.
@@ -82,10 +76,7 @@ interface IQuestChainFunctions {
     /// @param _quester The address of the quester.
     /// @param _questId The ID of the quest.
     /// @return The status of the quest.
-    function questStatus(
-        address _quester,
-        uint256 _questId
-    ) external view returns (QuestStatus);
+    function questStatus(address _quester, uint256 _questId) external view returns (QuestStatus);
 }
 
 /// @title IQuestChainSignals
@@ -117,11 +108,7 @@ interface IQuestChainSignals {
     /// @param sender The address of the user who submitted the proofs.
     /// @param questIdList The list of quest IDs for which proofs were submitted.
     /// @param proofList The list of off-chain proofs for each quest.
-    event QuestProofsSubmitted(
-        address indexed sender,
-        uint256[] questIdList,
-        string[] proofList
-    );
+    event QuestProofsSubmitted(address indexed sender, uint256[] questIdList, string[] proofList);
 
     /// @notice Emitted when proofs are reviewed for quests in the QuestChain.
     /// @param sender The address of the reviewer.
@@ -130,11 +117,7 @@ interface IQuestChainSignals {
     /// @param successList The list of booleans indicating whether each proof was accepted or rejected.
     /// @param detailsList The list of off-chain comments for each submission.
     event QuestProofsReviewed(
-        address indexed sender,
-        address[] questerList,
-        uint256[] questIdList,
-        bool[] successList,
-        string[] detailsList
+        address indexed sender, address[] questerList, uint256[] questIdList, bool[] successList, string[] detailsList
     );
 
     /// @notice Emitted when the token URI for the QuestChain is updated.

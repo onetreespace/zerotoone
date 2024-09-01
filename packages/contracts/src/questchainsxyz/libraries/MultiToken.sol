@@ -54,10 +54,7 @@ library MultiToken {
      * @param _asset Struct defining all necessary context of a token
      * @param _dest Destination address
      */
-    function transferAsset(
-        Asset memory _asset,
-        address _dest
-    ) internal returns (bool) {
+    function transferAsset(Asset memory _asset, address _dest) internal returns (bool) {
         return _transferAssetFrom(_asset, address(this), _dest);
     }
 
@@ -68,11 +65,7 @@ library MultiToken {
      * @param _source Account/address that provided the allowance
      * @param _dest Destination address
      */
-    function transferAssetFrom(
-        Asset memory _asset,
-        address _source,
-        address _dest
-    ) internal returns (bool) {
+    function transferAssetFrom(Asset memory _asset, address _source, address _dest) internal returns (bool) {
         return _transferAssetFrom(_asset, _source, _dest);
     }
 
@@ -103,10 +96,7 @@ library MultiToken {
      * @param _asset Struct defining all necessary context of a token
      * @param _target Target address to be checked
      */
-    function balanceOf(
-        Asset memory _asset,
-        address _target
-    ) internal view returns (uint256) {
+    function balanceOf(Asset memory _asset, address _target) internal view returns (uint256) {
         if (_asset.category == Category.ERC20) {
             IERC20 token = IERC20(_asset.assetAddress);
             return token.balanceOf(_target);
@@ -137,8 +127,9 @@ library MultiToken {
         if (_asset.category == Category.ERC20 && _asset.id != 0) return false;
 
         // ERC721 token has to have amount set to 1
-        if (_asset.category == Category.ERC721 && _asset.amount != 1)
+        if (_asset.category == Category.ERC721 && _asset.amount != 1) {
             return false;
+        }
 
         // Any categories have to have non-zero amount
         if (_asset.amount == 0) return false;
@@ -153,14 +144,9 @@ library MultiToken {
      * @param _otherAsset Second asset to examine
      * @return True if both structs represents the same asset
      */
-    function isSameAs(
-        Asset memory _asset,
-        Asset memory _otherAsset
-    ) internal pure returns (bool) {
-        return
-            _asset.assetAddress == _otherAsset.assetAddress &&
-            _asset.category == _otherAsset.category &&
-            _asset.id == _otherAsset.id;
+    function isSameAs(Asset memory _asset, Asset memory _otherAsset) internal pure returns (bool) {
+        return _asset.assetAddress == _otherAsset.assetAddress && _asset.category == _otherAsset.category
+            && _asset.id == _otherAsset.id;
     }
 
     /**
@@ -170,11 +156,7 @@ library MultiToken {
      * @param _source Account/address that provided the allowance
      * @param _dest Destination address
      */
-    function _transferAssetFrom(
-        Asset memory _asset,
-        address _source,
-        address _dest
-    ) private returns (bool) {
+    function _transferAssetFrom(Asset memory _asset, address _source, address _dest) private returns (bool) {
         bool success;
         bytes memory data;
 
@@ -182,12 +164,7 @@ library MultiToken {
             // Call ERC20 transferFrom function
             // solhint-disable-next-line avoid-low-level-calls
             (success, data) = _asset.assetAddress.call(
-                abi.encodeWithSelector(
-                    IERC20.transferFrom.selector,
-                    _source,
-                    _dest,
-                    _asset.amount
-                )
+                abi.encodeWithSelector(IERC20.transferFrom.selector, _source, _dest, _asset.amount)
             );
 
             // Check if the call was successful and that the data is either empty or decodes to true
@@ -195,14 +172,8 @@ library MultiToken {
         } else if (_asset.category == Category.ERC721) {
             // Call ERC721 safeTransferFrom function
             // solhint-disable-next-line avoid-low-level-calls
-            (success, ) = _asset.assetAddress.call(
-                abi.encodeWithSignature(
-                    "safeTransferFrom(address,address,uint256)",
-                    _source,
-                    _dest,
-                    _asset.id,
-                    ""
-                )
+            (success,) = _asset.assetAddress.call(
+                abi.encodeWithSignature("safeTransferFrom(address,address,uint256)", _source, _dest, _asset.id, "")
             );
 
             return success;
@@ -211,14 +182,9 @@ library MultiToken {
 
             // Call ERC1155 safeTransferFrom function
             // solhint-disable-next-line avoid-low-level-calls
-            (success, ) = _asset.assetAddress.call(
+            (success,) = _asset.assetAddress.call(
                 abi.encodeWithSelector(
-                    IERC1155.safeTransferFrom.selector,
-                    _source,
-                    _dest,
-                    _asset.id,
-                    amountToTransfer,
-                    ""
+                    IERC1155.safeTransferFrom.selector, _source, _dest, _asset.id, amountToTransfer, ""
                 )
             );
 

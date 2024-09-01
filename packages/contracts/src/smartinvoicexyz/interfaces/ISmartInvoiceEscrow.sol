@@ -18,10 +18,7 @@ interface ISmartInvoiceEscrow is ISmartInvoice {
      * @param _milestones An array of milestone amounts to be added.
      * @param _details Additional details associated with the milestones.
      */
-    function addMilestones(
-        uint256[] calldata _milestones,
-        string calldata _details
-    ) external;
+    function addMilestones(uint256[] calldata _milestones, string calldata _details) external;
 
     /**
      * @notice Releases funds for the next milestone.
@@ -68,11 +65,7 @@ interface ISmartInvoiceEscrow is ISmartInvoice {
      * @param _providerAward The amount to be awarded to the provider.
      * @param _details Additional details of the resolution.
      */
-    function resolve(
-        uint256 _clientAward,
-        uint256 _providerAward,
-        string calldata _details
-    ) external;
+    function resolve(uint256 _clientAward, uint256 _providerAward, string calldata _details) external;
 
     /// @dev Custom errors for more efficient gas usage
 
@@ -106,11 +99,7 @@ interface ISmartInvoiceEscrow is ISmartInvoice {
     /// @param sender The address that added the milestones.
     /// @param invoice The address of the invoice.
     /// @param milestones The array of milestone amounts added.
-    event MilestonesAdded(
-        address indexed sender,
-        address indexed invoice,
-        uint256[] milestones
-    );
+    event MilestonesAdded(address indexed sender, address indexed invoice, uint256[] milestones);
 
     /// @notice Emitted when the details of the invoice are updated.
     /// @param sender The address that updated the details.
@@ -143,11 +132,7 @@ interface ISmartInvoiceEscrow is ISmartInvoice {
     /// @param resolutionFee The fee deducted for resolving the dispute.
     /// @param details Additional details of the resolution.
     event Resolve(
-        address indexed resolver,
-        uint256 clientAward,
-        uint256 providerAward,
-        uint256 resolutionFee,
-        string details
+        address indexed resolver, uint256 clientAward, uint256 providerAward, uint256 resolutionFee, string details
     );
 
     /// @notice Emitted when a ruling is made on a dispute.
@@ -155,12 +140,7 @@ interface ISmartInvoiceEscrow is ISmartInvoice {
     /// @param clientAward The amount awarded to the client.
     /// @param providerAward The amount awarded to the provider.
     /// @param ruling The ruling number representing the decision.
-    event Rule(
-        address indexed resolver,
-        uint256 clientAward,
-        uint256 providerAward,
-        uint256 ruling
-    );
+    event Rule(address indexed resolver, uint256 clientAward, uint256 providerAward, uint256 ruling);
 
     /// @notice Emitted when the client and invoice are verified.
     /// @param client The address of the client.

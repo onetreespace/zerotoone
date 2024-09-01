@@ -12,9 +12,9 @@ contract GigManagerTest is Test {
     GigManager public gigManager;
     MockToken public token;
 
-    address internal resolver = makeAddr('resolver');
-      address internal client = makeAddr('client');
-      address internal provider = makeAddr('provider');
+    address internal resolver = makeAddr("resolver");
+    address internal client = makeAddr("client");
+    address internal provider = makeAddr("provider");
 
     function setUp() public {
         MockWETH weth = new MockWETH();
@@ -24,11 +24,11 @@ contract GigManagerTest is Test {
         gigManager = new GigManager(address(factory), resolver, address(weth));
 
         SmartInvoiceUpdatable updatable = new SmartInvoiceUpdatable();
-        factory.addImplementation(bytes32('updatable'), address(updatable));
+        factory.addImplementation(bytes32("updatable"), address(updatable));
     }
 
     function test_createGig() public {
-        string memory details = 'details';
+        string memory details = "details";
         uint256 minPrice = 1 ether;
         uint256 maxPrice = 2 ether;
         uint256 deadline = block.timestamp + 1 days;
@@ -51,7 +51,7 @@ contract GigManagerTest is Test {
     }
 
     function test_createProposal() public {
-        string memory details = 'details';
+        string memory details = "details";
         uint256 minPrice = 1 ether;
         uint256 maxPrice = 2 ether;
         uint256 deadline = block.timestamp + 1 days;
@@ -81,7 +81,7 @@ contract GigManagerTest is Test {
     }
 
     function test_editProposal() public {
-        string memory details = 'details';
+        string memory details = "details";
         uint256 minPrice = 1 ether;
         uint256 maxPrice = 2 ether;
         uint256 deadline = block.timestamp + 1 days;
@@ -96,7 +96,7 @@ contract GigManagerTest is Test {
         vm.prank(provider);
         uint256 proposalId = gigManager.createProposal(gigId, milestoneAmounts, details, provider, deadline);
 
-        details = 'new details';
+        details = "new details";
         milestoneAmounts[0] = 2 ether;
 
         vm.prank(provider);
@@ -111,7 +111,7 @@ contract GigManagerTest is Test {
     }
 
     function test_acceptProposal() public {
-        string memory details = 'details';
+        string memory details = "details";
         uint256 minPrice = 1 ether;
         uint256 maxPrice = 2 ether;
         uint256 deadline = block.timestamp + 1 days;
@@ -137,5 +137,4 @@ contract GigManagerTest is Test {
         assertNotEq(escrow, address(0));
         assertEq(gigManager.getEscrow(proposalId), escrow);
     }
-
 }

@@ -13,12 +13,9 @@ interface ISmartInvoiceFactory {
      * @param _type The type of the Smart Invoice to be created.
      * @return The address of the newly created Smart Invoice.
      */
-    function create(
-        address _recipient,
-        uint256[] calldata _amounts,
-        bytes calldata _data,
-        bytes32 _type
-    ) external returns (address);
+    function create(address _recipient, uint256[] calldata _amounts, bytes calldata _data, bytes32 _type)
+        external
+        returns (address);
 
     /**
      * @notice Creates a new Smart Invoice deterministically using a salt value.
@@ -43,19 +40,14 @@ interface ISmartInvoiceFactory {
      * @param _salt The salt value used for deterministic address calculation.
      * @return The predicted deterministic address of the Smart Invoice.
      */
-    function predictDeterministicAddress(
-        bytes32 _type,
-        bytes32 _salt
-    ) external returns (address);
+    function predictDeterministicAddress(bytes32 _type, bytes32 _salt) external returns (address);
 
     /**
      * @notice Returns the resolution rate for a specific resolver address.
      * @param _resolver The address of the resolver.
      * @return The resolution rate for the specified resolver.
      */
-    function resolutionRateOf(
-        address _resolver
-    ) external view returns (uint256);
+    function resolutionRateOf(address _resolver) external view returns (uint256);
 
     /// @dev Error definitions for more efficient gas usage.
 
@@ -86,19 +78,11 @@ interface ISmartInvoiceFactory {
     /// @param invoiceType The type of the invoice.
     /// @param version The version of the invoice implementation.
     /// @param implementation The address of the new implementation.
-    event AddImplementation(
-        bytes32 indexed invoiceType,
-        uint256 version,
-        address implementation
-    );
+    event AddImplementation(bytes32 indexed invoiceType, uint256 version, address implementation);
 
     /// @notice Emitted when the resolution rate is updated.
     /// @param resolver The address of the resolver.
     /// @param resolutionRate The new resolution rate.
     /// @param details Additional details about the update.
-    event UpdateResolutionRate(
-        address indexed resolver,
-        uint256 resolutionRate,
-        bytes32 details
-    );
+    event UpdateResolutionRate(address indexed resolver, uint256 resolutionRate, bytes32 details);
 }
