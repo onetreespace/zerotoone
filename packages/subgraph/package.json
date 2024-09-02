@@ -1,21 +1,21 @@
 {
   "name": "@zerotoone/subgraph",
-  "version": "0.1.0",
   "description": "Subgraph for ZeroToOne",
+  "version": "0.1.0",
   "author": "dan13ram",
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.81.0",
+    "@graphprotocol/graph-ts": "^0.35.1",
+    "mustache": "^4.2.0"
+  },
   "license": "MIT",
   "scripts": {
     "auth": "graph auth",
     "build": "graph build",
     "codegen": "graph codegen --output-dir src/types/",
-    "prepare-local": "mustache src/config/local.json subgraph.template.yaml > subgraph.yaml",
     "create-local": "graph create --node http://localhost:8020/ zerotoone",
-    "remove-local": "graph remove --node http://localhost:8020/ zerotoone",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 zerotoone"
-  },
-  "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.81.0",
-    "@graphprotocol/graph-ts": "^0.35.1",
-    "mustache": "^4.2.0"
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 zerotoone",
+    "prepare-local": "mustache src/config/local.json subgraph.template.yaml > subgraph.yaml",
+    "remove-local": "graph remove --node http://localhost:8020/ zerotoone"
   }
 }

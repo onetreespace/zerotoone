@@ -6,10 +6,10 @@ import {
   log,
   JSONValue,
   JSONValueKind,
-} from '@graphprotocol/graph-ts';
+} from "@graphprotocol/graph-ts";
 
-import { Agreement } from '../../../types/schema';
-import { InvoiceObject, addQm } from '../utils';
+import { Agreement } from "../../../types/schema";
+import { InvoiceObject, addQm } from "../utils";
 
 function handleAgreementFile(projectArray: Array<JSONValue>): Agreement[] {
   let agreementArray = new Array<Agreement>();
@@ -18,12 +18,19 @@ function handleAgreementFile(projectArray: Array<JSONValue>): Agreement[] {
     if (projectArray[i].kind != JSONValueKind.OBJECT) return agreementArray;
 
     let obj = projectArray[i].toObject();
-    let type = obj.get('type');
-    let src = obj.get('src');
-    let createdAt = obj.get('createdAt');
-    if (!type || type.isNull() || type.kind != JSONValueKind.STRING) return agreementArray;
-    if (!src || src.isNull() || src.kind != JSONValueKind.STRING) return agreementArray;
-    if (!createdAt || createdAt.isNull() || createdAt.kind != JSONValueKind.STRING) return agreementArray;
+    let type = obj.get("type");
+    let src = obj.get("src");
+    let createdAt = obj.get("createdAt");
+    if (!type || type.isNull() || type.kind != JSONValueKind.STRING)
+      return agreementArray;
+    if (!src || src.isNull() || src.kind != JSONValueKind.STRING)
+      return agreementArray;
+    if (
+      !createdAt ||
+      createdAt.isNull() ||
+      createdAt.kind != JSONValueKind.STRING
+    )
+      return agreementArray;
     let typeValue = type.toString();
     let srcValue = src.toString();
     let createdAtValue = BigInt.fromString(createdAt.toString());
@@ -35,7 +42,7 @@ function handleAgreementFile(projectArray: Array<JSONValue>): Agreement[] {
     agreement.createdAt = createdAtValue;
 
     log.info(
-      'agreement commit: agreement.type {} agreement.src {} agreement.createdAt {} index {}',
+      "agreement commit: agreement.type {} agreement.src {} agreement.createdAt {} index {}",
       [
         agreement.type,
         agreement.src,
@@ -58,7 +65,6 @@ export function handleIpfsDetails(
 ): InvoiceObject {
   invoiceObject.details = details;
   return invoiceObject;
-
 }
 /*
   if (

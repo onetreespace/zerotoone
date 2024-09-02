@@ -1,14 +1,14 @@
-import { Address, BigInt, Bytes, ByteArray } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes, ByteArray } from "@graphprotocol/graph-ts";
 
-import { Agreement, Invoice } from '../../types/schema';
+import { Agreement, Invoice } from "../../types/schema";
 
-import { updateUpdatableInfo } from './helpers/updatable-escrow';
+import { updateUpdatableInfo } from "./helpers/updatable-escrow";
 
 let zeroAddress = changetype<Address>(
-  Address.fromHexString('0x0000000000000000000000000000000000000000'),
+  Address.fromHexString("0x0000000000000000000000000000000000000000"),
 );
 
-let zeroBytes = changetype<Bytes>(Bytes.fromHexString('0x'));
+let zeroBytes = changetype<Bytes>(Bytes.fromHexString("0x"));
 
 export class InvoiceObject {
   client: Address;
@@ -22,7 +22,7 @@ export class InvoiceObject {
   total: BigInt;
   released: BigInt;
   terminationTime: BigInt;
-  details: String;
+  details: string;
   ipfsHash: string;
   disputeId: BigInt;
   projectName: string;
@@ -54,15 +54,15 @@ export class InvoiceObject {
     this.total = BigInt.fromI32(0);
     this.released = BigInt.fromI32(0);
     this.terminationTime = BigInt.fromI32(0);
-    this.details = '';
-    this.ipfsHash = '';
+    this.details = "";
+    this.ipfsHash = "";
     this.disputeId = BigInt.fromI32(0);
-    this.projectName = '';
-    this.projectDescription = '';
+    this.projectName = "";
+    this.projectDescription = "";
     this.projectAgreement = new Array<Agreement>();
     this.startDate = BigInt.fromI32(0);
     this.endDate = BigInt.fromI32(0);
-    this.invoiceType = '';
+    this.invoiceType = "";
     this.version = BigInt.fromI32(0);
     this.lateFee = BigInt.fromI32(0);
     this.lateFeeTimeInterval = BigInt.fromI32(0);
@@ -88,14 +88,14 @@ export function updateInvoice(address: Address, invoice: Invoice): Invoice {
   if (invoice == null) return invoice;
 
   // ignore bad address
-  if (address.toHexString() == '0x47838384f6cc2b08d5c86a2b48cdcb9d40516189') {
+  if (address.toHexString() == "0x47838384f6cc2b08d5c86a2b48cdcb9d40516189") {
     return invoice;
   }
 
   let type = invoice.invoiceType;
   if (type == null) return invoice;
 
-  if (type == 'updatable') {
+  if (type == "updatable") {
     invoice = updateUpdatableInfo(address, invoice);
   }
 

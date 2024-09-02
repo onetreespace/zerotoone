@@ -1,9 +1,9 @@
-import { Address, log } from '@graphprotocol/graph-ts';
+import { Address, log } from "@graphprotocol/graph-ts";
 
-import { Invoice } from '../../../types/schema';
-import { InvoiceObject } from '../utils';
-import { SmartInvoiceUpdatable } from '../../../types/templates/SmartInvoiceUpdatable/SmartInvoiceUpdatable';
-import { handleIpfsDetails } from './ipfs';
+import { Invoice } from "../../../types/schema";
+import { InvoiceObject } from "../utils";
+import { SmartInvoiceUpdatable } from "../../../types/templates/SmartInvoiceUpdatable/SmartInvoiceUpdatable";
+import { handleIpfsDetails } from "./ipfs";
 
 function fetchEscrowInfo(address: Address): InvoiceObject {
   let updatableInstance = SmartInvoiceUpdatable.bind(address);
@@ -77,15 +77,15 @@ export function updateUpdatableInfo(
 ): Invoice {
   let invoiceObject = fetchEscrowInfo(address);
 
-  log.info('Got details for invoice', [address.toHexString()]);
+  log.info("Got details for invoice", [address.toHexString()]);
 
   invoice.token = invoiceObject.token;
   invoice.client = invoiceObject.client;
   invoice.provider = invoiceObject.provider;
   if (invoiceObject.resolverType == 0) {
-    invoice.resolverType = 'individual';
+    invoice.resolverType = "individual";
   } else if (invoiceObject.resolverType == 1) {
-    invoice.resolverType = 'arbitrator';
+    invoice.resolverType = "arbitrator";
   }
   invoice.resolver = invoiceObject.resolver;
   invoice.resolutionRate = invoiceObject.resolutionRate;
@@ -113,7 +113,7 @@ export function updateUpdatableInfo(
 
   invoice.projectAgreement = projectAgreement;
 
-  log.info('fox tango {}', [invoice.projectName.toString()]);
+  log.info("fox tango {}", [invoice.projectName.toString()]);
 
   return invoice as Invoice;
 }

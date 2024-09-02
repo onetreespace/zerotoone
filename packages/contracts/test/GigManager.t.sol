@@ -127,7 +127,7 @@ contract GigManagerTest is Test {
         uint256 proposalId = gigManager.createProposal(gigId, milestoneAmounts, details, provider, deadline);
 
         vm.prank(client);
-        address escrow = gigManager.acceptProposal(proposalId);
+        address escrow = gigManager.acceptProposal(proposalId, details);
 
         GigManager.Proposal memory proposal = gigManager.getProposal(proposalId);
         GigManager.Gig memory gig = gigManager.getGig(gigId);

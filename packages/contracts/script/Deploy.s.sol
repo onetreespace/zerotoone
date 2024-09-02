@@ -50,7 +50,7 @@ contract DeployScript is Script {
         QuestChainToken questChainToken;
     }
 
-    function getDeploymentFile() internal virtual view returns (string memory) {
+    function getDeploymentFile() internal view virtual returns (string memory) {
         string memory root = vm.projectRoot();
         return string.concat(root, "/deployments/", vm.toString(block.chainid), ".json");
     }
@@ -83,20 +83,11 @@ contract DeployScript is Script {
         SmartInvoiceUpdatable updatable = new SmartInvoiceUpdatable();
         factory.addImplementation(bytes32("updatable"), address(updatable));
 
-        GigManager gigManager = new GigManager(
-            address(factory),
-            deployer,
-            address(weth)
-        );
+        GigManager gigManager = new GigManager(address(factory), deployer, address(weth));
 
         QuestChain questChain = new QuestChain();
-        QuestChainFactory questChainFactory = new QuestChainFactory(
-            address(questChain),
-            deployer
-        );
-        QuestChainToken questChainToken = QuestChainToken(
-            address(questChainFactory.questChainToken())
-        );
+        QuestChainFactory questChainFactory = new QuestChainFactory(address(questChain), deployer);
+        QuestChainToken questChainToken = QuestChainToken(address(questChainFactory.questChainToken()));
 
         console.log("Deployed WETH:", address(weth));
         console.log("Deployed Token:", address(token));

@@ -1,25 +1,36 @@
-import { log, dataSource, Address } from '@graphprotocol/graph-ts';
-import { Invoice } from '../../types/schema';
+import { log, dataSource, Address } from "@graphprotocol/graph-ts";
+import { Invoice } from "../../types/schema";
 
-import { LogNewInvoice as LogNewInvoiceEvent } from '../../types/SmartInvoiceFactory/SmartInvoiceFactory';
 import {
-  ERC20,
-  SmartInvoiceUpdatable,
-} from '../../types/templates';
-import { getToken } from './helpers/token';
-import { updateInvoice } from './utils';
+  LogNewInvoice as LogNewInvoiceEvent,
+  SmartInvoiceFactory,
+} from "../../types/SmartInvoiceFactory/SmartInvoiceFactory";
+import { ERC20, SmartInvoiceUpdatable } from "../../types/templates";
+import { getToken } from "./helpers/token";
+import { updateInvoice } from "./utils";
+import { getChainId } from "../questchainsxyz/helpers/network";
+import { getGlobal } from "../questchainsxyz/helpers/schema";
 
 export function handleLogNewInvoice(event: LogNewInvoiceEvent): void {
   if (
     event.params.invoiceAddress.toHexString() ==
-    '0x47838384f6cc2b08d5c86a2b48cdcb9d40516189'
+    "0x47838384f6cc2b08d5c86a2b48cdcb9d40516189"
   ) {
     return;
   }
 
+  let contract = SmartInvoiceFactory.bind(event.address);
+
+  let globalNode = getGlobal();
+  globalNode.wrappedNativeToken = contract.wrappedNativeToken();
+  globalNode.smartInvoiceFactory = event.address;
+  globalNode.save();
+
   let invoice = new Invoice(event.params.invoiceAddress.toHexString());
 
-  log.info('handleLogNewInvoice {}', [event.params.invoiceAddress.toHexString()]);
+  log.info("handleLogNewInvoice {}", [
+    event.params.invoiceAddress.toHexString(),
+  ]);
 
   invoice.address = event.params.invoiceAddress;
   invoice.factoryAddress = event.address;
@@ -35,16 +46,17 @@ export function handleLogNewInvoice(event: LogNewInvoiceEvent): void {
   invoice.resolutions = new Array<string>();
   invoice.creationTxHash = event.transaction.hash;
   invoice.network = dataSource.network();
+  invoice.chainId = getChainId();
   invoice.projectAgreement = new Array<string>();
   invoice.verified = new Array<string>();
   invoice.milestonesAdded = new Array<string>();
   invoice.tipAmount = new Array<string>();
 
-  log.info('invoice type check {}', [invoice.invoiceType!.toString()]);
+  log.info("invoice type check {}", [invoice.invoiceType!.toString()]);
 
   invoice = updateInvoice(event.params.invoiceAddress, invoice);
 
-  if (invoice.invoiceType == 'updatable') {
+  if (invoice.invoiceType == "updatable") {
     SmartInvoiceUpdatable.create(event.params.invoiceAddress);
   }
 

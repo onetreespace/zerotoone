@@ -1,18 +1,18 @@
-import { log } from '@graphprotocol/graph-ts';
-import { Invoice, Deposit } from '../types/schema';
-import { Transfer as TransferEvent } from '../types/templates/ERC20/ERC20';
+import { log } from "@graphprotocol/graph-ts";
+import { Invoice, Deposit } from "../../types/schema";
+import { Transfer as TransferEvent } from "../../types/templates/ERC20/ERC20";
 
-import { updateInvoice } from './smartinvoicexyz/utils';
+import { updateInvoice } from "./utils";
 
 export function handleTransfer(event: TransferEvent): void {
   let invoice = Invoice.load(event.params.to.toHexString());
   if (invoice != null) {
-    log.info('handleTransfer {} Invoice Found {}', [
+    log.info("handleTransfer {} Invoice Found {}", [
       event.transaction.hash.toHexString(),
       invoice.id,
     ]);
     if (event.address == invoice.token) {
-      log.info('handleTransfer {} Invoice {} Token Found {}', [
+      log.info("handleTransfer {} Invoice {} Token Found {}", [
         event.transaction.hash.toHexString(),
         invoice.id,
         invoice.token.toHexString(),
@@ -20,7 +20,12 @@ export function handleTransfer(event: TransferEvent): void {
 
       invoice = updateInvoice(event.params.to, invoice);
 
-      let deposit = new Deposit(event.transaction.hash.toHexString().concat('-').concat(event.logIndex.toHexString()));
+      let deposit = new Deposit(
+        event.transaction.hash
+          .toHexString()
+          .concat("-")
+          .concat(event.logIndex.toHexString()),
+      );
       deposit.txHash = event.transaction.hash;
       deposit.invoice = invoice.id;
       deposit.sender = event.params.from;

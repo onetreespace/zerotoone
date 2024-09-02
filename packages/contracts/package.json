@@ -4,17 +4,17 @@
   "devDependencies": {
     "@openzeppelin/contracts": "^5.0.1",
     "@openzeppelin/contracts-upgradeable": "^5.0.2",
-    "forge-std": "github:foundry-rs/forge-std#v1.8.1",
-    "create3-factory": "github:ZeframLou/create3-factory"
+    "create3-factory": "github:ZeframLou/create3-factory",
+    "forge-std": "github:foundry-rs/forge-std#v1.8.1"
   },
   "license": "MIT",
   "repository": "https://github.com/yieldnest/yieldnest-cross-chain",
   "scripts": {
-    "clean": "forge clean && rm -rf build",
     "build": "bash script/bash/build.sh",
+    "clean": "forge clean && rm -rf build",
     "compile": "forge compile",
+    "deploy-local": "forge script DeployScript --rpc-url local --broadcast",
     "format": "forge fmt --root .",
-    "test": "forge test",
-    "deploy-anvil": "forge script DeployScript --rpc-url anvil --broadcast"
+    "test": "forge test"
   }
 }
