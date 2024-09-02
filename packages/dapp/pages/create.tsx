@@ -11,20 +11,14 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { contracts } from '@quest-chains/sdk';
-import { QuestChainCommons } from '@quest-chains/sdk/dist/contracts/v1/contracts/QuestChainFactory';
-import { randomBytes } from 'crypto';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
-import { toast } from 'react-hot-toast';
 import { TwitterShareButton } from 'react-share';
+import { useAccount, useChainId } from 'wagmi';
 
 import { MetadataForm } from '@/components/CreateChain/MetadataForm';
 import NFTForm from '@/components/CreateChain/NFTForm';
-import {
-  QuestAdvSetting,
-  QuestsForm,
-} from '@/components/CreateChain/QuestsForm';
+import { QuestsForm } from '@/components/CreateChain/QuestsForm';
 import { Member, RolesForm } from '@/components/CreateChain/RolesForm';
 import Step0 from '@/components/CreateChain/Step0';
 import { TwitterIcon } from '@/components/icons/TwitterIcon';
@@ -36,17 +30,13 @@ import { NetworkDisplay } from '@/components/NetworkDisplay';
 import { HeadComponent } from '@/components/Seo';
 import { SubmitButton } from '@/components/SubmitButton';
 import { QUESTCHAINS_URL } from '@/utils/constants';
-import { awaitQuestChainAddress, waitUntilBlock } from '@/utils/graphHelpers';
-import { handleError, handleTxLoading } from '@/utils/helpers';
-import { Metadata, uploadMetadata } from '@/utils/metadata';
-import { TrackEvent } from '@/utils/plausibleHelpers';
 import { getQuestChainURL, ipfsUriToHttp } from '@/utils/uriHelpers';
-import { AVAILABLE_NETWORK_INFO, isSupportedNetwork, useWallet } from '@/web3';
 
 const Create: React.FC = () => {
   const router = useRouter();
 
-  const { address, provider, chainId, globalInfo, connectWallet } = useWallet();
+  const { address } = useAccount();
+  const chainId = useChainId();
 
   const [chainName, setChainName] = useState('');
   const [chainDescription, setChainDescription] = useState('');
@@ -69,20 +59,23 @@ const Create: React.FC = () => {
     name: string,
     description: string,
     metadataUri: string,
-    slug?: string,
-    imageUrl?: string,
+    _slug?: string,
+    _imageUrl?: string,
   ) => {
     setChainName(name);
     setChainDescription(description);
     setChainUri(metadataUri);
-    setImageUrl(imageUrl || '');
-    setSlug(slug || '');
+    setImageUrl(_imageUrl || '');
+    setSlug(_slug || '');
     setStep(2);
   };
 
-  const onSubmitNFTMeta = (metadataUri: string, nftUrl: string | undefined) => {
+  const onSubmitNFTMeta = (
+    metadataUri: string,
+    _nftUrl: string | undefined,
+  ) => {
     setNFTUri(metadataUri);
-    if (nftUrl) setNFTUrl(nftUrl);
+    if (_nftUrl) setNFTUrl(_nftUrl);
     setStep(3);
   };
 
@@ -111,135 +104,138 @@ const Create: React.FC = () => {
   };
 
   const onPublishQuestChain = useCallback(
-    async (
-      quests: {
-        name: string;
-        description: string;
-        optional: boolean;
-        skipReview: boolean;
-        paused: boolean;
-      }[],
-      startAsDisabled: boolean,
-    ) => {
-      setSubmitting(true);
-      if (!address || !chainId || !provider || !isSupportedNetwork(chainId))
-        return;
+    async () =>
+      // quests: {
+      //   name: string;
+      //   description: string;
+      //   optional: boolean;
+      //   skipReview: boolean;
+      //   paused: boolean;
+      // }[],
+      // startAsDisabled: boolean,
+      {
+        /*
+setSubmitting(true);
+if (!address || !chainId || !provider || !isSupportedChain(chainId))
+  return;
 
-      let tid;
-      let questsDetails: string[] = [];
-      if (quests.length) {
-        tid = toast.loading('Uploading Quests, please wait...');
-        const metadata: Metadata[] = quests;
-        const hashes = await Promise.all(
-          metadata.map(({ name, description }) =>
-            uploadMetadata({ name, description }),
-          ),
-        );
-        questsDetails = hashes.map(hash => `ipfs://${hash}`);
-        toast.dismiss(tid);
-      }
+let tid;
+let questsDetails: string[] = [];
+if (quests.length) {
+  tid = toast.loading('Uploading Quests, please wait...');
+  const metadata: Metadata[] = quests;
+  const hashes = await Promise.all(
+    metadata.map(({ name, description }) =>
+      uploadMetadata({ name, description }),
+    ),
+  );
+  questsDetails = hashes.map(hash => `ipfs://${hash}`);
+  toast.dismiss(tid);
+}
 
-      try {
-        const { factoryAddress } = globalInfo[chainId];
+try {
+  const { factoryAddress } = globalInfo[chainId];
 
-        const info: QuestChainCommons.QuestChainInfoStruct = {
-          details: chainUri,
-          tokenURI: nftUri,
-          owners: ownerAddresses.filter(address => address !== ''),
-          admins: adminAddresses.filter(address => address !== ''),
-          editors: editorAddresses.filter(address => address !== ''),
-          reviewers: reviewerAddresses.filter(address => address !== ''),
-          quests: questsDetails,
-          paused: startAsDisabled,
-        };
-        const factoryContract: contracts.V2.QuestChainFactory =
-          contracts.V2.QuestChainFactory__factory.connect(
-            factoryAddress,
-            provider.getSigner(),
-          );
+  const info: QuestChainCommons.QuestChainInfoStruct = {
+    details: chainUri,
+    tokenURI: nftUri,
+    owners: ownerAddresses.filter(address => address !== ''),
+    admins: adminAddresses.filter(address => address !== ''),
+    editors: editorAddresses.filter(address => address !== ''),
+    reviewers: reviewerAddresses.filter(address => address !== ''),
+    quests: questsDetails,
+    paused: startAsDisabled,
+  };
+  const factoryContract: contracts.V2.QuestChainFactory =
+    contracts.V2.QuestChainFactory__factory.connect(
+      factoryAddress,
+      provider.getSigner(),
+    );
 
-        tid = toast.loading(
-          'Waiting for Confirmation - Confirm the transaction in your Wallet',
-        );
-        const tx = await factoryContract.createAndUpgrade(
-          info,
-          randomBytes(32),
-        );
-        toast.dismiss(tid);
-        tid = handleTxLoading(tx.hash, chainId);
-        let receipt = await tx.wait(1);
-        toast.dismiss(tid);
+  tid = toast.loading(
+    'Waiting for Confirmation - Confirm the transaction in your Wallet',
+  );
+  const tx = await factoryContract.createAndUpgrade(
+    info,
+    randomBytes(32),
+  );
+  toast.dismiss(tid);
+  tid = handleTxLoading(tx.hash, chainId);
+  let receipt = await tx.wait(1);
+  toast.dismiss(tid);
 
-        const chainAddress = await awaitQuestChainAddress(receipt);
+  const chainAddress = await awaitQuestChainAddress(receipt);
 
-        const advanceSettingQuests: {
-          index: number;
-          settings: QuestAdvSetting;
-        }[] = [];
+  const advanceSettingQuests: {
+    index: number;
+    settings: QuestAdvSetting;
+  }[] = [];
 
-        quests.forEach((q, index) => {
-          if (q.optional || q.skipReview || q.paused) {
-            advanceSettingQuests.push({ index, settings: q });
-          }
-        });
+  quests.forEach((q, index) => {
+    if (q.optional || q.skipReview || q.paused) {
+      advanceSettingQuests.push({ index, settings: q });
+    }
+  });
 
-        // Send second tx to set questDetails
-        if (advanceSettingQuests.length > 0) {
-          tid = toast.loading(
-            'Waiting for Confirmation - Confirm the transaction in your Wallet',
-          );
-          const questContract: contracts.V2.QuestChain =
-            contracts.V2.QuestChain__factory.connect(
-              chainAddress,
-              provider.getSigner(),
-            );
+  // Send second tx to set questDetails
+  if (advanceSettingQuests.length > 0) {
+    tid = toast.loading(
+      'Waiting for Confirmation - Confirm the transaction in your Wallet',
+    );
+    const questContract: contracts.V2.QuestChain =
+      contracts.V2.QuestChain__factory.connect(
+        chainAddress,
+        provider.getSigner(),
+      );
 
-          const tx = await questContract.configureQuests(
-            advanceSettingQuests.map(({ index }) => index),
-            advanceSettingQuests.map(
-              ({ settings: { optional, skipReview, paused } }) => ({
-                optional,
-                paused,
-                skipReview,
-              }),
-            ),
-          );
-          toast.dismiss(tid);
-          tid = handleTxLoading(tx.hash, chainId);
-          receipt = await tx.wait(1);
-          toast.dismiss(tid);
-        }
-        tid = toast.loading(
-          'Transaction confirmed. Waiting for The Graph to index the transaction data.',
-        );
-        await waitUntilBlock(chainId, receipt.blockNumber);
-        toast.dismiss(tid);
-        onOpen();
+    const tx = await questContract.configureQuests(
+      advanceSettingQuests.map(({ index }) => index),
+      advanceSettingQuests.map(
+        ({ settings: { optional, skipReview, paused } }) => ({
+          optional,
+          paused,
+          skipReview,
+        }),
+      ),
+    );
+    toast.dismiss(tid);
+    tid = handleTxLoading(tx.hash, chainId);
+    receipt = await tx.wait(1);
+    toast.dismiss(tid);
+  }
+  tid = toast.loading(
+    'Transaction confirmed. Waiting for The Graph to index the transaction data.',
+  );
+  await waitUntilBlock(chainId, receipt.blockNumber);
+  toast.dismiss(tid);
+  onOpen();
 
-        // @ts-ignore
-        window.plausible(TrackEvent.ChainCreated);
-        setChainAddress(chainAddress);
-      } catch (error) {
-        // @ts-ignore
-        window.plausible(TrackEvent.ChainCreateFailed);
-        toast.dismiss(tid);
-        handleError(error);
-      } finally {
-        setSubmitting(false);
-      }
-    },
+  // @ts-ignore
+  window.plausible(TrackEvent.ChainCreated);
+  setChainAddress(chainAddress);
+} catch (error) {
+  // @ts-ignore
+  window.plausible(TrackEvent.ChainCreateFailed);
+  toast.dismiss(tid);
+  handleError(error);
+} finally {
+  setSubmitting(false);
+}
+
+*/
+      },
     [
-      address,
-      chainId,
-      provider,
-      chainUri,
-      nftUri,
-      ownerAddresses,
-      adminAddresses,
-      editorAddresses,
-      reviewerAddresses,
-      globalInfo,
-      onOpen,
+      // address,
+      // chainId,
+      // provider,
+      // chainUri,
+      // nftUri,
+      // ownerAddresses,
+      // adminAddresses,
+      // editorAddresses,
+      // reviewerAddresses,
+      // globalInfo,
+      // onOpen,
     ],
   );
 
@@ -268,7 +264,7 @@ const Create: React.FC = () => {
       <HeadComponent
         title="Create a quest chain"
         description="You will be able create a 2D or a 3D soulbound NFT which Questers will be able to mint after completing the chain."
-        url={QUESTCHAINS_URL + '/create'}
+        url={`${QUESTCHAINS_URL}/create`}
       />
 
       {step === 0 && (
@@ -282,7 +278,7 @@ const Create: React.FC = () => {
             ) : (
               <SubmitButton
                 onClick={async () => {
-                  await connectWallet();
+                  // await connectWallet();
                   setStep(1);
                 }}
                 px={32}
@@ -400,7 +396,7 @@ const Create: React.FC = () => {
         onClose={() => {
           onClose();
           if (chainId && slug) {
-            router.push(`/${AVAILABLE_NETWORK_INFO[chainId].urlName}/${slug}`);
+            router.push(`/${chainId}/${slug}`);
           }
         }}
         scrollBehavior="inside"
@@ -413,11 +409,7 @@ const Create: React.FC = () => {
         >
           <ModalCloseButton />
           <ModalBody textAlign="center" py={12}>
-            <Flex
-              justifyContent={'center'}
-              flexDir="column"
-              alignItems="center"
-            >
+            <Flex justifyContent="center" flexDir="column" alignItems="center">
               <Image
                 w="14rem"
                 src={ipfsUriToHttp(imageUrl)}
@@ -446,7 +438,7 @@ const Create: React.FC = () => {
                   Tweet
                 </Button>
               </TwitterShareButton>
-              <MastodonShareButton message={QCmessage + ' ' + QCURL} />
+              <MastodonShareButton message={`${QCmessage} ${QCURL}`} />
             </Flex>
           </ModalBody>
         </ModalContent>
@@ -483,8 +475,14 @@ const Step: React.FC<{
     </Text>
   </Flex>
 );
-const Step2 = () => <Step number={2} title="Chain completion NFT" />;
-const Step3 = () => <Step number={3} title="Members" />;
-const Step4 = () => <Step number={4} title="Quests" />;
+const Step2 = () => {
+  return <Step number={2} title="Chain completion NFT" />;
+};
+const Step3 = () => {
+  return <Step number={3} title="Members" />;
+};
+const Step4 = () => {
+  return <Step number={4} title="Quests" />;
+};
 
 export default Create;

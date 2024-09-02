@@ -66,7 +66,7 @@ export const Jazzicon = ({ address, size }: Props): JSX.Element => {
 
       return (
         <rect
-          key={`shape_${index}`}
+          key={`shape_${index.toString()}`}
           x={0}
           y={0}
           width={size}

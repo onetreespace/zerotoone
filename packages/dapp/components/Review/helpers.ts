@@ -4,9 +4,9 @@ import { SORT } from '@/components/Review/ReviewToolbar';
 import { SubmissionType } from '@/components/Review/SubmissionTile';
 
 export const removeSelectedFromReviewed = (
-  r: SubmissionType[],
+  submissions: SubmissionType[],
   selected: SubmissionType[],
-) => r.filter(r => !selected.map(s => s.id).includes(r.id));
+) => submissions.filter(r => !selected.map(s => s.id).includes(r.id));
 
 export const statusToSubmission = (
   q: graphql.QuestStatusInfoFragment,
@@ -25,18 +25,19 @@ export const statusToSubmission = (
     q.submissions[q.submissions.length - 1].timestamp,
   ),
   reviewComment: q.reviews.length
-    ? q.reviews[q.reviews.length - 1].description ?? ''
+    ? (q.reviews[q.reviews.length - 1].description ?? '')
     : '',
   success:
+    // eslint-disable-next-line no-nested-ternary
     q.status === graphql.Status.Pass
       ? true
       : q.status === graphql.Status.Fail
-      ? false
-      : undefined,
+        ? false
+        : undefined,
 });
 
-export const sort = (a: number, b: number, sort: SORT) => {
-  switch (sort) {
+export const sort = (a: number, b: number, sortType: SORT) => {
+  switch (sortType) {
     case SORT.DateDesc:
       return b - a;
     case SORT.DateAsc:

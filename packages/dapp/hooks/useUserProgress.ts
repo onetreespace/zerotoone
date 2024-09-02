@@ -50,7 +50,7 @@ export const useUserProgress = (
 
     let atLeastOnePassed = false;
 
-    for (let i = 0; i < questChain.quests.length; ++i) {
+    for (let i = 0; i < questChain.quests.length; i += 1) {
       const quest = questChain.quests[i];
       const status = userStatus[quest.questId]?.status;
 

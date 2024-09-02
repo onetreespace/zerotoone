@@ -1,7 +1,7 @@
 import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
-import { SUPPORTED_NETWORKS } from '@/web3/networks';
+import { CHAINS } from '@/web3';
 
 import { useRefresh } from './useRefresh';
 
@@ -23,15 +23,18 @@ export const useUserQuestsRejectedForAllChains = (
       setFetching(false);
       setError(new Error('No address provider'));
       setResults([]);
-      return;
+      return () => {};
     }
     let isMounted = true;
     (async () => {
       try {
         setFetching(true);
         const allResults = await Promise.all(
-          SUPPORTED_NETWORKS.map(async chainId =>
-            graphql.getQuestsRejectedForUserAndChain(chainId, address ?? ''),
+          CHAINS.map(async ({ id: chainId }) =>
+            graphql.getQuestsRejectedForUserAndChain(
+              chainId.toString(),
+              address ?? '',
+            ),
           ),
         );
         if (!isMounted) return;

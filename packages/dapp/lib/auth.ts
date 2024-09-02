@@ -1,40 +1,18 @@
-import { Web3Provider } from '@ethersproject/providers';
-import { verifyMessage } from '@ethersproject/wallet';
 import { Base64 } from 'js-base64';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  Account,
+  Chain,
+  getAddress,
+  RpcSchema,
+  Transport,
+  verifyMessage,
+  WalletClient,
+} from 'viem';
 
 const AUDIENCE = 'quest-chains-api';
 const TOKEN_DURATION = 1000 * 60 * 60 * 24 * 7; // 7 days
-const WELCOME_MESSAGE = `Welcome to Quest Chains Anon!\nPlease sign this message so we know it is you.\n\n`;
-
-const verifySignature = (
-  address: string,
-  message: string,
-  signature: string,
-): boolean => {
-  const recoveredAddress = verifyMessage(message, signature);
-  return address.toLowerCase() === recoveredAddress.toLowerCase();
-};
-
-export const signMessage = async (
-  provider: Web3Provider,
-  rawMessage: string,
-): Promise<string> => {
-  const ethereum = provider.provider;
-  const signer = provider.getSigner();
-  const address = await signer.getAddress();
-  if (!ethereum.request) throw new Error('invalid ethereum provider');
-
-  let params = [rawMessage, address.toLowerCase()];
-  if (ethereum.isMetaMask) {
-    params = [params[1], params[0]];
-  }
-  const signature = await ethereum.request({
-    method: 'personal_sign',
-    params,
-  });
-  return signature;
-};
+const WELCOME_MESSAGE = `Welcome to Zero To One Anon!\nPlease sign this message so we know it is you.\n\n`;
 
 type Claim = {
   iat: number;
@@ -44,8 +22,10 @@ type Claim = {
   tid: string;
 };
 
-export const createToken = async (provider: Web3Provider): Promise<string> => {
-  const address = await provider.getSigner().getAddress();
+export const createToken = async (
+  walletClient: WalletClient<Transport, Chain, Account, RpcSchema>,
+): Promise<string> => {
+  const { address } = walletClient.account!;
 
   const iat = new Date().getTime();
 
@@ -59,21 +39,21 @@ export const createToken = async (provider: Web3Provider): Promise<string> => {
 
   const serializedClaim = JSON.stringify(claim);
   const msgToSign = `${WELCOME_MESSAGE}${serializedClaim}`;
-  const proof = await signMessage(provider, msgToSign);
+  const signature = await walletClient.signMessage({ message: msgToSign });
 
-  return Base64.encode(JSON.stringify([proof, serializedClaim]));
+  return Base64.encode(JSON.stringify([signature, serializedClaim]));
 };
 
 export const verifyToken = (token: string): string | null => {
   try {
     if (!token) return null;
     const rawToken = Base64.decode(token);
-    const [proof, rawClaim] = JSON.parse(rawToken);
+    const [signature, rawClaim] = JSON.parse(rawToken);
     const claim: Claim = JSON.parse(rawClaim);
-    const address = claim.iss;
+    const address = getAddress(claim.iss);
 
     const msgToVerify = `${WELCOME_MESSAGE}${rawClaim}`;
-    const valid = verifySignature(address, msgToVerify, proof);
+    const valid = verifyMessage({ address, message: msgToVerify, signature });
     const expired = claim.exp < new Date().getTime();
     const validAudience = claim.aud === AUDIENCE;
 

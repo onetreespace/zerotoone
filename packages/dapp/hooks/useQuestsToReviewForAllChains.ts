@@ -1,7 +1,7 @@
 import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
-import { SUPPORTED_NETWORKS } from '@/web3/networks';
+import { CHAINS } from '@/web3';
 
 export const useQuestsToReviewForAllChains = (
   address: string | undefined | null,
@@ -21,15 +21,15 @@ export const useQuestsToReviewForAllChains = (
       setFetching(false);
       setError(new Error('No address provider'));
       setResults([]);
-      return;
+      return () => {};
     }
     let isMounted = true;
     (async () => {
       try {
         setFetching(true);
         const allResults = await Promise.all(
-          SUPPORTED_NETWORKS.map(async chainId =>
-            graphql.getQuestChainsToReview(chainId, address),
+          CHAINS.map(async ({ id: chainId }) =>
+            graphql.getQuestChainsToReview(chainId.toString(), address),
           ),
         );
         if (!isMounted) return;

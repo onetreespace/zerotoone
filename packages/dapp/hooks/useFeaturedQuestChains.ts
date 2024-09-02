@@ -1,7 +1,7 @@
 import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
-import { SUPPORTED_NETWORKS } from '@/web3/networks';
+import { isSupportedChain } from '@/web3';
 
 const featuredQuestChains = [
   {
@@ -44,12 +44,11 @@ const featuredQuestChains = [
 
 const networkAddresses = featuredQuestChains.reduce(
   (t: Record<string, string[]>, a: { address: string; chainId: string }) => {
-    if (SUPPORTED_NETWORKS.includes(a.chainId)) {
+    if (isSupportedChain(Number(a.chainId))) {
       if (t[a.chainId]) {
         return { ...t, [a.chainId]: [...t[a.chainId], a.address] };
-      } else {
-        return { ...t, [a.chainId]: [a.address] };
       }
+      return { ...t, [a.chainId]: [a.address] };
     }
     return t;
   },

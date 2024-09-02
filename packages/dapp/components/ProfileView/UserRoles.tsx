@@ -20,11 +20,11 @@ import {
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { useMemo } from 'react';
+import { useAccount } from 'wagmi';
 
 import { NetworkDisplay } from '@/components/NetworkDisplay';
 import { Role } from '@/components/RoleTag';
 import { useUserRolesForAllChains } from '@/hooks/useUserRolesForAllChains';
-import { AVAILABLE_NETWORK_INFO, useWallet } from '@/web3';
 
 type QuestChainRoleInfo = {
   address: string;
@@ -39,7 +39,7 @@ type QuestChainRoleInfo = {
 export const UserRoles: React.FC<{
   address: string;
 }> = ({ address }) => {
-  const { address: userAddress } = useWallet();
+  const { address: userAddress } = useAccount();
   const isLoggedInUser = address === userAddress?.toLowerCase();
 
   const { fetching, results: userRoles } = useUserRolesForAllChains(address);
@@ -132,9 +132,11 @@ export const UserRoles: React.FC<{
               </Text>
             </Flex>
           )}
-          {roles?.slice(0, 4).map(roleInfo => (
-            <RoleDisplay roleInfo={roleInfo} key={roleInfo.address} />
-          ))}
+          {roles
+            ?.slice(0, 4)
+            .map(roleInfo => (
+              <RoleDisplay roleInfo={roleInfo} key={roleInfo.address} />
+            ))}
         </>
       )}
 
@@ -158,8 +160,8 @@ const RoleDisplay: React.FC<{ roleInfo: QuestChainRoleInfo }> = ({
   roleInfo: { address, chainId, name, role, paused, slug },
 }) => (
   <NextLink
-    as={`/${AVAILABLE_NETWORK_INFO[chainId].urlName}/${slug || address}`}
-    href={`/[chainId]/[address]`}
+    as={`/${chainId}/${slug || address}`}
+    href="/[chainId]/[address]"
     passHref
   >
     <ChakraLink
@@ -197,7 +199,7 @@ const RoleDisplay: React.FC<{ roleInfo: QuestChainRoleInfo }> = ({
           <Text fontSize={16} fontWeight="bold">
             {role.toUpperCase()}
           </Text>
-          <NetworkDisplay asTag chainId={chainId} />
+          <NetworkDisplay asTag chainId={Number(chainId)} />
         </Flex>
       </Flex>
     </ChakraLink>

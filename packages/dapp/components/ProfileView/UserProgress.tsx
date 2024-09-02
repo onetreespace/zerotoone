@@ -16,9 +16,9 @@ import {
 } from '@chakra-ui/react';
 import { graphql } from '@quest-chains/sdk';
 import React from 'react';
+import { useAccount } from 'wagmi';
 
 import { useUserProgressForAllChains } from '@/hooks/useUserProgressForAllChains';
-import { useWallet } from '@/web3';
 
 import { QuestChainTile } from '../QuestChainTile';
 
@@ -48,7 +48,7 @@ const QuestChainWithProgress: React.FC<{ userStatus: graphql.UserStatus }> = ({
 export const UserProgress: React.FC<{
   address: string;
 }> = ({ address }) => {
-  const { address: userAddress } = useWallet();
+  const { address: userAddress } = useAccount();
   const isLoggedInUser = address === userAddress?.toLowerCase();
 
   const { fetching, results: userStatuses } =

@@ -1,7 +1,8 @@
+/* eslint-disable camelcase */
 import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
-import { SUPPORTED_NETWORKS } from '@/web3/networks';
+import { CHAINS } from '@/web3';
 
 const { OrderDirection, QuestChain_OrderBy } = graphql;
 
@@ -21,7 +22,7 @@ const getSortKey = (
 
 export const useFilteredQuestChains = (
   filters: graphql.QuestChainFiltersInfo,
-  networks: Record<string, boolean> = {},
+  networksMap: Record<string, boolean> = {},
 ): {
   error: unknown;
   fetching: boolean;
@@ -39,13 +40,15 @@ export const useFilteredQuestChains = (
       try {
         setFetching(true);
         let chains: graphql.QuestChainDisplayFragment[] = [];
-        const n = Object.entries(networks)
+        const networksList = Object.entries(networksMap)
           .filter(([_, value]) => value)
           .map(([key]) => key);
 
-        if (n.length > 0) {
+        if (networksList.length > 0) {
           const allResults = await Promise.all(
-            n.map(async n => graphql.getQuestChainsFromFilters(n, filters)),
+            networksList.map(async n =>
+              graphql.getQuestChainsFromFilters(n, filters),
+            ),
           );
           chains = allResults.reduce((t, a) => {
             t.push(...a);
@@ -53,8 +56,8 @@ export const useFilteredQuestChains = (
           }, []);
         } else {
           const allResults = await Promise.all(
-            SUPPORTED_NETWORKS.map(async n =>
-              graphql.getQuestChainsFromFilters(n, filters),
+            CHAINS.map(async c =>
+              graphql.getQuestChainsFromFilters(c.id.toString(), filters),
             ),
           );
           chains = allResults.reduce((t, a) => {
@@ -85,7 +88,7 @@ export const useFilteredQuestChains = (
     return () => {
       isMounted = false;
     };
-  }, [filters, networks]);
+  }, [filters, networksMap]);
 
   return {
     fetching,

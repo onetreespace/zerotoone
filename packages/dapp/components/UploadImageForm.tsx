@@ -78,7 +78,7 @@ export const UploadImageForm = ({
             borderRadius="full"
             onClick={onResetImage}
             icon={<SmallCloseIcon boxSize="1.5rem" />}
-            aria-label={''}
+            aria-label=""
             backdropFilter="blur(40px)"
             boxShadow="inset 0px 0px 0px 1px white"
             isDisabled={isDisabled}
@@ -106,7 +106,7 @@ export const UploadImageForm = ({
               setDefaultImageUri('');
             }}
             icon={<SmallCloseIcon boxSize="1.5rem" />}
-            aria-label={''}
+            aria-label=""
             backdropFilter="blur(40px)"
             boxShadow="inset 0px 0px 0px 1px white"
             isDisabled={isDisabled}

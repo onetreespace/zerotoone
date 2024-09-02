@@ -8,9 +8,9 @@ export const fetchUserProfile = async (
   addressOrUsername: string,
 ): Promise<MongoUser | null> => {
   if (!addressOrUsername) return null;
-  const res = await fetch('/api/profile/' + addressOrUsername);
+  const res = await fetch(`/api/profile/${addressOrUsername}`);
   if (res.ok && res.status === 200) {
-    return await res.json();
+    return res.json();
   }
   return null;
 };

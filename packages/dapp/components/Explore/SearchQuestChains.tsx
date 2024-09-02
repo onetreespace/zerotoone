@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { SearchIcon } from '@chakra-ui/icons';
 import {
   Flex,

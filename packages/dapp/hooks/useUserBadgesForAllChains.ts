@@ -1,7 +1,7 @@
 import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
-import { SUPPORTED_NETWORKS } from '@/web3/networks';
+import { CHAINS } from '@/web3';
 
 export const useUserBadgesForAllChains = (
   address: string,
@@ -22,8 +22,8 @@ export const useUserBadgesForAllChains = (
       try {
         setFetching(true);
         const allResults = await Promise.all(
-          SUPPORTED_NETWORKS.map(async chainId =>
-            graphql.getBadgesForUser(chainId, address ?? ''),
+          CHAINS.map(async ({ id: chainId }) =>
+            graphql.getBadgesForUser(chainId.toString(), address ?? ''),
           ),
         );
         if (!isMounted) return;

@@ -24,11 +24,14 @@ import { UploadProofButton } from '@/components/UploadProofButton';
 import { UserStatusType } from '@/hooks/useUserStatus';
 import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
-import { useWallet } from '@/web3';
-import { getQuestChainContract } from '@/web3/contract';
 
 import { ConfirmationModal } from './ConfirmationModal';
-import { QuestAdvSetting } from './CreateChain/QuestsForm';
+
+export type QuestAdvSetting = {
+  paused: boolean;
+  optional: boolean;
+  skipReview: boolean;
+};
 
 export const QuestTile: React.FC<{
   name: string;
@@ -61,7 +64,6 @@ export const QuestTile: React.FC<{
   pauseDisabled = true,
   onTogglePause,
 }) => {
-  const { chainId, provider } = useWallet();
   const [isToggling, setToggling] = useState(false);
   const {
     isOpen: isRemoveModalOpen,
@@ -71,48 +73,50 @@ export const QuestTile: React.FC<{
 
   const toggleQuestPaused = useCallback(
     async (pause: boolean) => {
-      if (!chainId || !provider || !questChain || !questId) {
-        return;
-      }
-
-      setToggling(true);
-      let tid = toast.loading(`${pause ? 'Disabling' : 'Enabling'} the quest`);
-      try {
-        const contract = getQuestChainContract(
-          questChain.address,
-          questChain.version,
-          provider.getSigner(),
-        );
-
-        const tx = await (Number(questChain.version) > 0
-          ? (contract as contracts.V1.QuestChain).pauseQuests(
-              [questId],
-              [pause],
-            )
-          : (contract as contracts.V0.QuestChain).functions[
-              pause ? 'pauseQuest' : 'unpauseQuest'
-            ](questId));
-        toast.dismiss(tid);
-        tid = handleTxLoading(tx.hash, chainId);
-        const receipt = await tx.wait(1);
-        toast.dismiss(tid);
-        tid = toast.loading(
-          'Transaction confirmed. Waiting for The Graph to index the transaction data.',
-        );
-        await waitUntilBlock(chainId, receipt.blockNumber);
-        toast.dismiss(tid);
-        toast.success(
-          `Successfully ${pause ? 'disabled' : 'enabled'} the quest`,
-        );
-        refresh?.();
-      } catch (error) {
-        toast.dismiss(tid);
-        handleError(error);
-      } finally {
-        setToggling(false);
-      }
+      /*
+        if (!chainId || !provider || !questChain || !questId) {
+          return;
+        }
+  
+        setToggling(true);
+        let tid = toast.loading(`${pause ? 'Disabling' : 'Enabling'} the quest`);
+        try {
+          const contract = getQuestChainContract(
+            questChain.address,
+            questChain.version,
+            provider.getSigner(),
+          );
+  
+          const tx = await (Number(questChain.version) > 0
+            ? (contract as contracts.V1.QuestChain).pauseQuests(
+                [questId],
+                [pause],
+              )
+            : (contract as contracts.V0.QuestChain).functions[
+                pause ? 'pauseQuest' : 'unpauseQuest'
+              ](questId));
+          toast.dismiss(tid);
+          tid = handleTxLoading(tx.hash, chainId);
+          const receipt = await tx.wait(1);
+          toast.dismiss(tid);
+          tid = toast.loading(
+            'Transaction confirmed. Waiting for The Graph to index the transaction data.',
+          );
+          await waitUntilBlock(chainId, receipt.blockNumber);
+          toast.dismiss(tid);
+          toast.success(
+            `Successfully ${pause ? 'disabled' : 'enabled'} the quest`,
+          );
+          refresh?.();
+        } catch (error) {
+          toast.dismiss(tid);
+          handleError(error);
+        } finally {
+          setToggling(false);
+        }
+        */
     },
-    [chainId, provider, questChain, questId, refresh],
+    [questChain, questId, refresh],
   );
 
   const { optional, skipReview, paused } = advSettings;

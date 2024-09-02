@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { CloseIcon } from '@chakra-ui/icons';
 import { Button, Flex, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 import { graphql } from '@quest-chains/sdk';
@@ -6,11 +7,12 @@ import {
   QuestChain_OrderBy,
 } from '@quest-chains/sdk/dist/graphql';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Chain } from 'viem';
 
 import { QuestChainTile } from '@/components/QuestChainTile';
 import { useCategories } from '@/hooks/useCategories';
 import { useFilteredQuestChains } from '@/hooks/useFilteredQuestChains';
-import { SUPPORTED_NETWORK_INFO } from '@/web3';
+import { CHAINS } from '@/web3';
 
 import { LoadingState } from '../LoadingState';
 import { FilterDropdown, FilterOption } from './FilterDropdown';
@@ -63,11 +65,9 @@ const getSorter = (sortValue: string): graphql.QuestChainFiltersInfo => {
   }
 };
 
-const networkOptions: FilterOption[] = Object.values(
-  SUPPORTED_NETWORK_INFO,
-).map(n => ({
-  value: n.chainId,
-  label: n.label,
+const networkOptions: FilterOption[] = CHAINS.map(n => ({
+  value: n.id.toString(),
+  label: n.name,
 }));
 
 const QuestChains: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
@@ -82,24 +82,24 @@ const QuestChains: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const resetFilters = useCallback(() => {
     setCategories(
       categoryOptions.reduce((t: Record<string, boolean>, v: FilterOption) => {
+        // eslint-disable-next-line no-param-reassign
         t[v.value] = false;
         return t;
       }, {}),
     );
 
     setNetworks(
-      Object.keys(SUPPORTED_NETWORK_INFO).reduce(
-        (t: Record<string, boolean>, v: string) => {
-          t[v] = false;
-          return t;
-        },
-        {},
-      ),
+      CHAINS.reduce((t: Record<string, boolean>, v: Chain) => {
+        // eslint-disable-next-line no-param-reassign
+        t[v.id.toString()] = false;
+        return t;
+      }, {}),
     );
 
     setSortBy(
       SortOptions.reduce((t: Record<string, boolean>, v: FilterOption) => {
-        t[v.value] = v.value === SortBy.NEWEST ? true : false;
+        // eslint-disable-next-line no-param-reassign
+        t[v.value] = v.value === SortBy.NEWEST;
         return t;
       }, {}),
     );

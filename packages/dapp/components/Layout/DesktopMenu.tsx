@@ -8,23 +8,15 @@ import {
 } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import NextLink from 'next/link';
-import { useMemo } from 'react';
-
-import { ConnectWallet } from '@/components/Layout/ConnectWallet';
-import { WalletDisplay } from '@/components/Layout/WalletDisplay';
-import { useWallet } from '@/web3';
+import { useAccount } from 'wagmi';
 
 export const DesktopMenu: React.FC<{ onSearchOpen: () => void }> = ({
   onSearchOpen,
 }) => {
-  const { address, isConnected, user, ens } = useWallet();
-
   const isSmallerScreen = useBreakpointValue({ base: true, xl: false });
+  const { isConnected, address } = useAccount();
 
-  const name = useMemo(
-    () => user?.username ?? ens ?? address,
-    [user, ens, address],
-  );
+  const name = address;
 
   return (
     <Flex zIndex={2} justify="space-between" w="full">
@@ -101,7 +93,6 @@ export const DesktopMenu: React.FC<{ onSearchOpen: () => void }> = ({
           </Button>
         </NextLink>
         <Flex pl={10}>
-          {/* {isConnected ? <WalletDisplay /> : <ConnectWallet />} */}
           <ConnectButton />
         </Flex>
       </HStack>

@@ -16,13 +16,13 @@ import {
 } from '@chakra-ui/react';
 import { graphql } from '@quest-chains/sdk';
 import removeMd from 'remove-markdown';
+import { useAccount } from 'wagmi';
 
 import { UploadProof } from '@/components/UploadProof';
 import { useUserQuestsRejectedForAllChains } from '@/hooks/useUserQuestsRejectedForAllChains';
-import { useWallet } from '@/web3';
 
 export const QuestsRejected: React.FC = () => {
-  const { address } = useWallet();
+  const { address } = useAccount();
   const {
     results: questsRejected,
     fetching,

@@ -5,7 +5,12 @@ import { MarkdownEditor } from '../MarkdownEditor';
 import QuestAdvancedSettings from '../QuestAdvancedSettings';
 import { SubmitButton } from '../SubmitButton';
 import { defaultQuestAdvSetting } from './AddQuestBlock';
-import { QuestAdvSetting } from './QuestsForm';
+
+export type QuestAdvSetting = {
+  paused: boolean;
+  optional: boolean;
+  skipReview: boolean;
+};
 
 export const EditingQuest: React.FC<{
   nameRef: MutableRefObject<string>;
@@ -65,7 +70,7 @@ export const EditingQuest: React.FC<{
         <MarkdownEditor value={descRef.current ?? ''} onChange={setQuestDesc} />
       </FormControl>
 
-      {/* Advanced Settings for QuestChain version 2*/}
+      {/* Advanced Settings for QuestChain version 2 */}
       {advSettings ? (
         <QuestAdvancedSettings
           questAdvSetting={questAdvSetting}

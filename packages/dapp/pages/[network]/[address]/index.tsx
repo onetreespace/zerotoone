@@ -7,11 +7,9 @@ import { isAddress } from 'viem';
 
 import { Page } from '@/components/Layout/Page';
 import { LoadingState } from '@/components/LoadingState';
-import { QuestChainV0Page } from '@/components/QuestChain/QuestChainV0Page';
-import { QuestChainV2Page } from '@/components/QuestChain/QuestChainV2Page';
+import { QuestChainPage } from '@/components/QuestChain/QuestChainPage';
 import { useLatestQuestChainData } from '@/hooks/useLatestQuestChainData';
 import { useLatestQuestStatusesForChainData } from '@/hooks/useLatestQuestStatusesForChainData';
-import { CHAIN_URL_MAPPINGS } from '@/web3/networks';
 
 const { getQuestChainFromSlug, getStatusesForChain, getQuestChainInfo } =
   graphql;
@@ -36,7 +34,7 @@ export type UserStatusType = {
   };
 };
 
-const QuestChainPage: React.FC<Props> = ({
+const QuestChainMainPage: React.FC<Props> = ({
   questChain: inputQuestChain,
   questStatuses: inputQuestStatuses,
 }) => {
@@ -80,21 +78,8 @@ const QuestChainPage: React.FC<Props> = ({
     );
   }
 
-  if (questChain.version === '0') {
-    return (
-      <QuestChainV0Page
-        {...{
-          questChain,
-          questStatuses,
-          fetching,
-          refresh,
-        }}
-      />
-    );
-  }
-
   return (
-    <QuestChainV2Page {...{ questChain, questStatuses, fetching, refresh }} />
+    <QuestChainPage {...{ questChain, questStatuses, fetching, refresh }} />
   );
 };
 
@@ -103,33 +88,17 @@ type QueryParams = { address: string; network: string };
 export async function getStaticPaths() {
   const paths: { params: QueryParams }[] = [];
 
-  // await Promise.all(
-  //   SUPPORTED_NETWORKS.map(async chainId => {
-  //     const addresses = await getQuestChainAddresses(chainId, 1000);
-  //
-  //     paths.push(
-  //       ...addresses.map(address => ({
-  //         params: { address, network: AVAILABLE_NETWORK_INFO[chainId].urlName },
-  //       })),
-  //     );
-  //   }),
-  // );
-
   return { paths, fallback: true };
 }
 
 export const getStaticProps = async (
   context: GetStaticPropsContext<QueryParams>,
 ) => {
-  let network = context.params?.network;
+  const network = context.params?.network;
   const address = context.params?.address;
 
   let questStatuses: graphql.QuestStatusInfoFragment[] = [];
   let questChain = null;
-
-  if (network && CHAIN_URL_MAPPINGS[network]) {
-    network = CHAIN_URL_MAPPINGS[network];
-  }
 
   if (address && network) {
     if (isAddress(address)) {
@@ -137,7 +106,7 @@ export const getStaticProps = async (
         questStatuses = await getStatusesForChain(network, address);
         questChain = await getQuestChainInfo(network, address);
       } catch (error) {
-        // eslint-disable-next-line no-console
+        console.error('Error fetching quest chain', error);
       }
     } else {
       try {
@@ -150,7 +119,7 @@ export const getStaticProps = async (
           );
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
+        console.error('Error fetching quest chain', error);
       }
     }
   }
@@ -164,4 +133,4 @@ export const getStaticProps = async (
   };
 };
 
-export default QuestChainPage;
+export default QuestChainMainPage;

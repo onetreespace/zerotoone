@@ -19,6 +19,7 @@ export const authHandler =
     try {
       client = await clientPromise;
     } catch (error) {
+      console.error('Error connecting to the database:', error);
       return res.status(500).end();
     }
     try {

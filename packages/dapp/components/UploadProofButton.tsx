@@ -1,9 +1,25 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { graphql } from '@quest-chains/sdk';
 
-import { UserStatusType } from '@/pages/[network]/[address]';
-
 import { UploadProof } from './UploadProof';
+
+export type UserStatusType = {
+  [questId: string]: {
+    submissions: {
+      description: string | undefined | null;
+      externalUrl: string | undefined | null;
+      timestamp: string;
+    }[];
+    reviews: {
+      description: string | undefined | null;
+      externalUrl: string | undefined | null;
+      timestamp: string;
+      reviewer: string;
+      accepted: boolean;
+    }[];
+    status: graphql.Status;
+  };
+};
 
 type UploadProofButtonProps = {
   userStatus: UserStatusType;

@@ -68,6 +68,7 @@ export const IPFSGatewaySettings: React.FC = () => {
       setOptions(prev => [...prev, newOption]);
       setValue(newOption);
     } catch (error) {
+      console.error('IPFS gateway invalid or not reachable', error);
       toast.error('IPFS gateway invalid or not reachable');
     } finally {
       setLoading(false);

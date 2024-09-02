@@ -9,9 +9,9 @@ const Settings: React.FC = () => {
   return (
     <Page align="start" gap={4}>
       <HeadComponent
-        title="Quest Chains Settings"
-        description="Quest Chains Settings"
-        url={QUESTCHAINS_URL + '/settings'}
+        title="Settings"
+        description="Settings"
+        url={`${QUESTCHAINS_URL}/settings`}
       />
       <Heading>Settings</Heading>
       <IPFSGatewaySettings />

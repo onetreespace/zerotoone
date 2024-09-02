@@ -6,16 +6,15 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { isAddress } from 'viem';
+import { useAccount } from 'wagmi';
 
 import { Page } from '@/components/Layout/Page';
 import { LoadingState } from '@/components/LoadingState';
-import { QuestChainV0ReviewPage } from '@/components/Review/QuestChainV0ReviewPage';
-import { QuestChainV1ReviewPage } from '@/components/Review/QuestChainV1ReviewPage';
+import { QuestChainReviewPage } from '@/components/Review/QuestChainReviewPage';
 import { HeadComponent } from '@/components/Seo';
 import { useLatestQuestChainData } from '@/hooks/useLatestQuestChainData';
 import { useLatestQuestStatusesForChainData } from '@/hooks/useLatestQuestStatusesForChainData';
 import { getQuestChainURL } from '@/utils/uriHelpers';
-import { AVAILABLE_NETWORK_INFO, CHAIN_URL_MAPPINGS, useWallet } from '@/web3';
 
 const { getQuestChainInfo, getStatusesForChain, getQuestChainFromSlug } =
   graphql;
@@ -49,7 +48,7 @@ const Review: React.FC<Props> = ({
   const fetching = fetchingStatuses || fetchingQuests;
 
   const { isFallback } = useRouter();
-  const { address, isConnecting } = useWallet();
+  const { address, isConnecting } = useAccount();
 
   const isReviewer: boolean = useMemo(
     () =>
@@ -80,58 +79,20 @@ const Review: React.FC<Props> = ({
     );
   }
 
-  const ReviewHead = () => (
-    <>
-      <HeadComponent
-        title={`Review - ${questChain.name} - ${
-          AVAILABLE_NETWORK_INFO[questChain.chainId].name
-        }`}
-        description={`Review submissions for this quest chain`}
-        url={getQuestChainURL(questChain)}
-      />
-      <Flex w="full">
-        <NextLink
-          as={`/${AVAILABLE_NETWORK_INFO[questChain.chainId].urlName}/${
-            questChain.address
-          }`}
-          href="/[chainId]/[address]"
-          passHref
-        >
-          <ChakraLink display="block" _hover={{}} w="full">
-            <Flex alignItems="center" _hover={{ textDecor: 'underline' }}>
-              <ArrowBackIcon mr={2} />
-              <Text fontSize={14}>Back to quest chain details</Text>
-            </Flex>
-          </ChakraLink>
-        </NextLink>
-      </Flex>
-    </>
-  );
-
   if (!isReviewer) {
     return (
       <Page>
-        <ReviewHead />
+        <ReviewHead questChain={questChain} />
         <Text> Cannot review quest chain! </Text>
-      </Page>
-    );
-  }
-
-  if (questChain.version === '0') {
-    return (
-      <Page>
-        <ReviewHead />
-        <QuestChainV0ReviewPage
-          {...{ questChain, questStatuses, fetching, refresh }}
-        />
       </Page>
     );
   }
 
   return (
     <Page>
-      <ReviewHead />
-      <QuestChainV1ReviewPage
+      <ReviewHead questChain={questChain} />
+      <Text> Cannot review quest chain! </Text>
+      <QuestChainReviewPage
         {...{ questChain, questStatuses, fetching, refresh }}
       />
     </Page>
@@ -143,33 +104,17 @@ type QueryParams = { address: string; network: string };
 export async function getStaticPaths() {
   const paths: { params: QueryParams }[] = [];
 
-  // await Promise.all(
-  //   SUPPORTED_NETWORKS.map(async chainId => {
-  //     const addresses = await getQuestChainAddresses(chainId, 1000);
-  //
-  //     paths.push(
-  //       ...addresses.map(address => ({
-  //         params: { address, network: AVAILABLE_NETWORK_INFO[chainId].urlName },
-  //       })),
-  //     );
-  //   }),
-  // );
-
   return { paths, fallback: true };
 }
 
 export const getStaticProps = async (
   context: GetStaticPropsContext<QueryParams>,
 ) => {
-  let network = context.params?.network;
+  const network = context.params?.network;
   const address = context.params?.address;
 
   let questStatuses: graphql.QuestStatusInfoFragment[] = [];
   let questChain = null;
-
-  if (network && CHAIN_URL_MAPPINGS[network]) {
-    network = CHAIN_URL_MAPPINGS[network];
-  }
 
   if (address && network) {
     if (isAddress(address)) {
@@ -203,6 +148,36 @@ export const getStaticProps = async (
     },
     revalidate: 60,
   };
+};
+
+const ReviewHead = ({
+  questChain,
+}: {
+  questChain: graphql.QuestChainInfoFragment;
+}) => {
+  return (
+    <>
+      <HeadComponent
+        title={`Review - ${questChain.name} - ${questChain.chainId}`}
+        description="Review submissions for this quest chain"
+        url={getQuestChainURL(questChain)}
+      />
+      <Flex w="full">
+        <NextLink
+          as={`/${questChain.chainId}/${questChain.address}`}
+          href="/[chainId]/[address]"
+          passHref
+        >
+          <ChakraLink display="block" _hover={{}} w="full">
+            <Flex alignItems="center" _hover={{ textDecor: 'underline' }}>
+              <ArrowBackIcon mr={2} />
+              <Text fontSize={14}>Back to quest chain details</Text>
+            </Flex>
+          </ChakraLink>
+        </NextLink>
+      </Flex>
+    </>
+  );
 };
 
 export default Review;

@@ -24,7 +24,7 @@ import {
   useTimeout,
   VStack,
 } from '@chakra-ui/react';
-import { contracts, graphql } from '@quest-chains/sdk';
+import { graphql } from '@quest-chains/sdk';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import React, {
@@ -36,6 +36,7 @@ import React, {
 } from 'react';
 import { toast } from 'react-hot-toast';
 import { TwitterShareButton } from 'react-share';
+import { useAccount } from 'wagmi';
 
 import { ConfirmationModal } from '@/components/ConfirmationModal';
 import { Categories } from '@/components/CreateChain/Categories';
@@ -68,13 +69,10 @@ import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
 import { Metadata, uploadFiles, uploadMetadata } from '@/utils/metadata';
 import { getQuestChainURL, ipfsUriToHttp } from '@/utils/uriHelpers';
-import { AVAILABLE_NETWORK_INFO, useWallet } from '@/web3';
-import { getQuestChainContract } from '@/web3/contract';
 
-import { NFTDetailsModal } from '../NFTDetailsModal';
-import { QuestsV1Editor } from '../QuestChainV1Page/QuestsV1Editor';
-import { RolesEditor } from '../RolesEditor';
-import { QuestsV2Editor } from './QuestsV2Editor';
+import { NFTDetailsModal } from './NFTDetailsModal';
+import { QuestsEditor } from './QuestsEditor';
+import { RolesEditor } from './RolesEditor';
 
 const { Status } = graphql;
 
@@ -91,14 +89,14 @@ const getQuestBGColor = (
     return 'whiteAlpha.100';
 
   if (status === Status.Fail) return 'rejected.300';
-  else if (status === Status.Review) return 'pending.300';
-  else return 'main.300';
+  if (status === Status.Review) return 'pending.300';
+  return 'main.300';
 };
 
-const ChainStat: React.FC<{ label: string; value: string | JSX.Element }> = ({
-  label,
-  value,
-}) => (
+const ChainStat: React.FC<{
+  label: string;
+  value: string | JSX.Element;
+}> = ({ label, value }) => (
   <Flex direction="column" justify="space-between">
     <Text color="whiteAlpha.600" fontSize="xs" textTransform="uppercase">
       {label}
@@ -107,20 +105,20 @@ const ChainStat: React.FC<{ label: string; value: string | JSX.Element }> = ({
   </Flex>
 );
 
-export type QuestChainV2PageProps = {
+export type QuestChainPageProps = {
   questChain: graphql.QuestChainInfoFragment;
   questStatuses: graphql.QuestStatusInfoFragment[];
   fetching: boolean;
   refresh: () => void;
 };
 
-export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
+export const QuestChainPage: React.FC<QuestChainPageProps> = ({
   questChain,
   questStatuses,
   fetching,
   refresh,
-}) => {
-  const { address, chainId, provider } = useWallet();
+}: QuestChainPageProps) => {
+  const { address } = useAccount();
   const [visible, setVisible] = useState(false);
 
   useTimeout(() => {
@@ -189,7 +187,7 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
       chainNameRef.current === questChain.name &&
       chainDescRef.current === questChain.description &&
       categoriesRef.current
-        .map(v => v.value)
+        .map((v: MongoCategory) => v.value)
         .sort()
         .join(',') === questChain?.categories?.sort().join(',')
     ) {
@@ -200,7 +198,7 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
         chainNameRef.current === questChain.name &&
         chainDescRef.current === questChain.description &&
         categoriesRef.current
-          .map(v => v.value)
+          .map((v: MongoCategory) => v.value)
           .sort()
           .join(',') === questChain?.categories?.sort().join(',')
       )
@@ -259,20 +257,20 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
   } = useMemo(() => {
     const memberRoles: { [addr: string]: Role } = {};
 
-    questChain?.reviewers.forEach(({ address }) => {
-      memberRoles[address] = 'Reviewer';
+    questChain?.reviewers.forEach(({ address: addr }) => {
+      memberRoles[addr] = 'Reviewer';
     });
 
-    questChain?.editors.forEach(({ address }) => {
-      memberRoles[address] = 'Editor';
+    questChain?.editors.forEach(({ address: addr }) => {
+      memberRoles[addr] = 'Editor';
     });
 
-    questChain?.admins.forEach(({ address }) => {
-      memberRoles[address] = 'Admin';
+    questChain?.admins.forEach(({ address: addr }) => {
+      memberRoles[addr] = 'Admin';
     });
 
-    questChain?.owners.forEach(({ address }) => {
-      memberRoles[address] = 'Owner';
+    questChain?.owners.forEach(({ address: addr }) => {
+      memberRoles[addr] = 'Owner';
     });
 
     return memberRoles;
@@ -282,16 +280,16 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
 
   const owners = Object.entries(members)
     .filter(([, role]) => role === 'Owner')
-    .map(([address]) => address);
+    .map(([addr]) => addr);
   const admins = Object.entries(members)
     .filter(([, role]) => role === 'Admin')
-    .map(([address]) => address);
+    .map(([addr]) => addr);
   const editors = Object.entries(members)
     .filter(([, role]) => role === 'Editor')
-    .map(([address]) => address);
+    .map(([addr]) => addr);
   const reviewers = Object.entries(members)
     .filter(([, role]) => role === 'Reviewer')
-    .map(([address]) => address);
+    .map(([addr]) => addr);
 
   const isUser = !(isOwner || isAdmin || isEditor || isReviewer);
 
@@ -301,13 +299,14 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
 
   const [isSubmittingQuestChain, setSubmittingQuestChain] = useState(false);
 
-  const onSubmitQuestChain = useCallback(async () => {
+  const chainId = undefined;
+  const provider = undefined;
+
+  const onSubmitQuestChain = useCallback(
+    async () => {
+      /*
     if (!chainId || !provider || questChain.chainId !== chainId) {
-      toast.error(
-        `Wrong Chain, please switch to ${
-          AVAILABLE_NETWORK_INFO[questChain.chainId].label
-        }`,
-      );
+      toast.error(`Wrong Chain, please switch to ${questChain.chainId}`);
       return;
     }
     setSubmittingQuestChain(true);
@@ -318,7 +317,7 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
       categories: categoriesRef.current.map(c => c.value),
       image_url: removeCoverImage
         ? undefined
-        : questChain.imageUrl ?? undefined,
+        : (questChain.imageUrl ?? undefined),
     };
     let tid;
     try {
@@ -363,17 +362,20 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
       setSubmittingQuestChain(false);
       onResetImage();
     }
-  }, [
-    chainId,
-    provider,
-    questChain,
-    chainNameRef,
-    chainDescRef,
-    removeCoverImage,
-    imageFile,
-    refresh,
-    onResetImage,
-  ]);
+    */
+    },
+    [
+      // chainId,
+      // provider,
+      // questChain,
+      // chainNameRef,
+      // chainDescRef,
+      // removeCoverImage,
+      // imageFile,
+      // refresh,
+      // onResetImage,
+    ],
+  );
 
   const QCmessage =
     'Level up your Web3 skills by completing a quest chain and earning a soulbound NFT! #QuestChains #NFTs #Web3';
@@ -388,10 +390,10 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
 
   const onSubmitNFT = useCallback(
     async (metadataUri: string) => {
+      /*
       if (!chainId || !provider || questChain?.chainId !== chainId) {
         toast.error(
-          `Wrong Chain, please switch to ${
-            AVAILABLE_NETWORK_INFO[questChain?.chainId].label
+          `Wrong Chain, please switch to ${AVAILABLE_NETWORK_INFO[questChain?.chainId].label
           }`,
         );
         return;
@@ -410,7 +412,7 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
           provider.getSigner(),
         );
 
-        const tx = await (contract as contracts.V2.QuestChain).setTokenURI(
+        const tx = await (contract as contracts.QuestChain).setTokenURI(
           metadataUri,
         );
         toast.dismiss(tid);
@@ -431,6 +433,7 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
         setSavingNFT(false);
         setEditingNFT(false);
       }
+      */
     },
     [refresh, questChain, chainId, provider, onEditNFTClose],
   );
@@ -465,11 +468,7 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
       />
       <Fade in={visible} style={{ width: '100%' }}>
         <Head>
-          <title>
-            {`${questChain.name} - ${
-              AVAILABLE_NETWORK_INFO[questChain.chainId].name
-            }`}
-          </title>
+          <title>{`${questChain.name} - ${questChain.chainId}`}</title>
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"
@@ -661,9 +660,7 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
                     onClick={() => {
                       if (!provider || chainId !== questChain.chainId) {
                         toast.error(
-                          `Wrong Chain, please switch to ${
-                            AVAILABLE_NETWORK_INFO[questChain.chainId].label
-                          }`,
+                          `Wrong Chain, please switch to ${questChain.chainId}`,
                         );
                         return;
                       }
@@ -731,7 +728,7 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
                     </Text>
                     <Flex gap={4} justify="space-between">
                       <HStack>
-                        <NetworkDisplay chainId={questChain.chainId} />
+                        <NetworkDisplay chainId={Number(questChain.chainId)} />
                         <Tooltip
                           label="Copy Quest Chain Address"
                           aria-label="Copy Quest Chain Address"
@@ -764,7 +761,7 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
                           </Button>
                         </TwitterShareButton>
                         <MastodonShareButton
-                          message={QCmessage + ' ' + QCURL}
+                          message={`${QCmessage} ${QCURL}`}
                         />
                       </Flex>
                     </Flex>
@@ -825,16 +822,14 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
                 </Flex>
               )}
               {isEditingQuestChain && (
-                <>
-                  <MarkdownEditor
-                    value={chainDescRef.current}
-                    isDisabled={isSubmittingQuestChain}
-                    onChange={value => {
-                      setChainDescription(value);
-                      checkMetadataChanged();
-                    }}
-                  />
-                </>
+                <MarkdownEditor
+                  value={chainDescRef.current}
+                  isDisabled={isSubmittingQuestChain}
+                  onChange={value => {
+                    setChainDescription(value);
+                    checkMetadataChanged();
+                  }}
+                />
               )}
               {isEditingQuestChain && (
                 <Flex mb={8} pt={2}>
@@ -1043,7 +1038,7 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
                       justifyContent="space-between"
                     >
                       <Flex justifyContent="center" alignItems="center">
-                        <InfoIcon boxSize={'1.25rem'} mr={2} color="#3B82F6" />
+                        <InfoIcon boxSize="1.25rem" mr={2} color="#3B82F6" />
                         {numSubmissionsToReview > 0 ? (
                           <>
                             {numSubmissionsToReview} submissions are awaiting
@@ -1054,12 +1049,8 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
                         )}
                       </Flex>
                       <NextLink
-                        as={`/${
-                          AVAILABLE_NETWORK_INFO[questChain.chainId].urlName
-                        }/${questChain.address}/review`}
-                        href={`/${
-                          AVAILABLE_NETWORK_INFO[questChain.chainId].urlName
-                        }/[address]/review`}
+                        as={`/${questChain.chainId}/${questChain.address}/review`}
+                        href={`/${questChain.chainId}/[address]/review`}
                       >
                         <SubmitButton
                           fontSize={14}
@@ -1083,8 +1074,8 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
                     fontSize="sm"
                     color="whiteAlpha.600"
                     w="full"
-                    justifyContent={'center'}
-                    alignContent={'center'}
+                    justifyContent="center"
+                    alignContent="center"
                     textAlign="center"
                     direction="column"
                     mt={4}
@@ -1145,21 +1136,11 @@ export const QuestChainV2Page: React.FC<QuestChainV2PageProps> = ({
                     </Flex>
 
                     {isEditingQuests ? (
-                      <>
-                        {questChain.version === '1' ? (
-                          <QuestsV1Editor
-                            refresh={refresh}
-                            questChain={questChain}
-                            onExit={() => setEditingQuests(false)}
-                          />
-                        ) : (
-                          <QuestsV2Editor
-                            refresh={refresh}
-                            questChain={questChain}
-                            onExit={() => setEditingQuests(false)}
-                          />
-                        )}
-                      </>
+                      <QuestsEditor
+                        refresh={refresh}
+                        questChain={questChain}
+                        onExit={() => setEditingQuests(false)}
+                      />
                     ) : (
                       <Accordion allowMultiple w="full" defaultIndex={[]}>
                         {questChain.quests

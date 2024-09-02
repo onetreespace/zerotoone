@@ -1,5 +1,3 @@
-import { AVAILABLE_NETWORK_INFO } from '@/web3';
-
 import { QUESTCHAINS_URL } from './constants';
 import { getFromStorage, STORAGE_KEYS } from './storageHelpers';
 
@@ -118,10 +116,7 @@ export const getQuestChainURL = ({
   slug,
   address,
 }: {
-  chainId: string;
+  chainId: number | string;
   slug?: string | null | undefined;
   address: string;
-}) =>
-  `${QUESTCHAINS_URL}/${AVAILABLE_NETWORK_INFO[chainId]?.urlName ?? chainId}/${
-    slug || address
-  }`;
+}) => `${QUESTCHAINS_URL}/${chainId}/${slug || address}`;

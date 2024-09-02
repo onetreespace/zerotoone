@@ -20,8 +20,6 @@ import VictoryCupImage from '@/assets/victory-cup.svg';
 import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
 import { ipfsUriToHttp } from '@/utils/uriHelpers';
-import { useWallet } from '@/web3';
-import { getQuestChainContract } from '@/web3/contract';
 
 import { TwitterIcon } from './icons/TwitterIcon';
 import { MastodonShareButton } from './MastodonShareButton';
@@ -37,10 +35,11 @@ export const MintNFTTile: React.FC<QuestChainTileProps> = ({
   onSuccess,
   QCURL,
 }) => {
-  const { provider, chainId, address } = useWallet();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isMinting, setMinting] = useState(false);
+
+  /*
   const onMint = useCallback(async () => {
     if (!chainId || questChain.chainId !== chainId || !address || !provider)
       return;
@@ -77,6 +76,8 @@ export const MintNFTTile: React.FC<QuestChainTileProps> = ({
     }
   }, [questChain, address, chainId, onOpen, provider]);
 
+  */
+
   const QCmessage =
     'Woohoo! Just minted my soulbound NFT for completing a quest chain 🤩 Check it out!';
 
@@ -99,7 +100,7 @@ export const MintNFTTile: React.FC<QuestChainTileProps> = ({
       <Button
         w="100%"
         isLoading={isMinting}
-        onClick={onMint}
+        // onClick={onMint}
         borderRadius="full"
         _hover={{
           bg: 'main.100',
@@ -125,11 +126,7 @@ export const MintNFTTile: React.FC<QuestChainTileProps> = ({
         >
           <ModalCloseButton />
           <ModalBody textAlign="center" py={12}>
-            <Flex
-              justifyContent={'center'}
-              flexDir="column"
-              alignItems="center"
-            >
+            <Flex justifyContent="center" flexDir="column" alignItems="center">
               <Image
                 w="14rem"
                 src={ipfsUriToHttp(questChain.token.imageUrl)}
@@ -159,7 +156,7 @@ export const MintNFTTile: React.FC<QuestChainTileProps> = ({
                   Tweet
                 </Button>
               </TwitterShareButton>
-              <MastodonShareButton message={QCmessage + ' ' + QCURL} />
+              <MastodonShareButton message={`${QCmessage} ${QCURL}`} />
             </Flex>
           </ModalBody>
         </ModalContent>

@@ -1,4 +1,4 @@
-# @quest-chains/dapp
+# @zerotoone/dapp
 
 ### Create your .env file:
 
@@ -9,15 +9,11 @@ cp sample.env .env
 ### Install dependencies:
 
 ```shell
-yarn install
+pnpm install
 ```
 
 ### Run in development mode:
 
 ```shell
-yarn dev
+pnpm dev
 ```
-
-### Submit Pull request:
-
-Make sure to branch off of the `dev` branch and to make `dev` the target of pull requests instead of `main`.

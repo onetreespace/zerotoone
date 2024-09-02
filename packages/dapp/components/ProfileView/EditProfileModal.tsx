@@ -25,18 +25,18 @@ import { useDropImage } from '@/hooks/useDropFiles';
 import { fetchWithHeaders } from '@/utils/fetchWithHeaders';
 import { uploadFiles } from '@/utils/metadata';
 import { ipfsUriToHttp } from '@/utils/uriHelpers';
-import { useWallet } from '@/web3';
 
 import { ConfirmationModal } from '../ConfirmationModal';
 import { SubmitButton } from '../SubmitButton';
 import { UploadImageForm } from '../UploadImageForm';
 
+const user = { username: 'username', avatarUri: 'avatarUri' };
+const ens = '';
+
 export const EditProfileModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
 }> = ({ isOpen, onClose }) => {
-  const { user, ens, setUser } = useWallet();
-
   const { push } = useRouter();
 
   const [username, setUsername] = useState(user?.username ?? ens ?? '');
@@ -65,14 +65,14 @@ export const EditProfileModal: React.FC<{
       return false;
     }
 
-    if (!/^[A-Za-z0-9_\-\.]+$/.test(username)) {
+    if (!/^[A-Za-z0-9_\-.]+$/.test(username)) {
       setUsernameError(
         'Username can only contain letters, numbers, hyphens, dots, and underscores.',
       );
       return false;
     }
 
-    if (!/^[A-Za-z0-9]+(?:[_\-\.][A-Za-z0-9]+)*$/.test(username)) {
+    if (!/^[A-Za-z0-9]+(?:[_\-.][A-Za-z0-9]+)*$/.test(username)) {
       setUsernameError(
         'Username cannot have consecutive or adjacent hyphens, dots or underscores.',
       );
@@ -87,7 +87,7 @@ export const EditProfileModal: React.FC<{
     }
 
     return true;
-  }, [user, username, imageFile, imageRemoved]);
+  }, [username, imageFile, imageRemoved]);
 
   const handleUpdate = useCallback(async () => {
     let tid;
@@ -110,11 +110,11 @@ export const EditProfileModal: React.FC<{
         toUpdate,
       );
       if (res.status === 200) {
-        setUser(await res.json());
+        // setUser(await res.json());
         toast.dismiss(tid);
         tid = toast.success('Profile updated successfully!');
         onClose();
-        push('/profile/' + username);
+        push(`/profile/${username}`);
       } else {
         const { error } = await res.json();
         throw new Error(error);
@@ -122,11 +122,11 @@ export const EditProfileModal: React.FC<{
     } catch (error) {
       console.error('Error updating profile:', error);
       toast.dismiss(tid);
-      toast.error('Unable to update profile: ' + (error as Error).message);
+      toast.error(`Unable to update profile: ${(error as Error).message}`);
     } finally {
       setLoading(false);
     }
-  }, [username, imageFile, user, setUser, push, onClose]);
+  }, [username, imageFile, push, onClose]);
 
   useEffect(() => {
     if (isOpen) {
@@ -136,7 +136,7 @@ export const EditProfileModal: React.FC<{
       setImageError('');
       setImageRemoved(false);
     }
-  }, [isOpen, user, ens, setUsername, onResetImage]);
+  }, [isOpen, setUsername, onResetImage]);
 
   const {
     isOpen: isConfirmationOpen,
@@ -154,12 +154,13 @@ export const EditProfileModal: React.FC<{
 
   const isChanged = useMemo(
     () => imageRemoved || imageFile || username !== user?.username,
-    [user, username, imageFile, imageRemoved],
+    [username, imageFile, imageRemoved],
   );
 
   const onModalClose = useCallback(() => {
     if (!isChanged) {
-      return onClose();
+      onClose();
+      return;
     }
 
     setConfirmationProps({

@@ -57,14 +57,14 @@ export const UserBadges: React.FC<{
   const badges: QuestChainBadgeInfo[] = useMemo(
     () =>
       userBadges?.reduce((t, a) => {
-        const badges =
+        const badgesList =
           a?.tokens.map(b => ({
             ...b,
             chainId: a.chainId,
             address: b.questChain?.address ?? '',
             slug: b.questChain?.slug,
           })) ?? [];
-        t.push(...badges);
+        t.push(...badgesList);
         return t;
       }, new Array<QuestChainBadgeInfo>()) ?? [],
     [userBadges],
@@ -161,7 +161,10 @@ export const UserBadges: React.FC<{
           <ModalBody>
             <VStack mb={3}>
               <Flex w="full" gap={4} mb={2} justifyContent="space-between">
-                <NetworkDisplay chainId={selectedNFT?.chainId ?? ''} asTag />
+                <NetworkDisplay
+                  chainId={Number(selectedNFT?.chainId ?? '')}
+                  asTag
+                />
                 <Flex gap={3}>
                   <TwitterShareButton
                     url={QCURL}
@@ -177,7 +180,7 @@ export const UserBadges: React.FC<{
                       Tweet
                     </Button>
                   </TwitterShareButton>
-                  <MastodonShareButton message={QCmessage + ' ' + QCURL} />
+                  <MastodonShareButton message={`${QCmessage} ${QCURL}`} />
                 </Flex>
               </Flex>
               <TokenImageOrVideo

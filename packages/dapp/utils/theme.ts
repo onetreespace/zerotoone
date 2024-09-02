@@ -1,8 +1,6 @@
 import { extendTheme } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 
-import { checkboxTheme } from './checkbox';
-
 const Input = {
   variants: {
     outline: {
@@ -47,38 +45,38 @@ export const theme = extendTheme({
   colors: {
     // TODO: replace all occurences of 'main', 'pending', 'rejected' with green, yellow and purple
     main: '#2DF8C7',
-    ['main.100']: '#2DF8C710',
-    ['main.200']: '#2DF8C720',
-    ['main.300']: '#2DF8C730',
-    ['main.400']: '#2DF8C740',
-    ['main.500']: '#2DF8C750',
-    ['main.600']: '#2DF8C760',
-    ['main.700']: '#2DF8C770',
-    ['main.800']: '#2DF8C780',
-    ['main.900']: '#2DF8C790',
-    ['main.950']: '#2DF8C795',
+    'main.100': '#2DF8C710',
+    'main.200': '#2DF8C720',
+    'main.300': '#2DF8C730',
+    'main.400': '#2DF8C740',
+    'main.500': '#2DF8C750',
+    'main.600': '#2DF8C760',
+    'main.700': '#2DF8C770',
+    'main.800': '#2DF8C780',
+    'main.900': '#2DF8C790',
+    'main.950': '#2DF8C795',
     pending: '#EFFF8F',
-    ['pending.100']: '#EFFF8F10',
-    ['pending.200']: '#EFFF8F20',
-    ['pending.300']: '#EFFF8F30',
-    ['pending.400']: '#EFFF8F40',
-    ['pending.500']: '#EFFF8F50',
-    ['pending.600']: '#EFFF8F60',
-    ['pending.700']: '#EFFF8F70',
-    ['pending.800']: '#EFFF8F80',
-    ['pending.900']: '#EFFF8F90',
-    ['pending.950']: '#EFFF8F95',
+    'pending.100': '#EFFF8F10',
+    'pending.200': '#EFFF8F20',
+    'pending.300': '#EFFF8F30',
+    'pending.400': '#EFFF8F40',
+    'pending.500': '#EFFF8F50',
+    'pending.600': '#EFFF8F60',
+    'pending.700': '#EFFF8F70',
+    'pending.800': '#EFFF8F80',
+    'pending.900': '#EFFF8F90',
+    'pending.950': '#EFFF8F95',
     rejected: '#F43F5E',
-    ['rejected.100']: '#F43F5E10',
-    ['rejected.200']: '#F43F5E20',
-    ['rejected.300']: '#F43F5E30',
-    ['rejected.400']: '#F43F5E40',
-    ['rejected.500']: '#F43F5E50',
-    ['rejected.600']: '#F43F5E60',
-    ['rejected.700']: '#F43F5E70',
-    ['rejected.800']: '#F43F5E80',
-    ['rejected.900']: '#F43F5E90',
-    ['rejected.950']: '#F43F5E95',
+    'rejected.100': '#F43F5E10',
+    'rejected.200': '#F43F5E20',
+    'rejected.300': '#F43F5E30',
+    'rejected.400': '#F43F5E40',
+    'rejected.500': '#F43F5E50',
+    'rejected.600': '#F43F5E60',
+    'rejected.700': '#F43F5E70',
+    'rejected.800': '#F43F5E80',
+    'rejected.900': '#F43F5E90',
+    'rejected.950': '#F43F5E95',
     neutral: '#BCBCBC',
     green: {
       '50': '#eafef9',
@@ -128,28 +126,6 @@ export const theme = extendTheme({
     Input,
     Button,
     Form,
-    Checkbox: checkboxTheme,
-    // Checkbox: {
-    //   baseStyle: {
-    //     control: {
-    //       bg: 'transparent',
-    //       _checked: {
-    //         bg: 'transparent',
-    //         _hover: {
-    //           bg: 'transparent',
-    //           borderColor: 'white',
-    //           borderRadius: 'full',
-    //         },
-    //         borderColor: 'white',
-    //         borderRadius: 'full',
-    //       },
-    //       borderRadius: 'full',
-    //       _hover: {
-    //         bg: 'transparent',
-    //       },
-    //     },
-    //   },
-    // },
   },
 });
 

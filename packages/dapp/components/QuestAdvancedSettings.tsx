@@ -11,7 +11,11 @@ import {
 } from '@chakra-ui/react';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 
-import { QuestAdvSetting } from './CreateChain/QuestsForm';
+export type QuestAdvSetting = {
+  paused: boolean;
+  optional: boolean;
+  skipReview: boolean;
+};
 
 type Props = {
   questAdvSetting: QuestAdvSetting;
@@ -29,27 +33,27 @@ const QuestAdvancedSettings = ({
   return (
     <div>
       <Flex
-        flexDirection={'row'}
-        justify={'space-evenly'}
-        align={'center'}
-        w={'100%'}
-        gap={'1'}
+        flexDirection="row"
+        justify="space-evenly"
+        align="center"
+        w="100%"
+        gap="1"
         my={3}
-        cursor={'pointer'}
+        cursor="pointer"
         onClick={() => setIsAdvancedSetOpen(prev => !prev)}
       >
         <Divider />
         <Flex
-          flexDirection={'row'}
-          justify={'space-evenly'}
-          align={'center'}
-          gap={'1'}
-          cursor={'pointer'}
+          flexDirection="row"
+          justify="space-evenly"
+          align="center"
+          gap="1"
+          cursor="pointer"
         >
           <Text
-            whiteSpace={'nowrap'}
+            whiteSpace="nowrap"
             fontSize="sm"
-            lineHeight={'16px'}
+            lineHeight="16px"
             color="main"
           >
             Advanced settings
@@ -65,9 +69,9 @@ const QuestAdvancedSettings = ({
 
       <Collapse in={isAdvancedSetOpen} animateOpacity>
         <Flex
-          lineHeight={'3rem'}
-          justify={'start'}
-          flexDirection={'column'}
+          lineHeight="3rem"
+          justify="start"
+          flexDirection="column"
           gap={4}
           pb={4}
         >
@@ -75,10 +79,10 @@ const QuestAdvancedSettings = ({
           <Box>
             The quest is{' '}
             <Select
-              rounded={'full'}
+              rounded="full"
               variant="filled"
-              w={'fit-content'}
-              display={'inline-block'}
+              w="fit-content"
+              display="inline-block"
               value={
                 questAdvSetting.optional === false ? 'required' : 'optional'
               }
@@ -86,7 +90,7 @@ const QuestAdvancedSettings = ({
                 setQuestAdvSetting(prevState => {
                   return {
                     ...prevState,
-                    optional: e.target.value === 'required' ? false : true,
+                    optional: e.target.value !== 'required',
                   };
                 })
               }
@@ -98,10 +102,10 @@ const QuestAdvancedSettings = ({
             </Select>{' '}
             and submissions of proof will be{' '}
             <Select
-              rounded={'full'}
+              rounded="full"
               variant="filled"
-              w={'fit-content'}
-              display={'inline-block'}
+              w="fit-content"
+              display="inline-block"
               value={
                 questAdvSetting.skipReview === false
                   ? 'reviewed_manually'
@@ -111,8 +115,7 @@ const QuestAdvancedSettings = ({
                 setQuestAdvSetting(prevState => {
                   return {
                     ...prevState,
-                    skipReview:
-                      e.target.value === 'reviewed_manually' ? false : true,
+                    skipReview: e.target.value !== 'reviewed_manually',
                   };
                 })
               }
@@ -124,7 +127,7 @@ const QuestAdvancedSettings = ({
             </Select>
           </Box>
           <Divider />
-          <Flex align={'center'} justify="space-between">
+          <Flex align="center" justify="space-between">
             <FormLabel htmlFor="questDisabled" mb="0" fontWeight="normal">
               {isCreatingQuest ? 'Start' : 'Set'} quest as disabled
             </FormLabel>
@@ -138,7 +141,7 @@ const QuestAdvancedSettings = ({
                 setQuestAdvSetting(prevState => {
                   return {
                     ...prevState,
-                    paused: e.target.checked ? true : false,
+                    paused: !!e.target.checked,
                   };
                 })
               }

@@ -14,13 +14,13 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { isAddress } from 'viem';
 
 import { SubmitButton } from '@/components/SubmitButton';
 import { UserDisplay } from '@/components/UserDisplay';
-import { isSupportedNetwork, useWallet } from '@/web3';
+import { isSupportedChain } from '@/web3';
 
 import { AddUserIcon } from '../icons/AddUserIcon';
 import { TrashOutlinedIcon } from '../icons/TrashOutlinedIcon';
@@ -41,15 +41,16 @@ export const RolesForm: React.FC<{
   onSubmit: (members: Member[]) => void;
   address: string | undefined | null;
 }> = ({ onSubmit, address }) => {
-  const { isConnected, chainId } = useWallet();
+  // const { isConnected, chainId } = useWallet();
 
   const [members, setMembers] = useState<Member[]>([]);
 
   const setRole = useCallback(
-    (role: Role, address: string) =>
+    (role: Role, addr: string) =>
       setMembers(old =>
         old.map(m => {
-          if (m.address !== address) return m;
+          if (m.address !== addr) return m;
+          // eslint-disable-next-line no-param-reassign
           m.role = role;
           return m;
         }),
@@ -57,12 +58,12 @@ export const RolesForm: React.FC<{
     [],
   );
 
-  const onAdd = useCallback((address: string) => {
-    setMembers(old => old.concat({ address, role: null }));
+  const onAdd = useCallback((addr: string) => {
+    setMembers(old => old.concat({ address: addr, role: null }));
   }, []);
 
-  const onRemove = useCallback((address: string) => {
-    setMembers(old => old.filter(m => m.address !== address));
+  const onRemove = useCallback((addr: string) => {
+    setMembers(old => old.filter(m => m.address !== addr));
   }, []);
 
   useEffect(() => {
@@ -71,13 +72,13 @@ export const RolesForm: React.FC<{
     }
   }, [address, members.length]);
 
-  const isDisabled = useMemo(
-    () =>
-      !isConnected ||
-      !isSupportedNetwork(chainId) ||
-      members.some(member => member.role === null),
-    [isConnected, chainId, members],
-  );
+  // const isDisabled = useMemo(
+  //   () =>
+  //     !isConnected ||
+  //     !isSupportedChain(chainId) ||
+  //     members.some(member => member.role === null),
+  //   [isConnected, chainId, members],
+  // );
 
   return (
     <VStack
@@ -227,7 +228,7 @@ export const RolesForm: React.FC<{
 
       <SubmitButton
         onClick={() => onSubmit(members)}
-        isDisabled={isDisabled}
+        // isDisabled={isDisabled}
         w="full"
       >
         Continue to Step 4
@@ -238,7 +239,7 @@ export const RolesForm: React.FC<{
 
 const GridItem: React.FC<{
   bgColor?: string | undefined;
-  children?: unknown;
+  children?: ReactNode;
 }> = ({ bgColor, children }) => {
   return (
     <Flex
@@ -249,7 +250,7 @@ const GridItem: React.FC<{
       alignItems="center"
       p={2}
     >
-      <>{children}</>
+      {children}
     </Flex>
   );
 };

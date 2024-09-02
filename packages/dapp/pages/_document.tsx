@@ -10,25 +10,6 @@ import Document, {
 
 import { theme } from '../utils/theme';
 
-export enum TrackEvent {
-  Signup = 'Signup',
-  Error = '404',
-  ChainCreated = 'Chain created',
-}
-
-type PlausibleArgs = [TrackEvent, () => void] | [TrackEvent];
-
-declare global {
-  const plausible: {
-    (...args: PlausibleArgs): void;
-    q?: PlausibleArgs[];
-  };
-
-  interface Window {
-    plausible?: typeof plausible;
-  }
-}
-
 class TSDocument extends Document {
   static async getInitialProps(
     ctx: DocumentContext,
@@ -53,12 +34,6 @@ class TSDocument extends Document {
             href="/logo.svg"
           />
           <link rel="manifest" href="/manifest.json" />
-          <script
-            dangerouslySetInnerHTML={{
-              __html:
-                'window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }',
-            }}
-          />
         </Head>
         <body
           style={{

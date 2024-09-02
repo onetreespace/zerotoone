@@ -35,33 +35,26 @@ export const ConfirmationModal: React.FC<DialogProps> = ({
   submitLabel = 'Confirm',
 }) => {
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent maxW="30rem">
-          <ModalHeader>{title}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>{content}</ModalBody>
-          <ModalFooter alignItems="baseline">
-            <Button
-              variant="ghost"
-              mr={3}
-              onClick={onClose}
-              borderRadius="full"
-            >
-              {cancelLabel}
-            </Button>
-            <SubmitButton
-              mt={4}
-              onClick={onSubmit}
-              isDisabled={isDisabled}
-              isLoading={isLoading}
-            >
-              {submitLabel}
-            </SubmitButton>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent maxW="30rem">
+        <ModalHeader>{title}</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>{content}</ModalBody>
+        <ModalFooter alignItems="baseline">
+          <Button variant="ghost" mr={3} onClick={onClose} borderRadius="full">
+            {cancelLabel}
+          </Button>
+          <SubmitButton
+            mt={4}
+            onClick={onSubmit}
+            isDisabled={isDisabled}
+            isLoading={isLoading}
+          >
+            {submitLabel}
+          </SubmitButton>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
