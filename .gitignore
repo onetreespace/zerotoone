@@ -59,6 +59,7 @@ pids
 packages/subgraph/src/types
 packages/subgraph/src/abis
 packages/subgraph/subgraph.yaml
+packages/subgraph/docker/data
 
 # yarn version
 .yarn*
@@ -85,7 +86,9 @@ packages/contracts/broadcast/*/31337/
 packages/contracts/broadcast/**/dry-run/
 
 # dapp
-pacakges/dapp/web3/generated.ts
+packages/dapp/web3/generated.ts
+pacakges/dapp/graphql/generated.ts
+
 
 # Docs
 packages/contracts/docs/

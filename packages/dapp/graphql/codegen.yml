@@ -1,0 +1,14 @@
+overwrite: true
+schema: 'http://localhost:8000/subgraphs/name/zerotoone'
+generates:
+  graphql/generated.ts:
+    config:
+      withHooks: false
+    documents:
+      - graphql/**/(!(*.d)).graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-urql
+      - add:
+          content: '/* eslint-disable */'
