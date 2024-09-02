@@ -63,6 +63,9 @@ export const uploadFiles = authHandler(
         if (files.length === 0) {
           throw new HttpError(400, 'No files uploaded');
         }
+        if (files.length > 1) {
+          throw new HttpError(400, 'Only one file can be uploaded at a time');
+        }
 
         const result = await pinFilesToIPFS(files);
         res.json({ response: result });
