@@ -3,6 +3,7 @@ import { Invoice } from "../../types/schema";
 
 import {
   LogNewInvoice as LogNewInvoiceEvent,
+  SmartInvoiceFactoryInit as SmartInvoiceFactoryInitEvent,
   SmartInvoiceFactory,
 } from "../../types/SmartInvoiceFactory/SmartInvoiceFactory";
 import { ERC20, SmartInvoiceUpdatable } from "../../types/templates";
@@ -10,6 +11,16 @@ import { getToken } from "./helpers/token";
 import { updateInvoice } from "./utils";
 import { getChainId } from "../questchainsxyz/helpers/network";
 import { getGlobal } from "../questchainsxyz/helpers/schema";
+export function handleSmartInvoiceFactoryInit(
+  event: SmartInvoiceFactoryInitEvent,
+): void {
+  let globalNode = getGlobal();
+  let contract = SmartInvoiceFactory.bind(event.address);
+
+  globalNode.wrappedNativeToken = contract.wrappedNativeToken();
+  globalNode.smartInvoiceFactory = event.address;
+  globalNode.save();
+}
 
 export function handleLogNewInvoice(event: LogNewInvoiceEvent): void {
   if (
@@ -18,13 +29,6 @@ export function handleLogNewInvoice(event: LogNewInvoiceEvent): void {
   ) {
     return;
   }
-
-  let contract = SmartInvoiceFactory.bind(event.address);
-
-  let globalNode = getGlobal();
-  globalNode.wrappedNativeToken = contract.wrappedNativeToken();
-  globalNode.smartInvoiceFactory = event.address;
-  globalNode.save();
 
   let invoice = new Invoice(event.params.invoiceAddress.toHexString());
 

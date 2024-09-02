@@ -32,6 +32,8 @@ contract GigManager is EIP712, IGigManager {
         escrowFactory = _escrowFactory;
         escrowResolver = _escrowResolver;
         wrappedNativeToken = _wrappedNativeToken;
+
+        emit GigManagerInit();
     }
 
     function createGig(

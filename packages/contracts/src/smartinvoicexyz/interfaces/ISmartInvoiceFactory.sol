@@ -60,6 +60,9 @@ interface ISmartInvoiceFactory {
     /// @notice Reverts when the implementation address provided is the zero address.
     error ZeroAddressImplementation();
 
+    /// @notice Emitted when the Smart Invoice Factory is initialized.
+    event SmartInvoiceFactoryInit();
+
     /// @notice Emitted when a new invoice is created.
     /// @param invoiceId The ID of the created invoice.
     /// @param invoiceAddress The address of the created invoice.

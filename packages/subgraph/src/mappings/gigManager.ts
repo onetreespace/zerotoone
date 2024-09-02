@@ -5,17 +5,20 @@ import {
   ProposalCreated as ProposalCreatedEvent,
   ProposalEdited as ProposalEditedEvent,
   ProposalAccepted as ProposalAcceptedEvent,
+  GigManagerInit as GigManagerInitEvent,
 } from "../types/GigManager/GigManager";
 
 import { getGig, getProposal, updateProposal } from "./helpers";
 
 import { getGlobal } from "./questchainsxyz/helpers/schema";
 
-export function handleGigCreated(event: GigCreatedEvent): void {
+export function handleGigManagerInit(event: GigManagerInitEvent): void {
   let globalNode = getGlobal();
   globalNode.gigManager = event.address;
   globalNode.save();
+}
 
+export function handleGigCreated(event: GigCreatedEvent): void {
   let gig = getGig(event.address, event.params.gigId);
 
   log.info("handleGigCreated {}", [event.params.gigId.toHexString()]);

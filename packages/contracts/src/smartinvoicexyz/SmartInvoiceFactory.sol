@@ -33,6 +33,8 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory, AccessControl {
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(ADMIN, msg.sender);
+
+        emit SmartInvoiceFactoryInit();
     }
 
     /**

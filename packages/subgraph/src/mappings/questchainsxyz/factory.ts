@@ -11,7 +11,7 @@ import {
   QuestChainToken as QuestChainTokenTemplate,
 } from "../../types/templates";
 
-import { getUser, getGlobal, getQuestChain, ADDRESS_ZERO } from "./helpers";
+import { getUser, getGlobal, getQuestChain } from "./helpers";
 
 import { Global } from "../../types/schema";
 
@@ -56,11 +56,6 @@ export function handleQuestChainCreated(event: QuestChainCreatedEvent): void {
   QuestChainTemplate.create(event.params.questChainAddress);
 
   let globalNode = getGlobal();
-
-  if (globalNode.questChainFactory == ADDRESS_ZERO) {
-    setupGlobalNode(globalNode, event.address);
-  }
-
   globalNode.questChainCount = globalNode.questChainCount + 1;
   globalNode.save();
 

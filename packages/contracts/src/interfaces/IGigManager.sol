@@ -25,6 +25,9 @@ interface IGigManager {
         uint256 deadline; // Deadline for the proposal
     }
 
+    /// @notice Emitted when the contract is initialized.
+    event GigManagerInit();
+
     /// @notice Emitted when a new gig is created.
     /// @param gigId The ID of the created gig.
     event GigCreated(uint256 gigId);
