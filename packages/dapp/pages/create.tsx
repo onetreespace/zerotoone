@@ -11,9 +11,9 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { randomBytes } from 'crypto';
 import { contracts } from '@quest-chains/sdk';
 import { QuestChainCommons } from '@quest-chains/sdk/dist/contracts/v1/contracts/QuestChainFactory';
+import { randomBytes } from 'crypto';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';

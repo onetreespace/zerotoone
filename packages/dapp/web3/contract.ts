@@ -1,5 +1,5 @@
-import { Client } from 'viem';
 import { contracts } from '@quest-chains/sdk';
+import { Client } from 'viem';
 
 export const getQuestChainContract = (
   address: string,

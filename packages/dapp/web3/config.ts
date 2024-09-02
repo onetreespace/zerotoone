@@ -1,7 +1,8 @@
-import { mainnet, sepolia } from '@wagmi/core/chains';
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
-import { rainbowWallet, metaMaskWallet } from '@rainbow-me/rainbowkit/wallets';
+import { metaMaskWallet, rainbowWallet } from '@rainbow-me/rainbowkit/wallets';
+import { mainnet, sepolia } from '@wagmi/core/chains';
 import { http } from 'viem';
+
 import { rainbowWeb3AuthConnector } from './auth';
 
 export const config = getDefaultConfig({
@@ -12,13 +13,11 @@ export const config = getDefaultConfig({
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),
-  },  
-  wallets: [{
-    groupName: 'Recommended',
-    wallets: [
-      rainbowWallet,
-      rainbowWeb3AuthConnector,
-      metaMaskWallet,
-    ],
-  }],
+  },
+  wallets: [
+    {
+      groupName: 'Recommended',
+      wallets: [rainbowWallet, rainbowWeb3AuthConnector, metaMaskWallet],
+    },
+  ],
 });

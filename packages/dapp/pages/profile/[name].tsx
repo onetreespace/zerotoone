@@ -14,9 +14,9 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { getAddress, isAddress } from 'viem';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router';
+import { getAddress, isAddress } from 'viem';
 
 import { Page } from '@/components/Layout/Page';
 import { LoadingState } from '@/components/LoadingState';

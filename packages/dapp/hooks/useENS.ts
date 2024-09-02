@@ -1,5 +1,5 @@
-import { isAddress } from 'viem';
 import { useCallback, useEffect, useState } from 'react';
+import { isAddress } from 'viem';
 
 import { ZERO_ADDRESS } from '@/utils/constants';
 import { getEthersProvider } from '@/web3/providers';

@@ -9,10 +9,9 @@ import {
 import { useState } from 'react';
 
 import NFTForm2D from '@/components/CreateChain/NFTForm2D';
-import NFTForm3D from '@/components/CreateChain/NFTForm3D';
 import NFTFormCustom from '@/components/CreateChain/NFTFormCustom';
 
-const TABS = ['2D', '3D', 'Custom'];
+const TABS = ['2D', 'Custom'];
 
 const NFTForm: React.FC<{
   showStep?: boolean;
@@ -83,17 +82,11 @@ const NFTForm: React.FC<{
         submitLabel={submitLabel}
         show={tab === TABS[0]}
       />
-      <NFTForm3D
-        chainName={chainName}
-        onSubmit={onSubmit}
-        submitLabel={submitLabel}
-        show={tab === TABS[1]}
-      />
       <NFTFormCustom
         chainName={chainName}
         onSubmit={onSubmit}
         submitLabel={submitLabel}
-        show={tab === TABS[2]}
+        show={tab === TABS[1]}
       />
     </VStack>
   );

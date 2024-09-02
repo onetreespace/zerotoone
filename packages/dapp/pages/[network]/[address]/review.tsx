@@ -1,11 +1,11 @@
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Flex, Heading, Link as ChakraLink, Text } from '@chakra-ui/react';
-import { isAddress } from 'viem';
 import { graphql } from '@quest-chains/sdk';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
+import { isAddress } from 'viem';
 
 import { Page } from '@/components/Layout/Page';
 import { LoadingState } from '@/components/LoadingState';

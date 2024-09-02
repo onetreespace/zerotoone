@@ -6,12 +6,12 @@ import {
   Text,
   useBreakpointValue,
 } from '@chakra-ui/react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import NextLink from 'next/link';
 import { useMemo } from 'react';
 
 import { ConnectWallet } from '@/components/Layout/ConnectWallet';
 import { WalletDisplay } from '@/components/Layout/WalletDisplay';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useWallet } from '@/web3';
 
 export const DesktopMenu: React.FC<{ onSearchOpen: () => void }> = ({
