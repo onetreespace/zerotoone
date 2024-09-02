@@ -1,9 +1,9 @@
 import { Heading } from '@chakra-ui/react';
-import { isAddress } from 'viem';
 import { graphql } from '@quest-chains/sdk';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
+import { isAddress } from 'viem';
 
 import { Page } from '@/components/Layout/Page';
 import { LoadingState } from '@/components/LoadingState';

@@ -9,6 +9,8 @@ import {
   useState,
 } from 'react';
 import { toast } from 'react-hot-toast';
+import { createWalletClient, custom, WalletClient } from 'viem';
+import { mainnet } from 'viem/chains';
 import Web3Modal from 'web3modal';
 
 import {
@@ -24,8 +26,6 @@ import { isSupportedNetwork } from './helpers';
 import { switchChainOnMetaMask } from './metamask';
 import { CHAIN_ID, SUPPORTED_NETWORK_INFO } from './networks';
 import { WEB3_MODAL_OPTIONS } from './options';
-import { createWalletClient, custom, WalletClient } from 'viem';
-import { mainnet } from 'viem/chains';
 
 export type WalletContextType = {
   walletClient: WalletClient | null | undefined;
@@ -90,7 +90,6 @@ const fetchENSData = async (
 export const WalletProvider: React.FC<{ children: JSX.Element }> = ({
   children,
 }) => {
-  
   const [walletState, setWalletState] = useState<WalletStateType>({});
 
   const { walletClient, chainId, address, isMetaMask } = walletState;
@@ -119,10 +118,10 @@ export const WalletProvider: React.FC<{ children: JSX.Element }> = ({
     async (walletClient: WalletClient, onlyNetworkChange = false) => {
       const ethersProvider = new Web3Provider(walletClient);
 
-      const client = createWalletClient({ 
-        chain: mainnet, 
-        transport: custom(walletClient)
-      }) 
+      const client = createWalletClient({
+        chain: mainnet,
+        transport: custom(walletClient),
+      });
 
       // const network = (await client.getNetwork()).chainId;
       const network = await client.getChainId();

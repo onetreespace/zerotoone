@@ -14,9 +14,9 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react';
-import { isAddress } from 'viem';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { isAddress } from 'viem';
 
 import { SubmitButton } from '@/components/SubmitButton';
 import { UserDisplay } from '@/components/UserDisplay';

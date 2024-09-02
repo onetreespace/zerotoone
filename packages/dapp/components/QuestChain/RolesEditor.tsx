@@ -10,10 +10,10 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { isAddress } from 'viem';
 import { contracts, graphql } from '@quest-chains/sdk';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { isAddress } from 'viem';
 
 import { AddUserIcon } from '@/components/icons/AddUserIcon';
 import { TrashOutlinedIcon } from '@/components/icons/TrashOutlinedIcon';

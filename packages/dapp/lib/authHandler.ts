@@ -1,6 +1,6 @@
-import { isAddress } from 'viem';
 import { Db } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { isAddress } from 'viem';
 
 import { verifyToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb/client';

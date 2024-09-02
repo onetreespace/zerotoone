@@ -1,5 +1,5 @@
-import { isAddress } from 'viem';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { isAddress } from 'viem';
 
 import { verifyToken } from '@/lib/auth';
 import clientPromise from '@/lib/mongodb/client';

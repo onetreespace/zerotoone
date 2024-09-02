@@ -1,9 +1,9 @@
 import { AddIcon } from '@chakra-ui/icons';
 import { Accordion, Box, Button, Flex, HStack, Text } from '@chakra-ui/react';
-import { TransactionReceipt } from 'viem';
 import { contracts, graphql } from '@quest-chains/sdk';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { TransactionReceipt } from 'viem';
 
 import {
   AddQuestBlock,
