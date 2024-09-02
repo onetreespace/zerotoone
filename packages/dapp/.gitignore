@@ -46,3 +46,6 @@ output
 .yarnrc.yml
 .pnp.*
 package-lock.json
+
+
+web3/generated.ts

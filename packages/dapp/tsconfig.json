@@ -29,6 +29,7 @@
   },
   "exclude": ["node_modules", ".next", "out"],
   "include": [
+    "wagmi.config.ts",
     "next-env.d.ts",
     "static.d.ts",
     "**/*.ts",

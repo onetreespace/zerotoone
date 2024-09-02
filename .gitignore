@@ -84,5 +84,8 @@ packages/contracts/build/
 packages/contracts/broadcast/*/31337/
 packages/contracts/broadcast/**/dry-run/
 
+# dapp
+pacakges/dapp/web3/generated.ts
+
 # Docs
 packages/contracts/docs/
