@@ -60,6 +60,13 @@ export class MetadataUploader extends EventEmitter {
     files: File[],
     options?: UploadOptions,
   ): Promise<string> => {
+    if (files.length === 0) {
+      throw new Error('No files to upload');
+    }
+    if (files.length > 1) {
+      throw new Error('Only one file can be uploaded at a time');
+    }
+
     const { label, apiUrl } = options || {};
     const formData = new FormData();
     for (let i = 0; i < files.length; i += 1) {

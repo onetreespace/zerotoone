@@ -1,15 +1,11 @@
-import { metadata } from '@quest-chains/sdk';
+import { MetadataUploader, QCMetadata } from '@/metadata';
 
-import { API_URL } from './constants';
+export type Metadata = QCMetadata;
 
-export type Metadata = metadata.Metadata;
+export const uploader = new MetadataUploader();
 
-const { MetadataUploader } = metadata;
-
-export const uploader = new MetadataUploader(API_URL);
-
-export const uploadMetadata = async (_metadata: Metadata): Promise<string> =>
-  uploader.uploadMetadata(_metadata);
+export const uploadMetadata = async (data: Metadata): Promise<string> =>
+  uploader.uploadMetadata(data);
 
 export const uploadFiles = async (files: File[] | FileList): Promise<string> =>
   uploader.uploadFiles(files as File[]);

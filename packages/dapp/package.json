@@ -36,6 +36,7 @@
     "@types/uuid": "^9.0.8",
     "@ucanto/core": "^9.0.1",
     "@ucanto/principal": "^9.0.0",
+    "@vercel/blob": "^0.23.4",
     "@wagmi/cli": "^2.1.15",
     "@wagmi/connectors": "^5.1.8",
     "@wagmi/core": "^2.13.4",
