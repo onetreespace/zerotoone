@@ -14,8 +14,9 @@
     "build": "graph build",
     "codegen": "graph codegen --output-dir src/types/",
     "create-local": "graph create --node http://localhost:8020/ zerotoone",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 zerotoone",
+    "deploy-only-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 zerotoone",
     "prepare-local": "mustache src/config/local.json subgraph.template.yaml > subgraph.yaml",
-    "remove-local": "graph remove --node http://localhost:8020/ zerotoone"
+    "remove-local": "graph remove --node http://localhost:8020/ zerotoone",
+    "deploy-local": "pnpm prepare-local && pnpm codegen && pnpm build && pnpm create-local && pnpm deploy-only-local"
   }
 }

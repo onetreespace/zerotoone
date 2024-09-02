@@ -1,0 +1,142 @@
+fragment ERC20TokenInfo on ERC20Token {
+  address: id
+  name
+  symbol
+  decimals
+}
+
+fragment GlobalInfo on Global {
+  network: id
+  questChainFactory
+  questChainToken
+  smartInvoiceFactory
+  gigManager
+  admin
+}
+
+fragment QuestInfo on Quest {
+  id
+  questId
+  paused
+  optional
+  skipReview
+  details
+}
+
+fragment QuestChainTokenInfo on QuestChainToken {
+  tokenId
+  tokenAddress
+  details
+  owners {
+    id
+  }
+}
+
+fragment QuestChainDisplay on QuestChain {
+  address: id
+  paused
+  chainId
+  network
+  details
+  updatedAt
+  createdAt
+  createdBy {
+    id
+  }
+  numQuests: questCount
+  numQuesters
+  numCompletedQuesters
+  token {
+    tokenId
+    tokenAddress
+    mimeType
+  }
+}
+
+fragment QuestChainInfo on QuestChain {
+  address: id
+  paused
+  chainId
+  network
+  updatedAt
+  createdAt
+  createdBy {
+    id
+  }
+  numQuests: questCount
+  numQuesters
+  numCompletedQuesters
+  details
+  quests {
+    ...QuestInfo
+  }
+  owners {
+    address: id
+  }
+  admins {
+    address: id
+  }
+  editors {
+    address: id
+  }
+  reviewers {
+    address: id
+  }
+  token {
+    ...QuestChainTokenInfo
+  }
+}
+
+fragment QuestStatusInfo on QuestStatus {
+  id
+  status
+  updatedAt
+  questChain {
+    ...QuestChainInfo
+  }
+  quest {
+    ...QuestInfo
+  }
+  user {
+    id
+  }
+  submissions {
+    timestamp
+    details
+  }
+  reviews {
+    accepted
+    timestamp
+    details
+    reviewer {
+      id
+    }
+  }
+}
+
+fragment QuestChainReviewInfo on QuestChain {
+  address: id
+  paused
+  chainId
+  network
+  updatedAt
+  questsFailed {
+    id
+  }
+  questsPassed {
+    id
+  }
+  questsInReview {
+    id
+  }
+}
+
+fragment QuestChainCompletedInfo on QuestChain {
+  address: id
+  paused
+  chainId
+  network
+  completedQuesters {
+    address: id
+  }
+}

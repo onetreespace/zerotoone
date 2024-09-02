@@ -1,0 +1,131 @@
+query GetMeta {
+  _meta {
+    block {
+      number
+    }
+  }
+}
+
+query GlobalInfo {
+  globals {
+    ...GlobalInfo
+  }
+}
+
+query CreatedQuestChainsInfo($limit: Int, $user: String) {
+  questChains(first: $limit, where: { createdBy: $user }, orderBy: createdAt, orderDirection: desc) {
+    ...QuestChainDisplay
+  }
+}
+
+query QuestChainInfo($address: ID!) {
+  questChain(id: $address) {
+    ...QuestChainInfo
+  }
+}
+
+query QuestChainCompletedInfo($address: ID!) {
+  questChain(id: $address) {
+    ...QuestChainCompletedInfo
+  }
+}
+
+query QuestChainsFromAddresses($addresses: [ID!]!) {
+  questChains(where: { id_in: $addresses }, first: 1000) {
+    ...QuestChainInfo
+  }
+}
+
+query QuestChainAddresses($limit: Int!) {
+  questChains(first: $limit) {
+    address: id
+  }
+}
+
+query QuestChainSearch(
+  $orderDirection: OrderDirection
+  $orderBy: QuestChain_orderBy
+  $where: QuestChain_filter
+  $limit: Int
+  $skip: Int
+) {
+  questChains(skip: $skip, first: $limit, where: $where, orderBy: $orderBy, orderDirection: $orderDirection) {
+    ...QuestChainDisplay
+  }
+}
+
+query QuestChainSearchBySlug($slug: String) {
+  questChains(where: { slug: $slug }, first: 1) {
+    ...QuestChainInfo
+  }
+}
+
+query QuestChainValidateSlug($slug: String) {
+  questChains(where: { slug: $slug }, first: 1) {
+    id
+  }
+}
+
+query QuestChainsReviewStatus($reviewer: String!, $limit: Int) {
+  questChains(first: $limit, where: { reviewers_contains: [$reviewer] }) {
+    ...QuestChainReviewInfo
+  }
+}
+
+query StatusForChain($address: String!, $limit: Int) {
+  questStatuses(first: $limit, where: { questChain: $address }) {
+    ...QuestStatusInfo
+  }
+}
+
+query StatusForUser($user: String!, $limit: Int) {
+  questStatuses(first: $limit, where: { user: $user }) {
+    ...QuestStatusInfo
+  }
+}
+
+query StatusForUserAndChain($user: String!, $address: String!, $limit: Int) {
+  questStatuses(first: $limit, where: { user: $user, questChain: $address }) {
+    ...QuestStatusInfo
+  }
+}
+
+query RolesForUser($address: ID!) {
+  user(id: $address) {
+    ownerOf {
+      ...QuestChainDisplay
+    }
+    adminOf {
+      ...QuestChainDisplay
+    }
+    editorOf {
+      ...QuestChainDisplay
+    }
+    reviewerOf {
+      ...QuestChainDisplay
+    }
+  }
+}
+
+query QuestsRejected($address: ID!) {
+  user(id: $address) {
+    questsFailed {
+      ...QuestStatusInfo
+    }
+  }
+}
+
+query BadgesForUser($address: ID!) {
+  user(id: $address) {
+    tokens {
+      details
+      tokenAddress
+      tokenId
+      questChain {
+        address
+        chainId
+        network
+      }
+    }
+  }
+}

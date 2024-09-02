@@ -1,2 +1,4 @@
 packages:
   - 'packages/**'
+exclude:
+  - 'packages/subgraph/docker/data'

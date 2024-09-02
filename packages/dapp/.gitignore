@@ -49,3 +49,4 @@ package-lock.json
 
 
 web3/generated.ts
+graphql/generated.ts

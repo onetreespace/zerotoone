@@ -46,7 +46,7 @@
     "lint": "eslint --ignore-path .gitignore \"./packages/**/*.{ts,tsx,js,jsx}\"",
     "lint-staged": "pnpx lint-staged -r",
     "preinstall": "only-allow pnpm",
-    "prepare": "husky install",
+    "prepare": "husky",
     "syncpack": "syncpack list-mismatches",
     "update-deps": "pnpm update -i -r --latest"
   },
