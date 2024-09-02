@@ -26,12 +26,15 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory, AccessControl {
     /// @notice Constructor to initialize the factory with a wrapped native token.
     /// @param _wrappedNativeToken The address of the wrapped native token.
     constructor(address _wrappedNativeToken) {
-        if (_wrappedNativeToken == address(0))
+        if (_wrappedNativeToken == address(0)) {
             revert InvalidWrappedNativeToken();
+        }
         wrappedNativeToken = _wrappedNativeToken;
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(ADMIN, msg.sender);
+
+        emit SmartInvoiceFactoryInit();
     }
 
     /**
@@ -57,13 +60,7 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory, AccessControl {
         _invoices[invoiceId] = _invoiceAddress;
         invoiceCount++;
 
-        emit LogNewInvoice(
-            invoiceId,
-            _invoiceAddress,
-            _amounts,
-            _type,
-            _version
-        );
+        emit LogNewInvoice(invoiceId, _invoiceAddress, _amounts, _type, _version);
     }
 
     /**
@@ -74,12 +71,11 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory, AccessControl {
      * @param _type The type of the invoice.
      * @return The address of the created invoice.
      */
-    function create(
-        address _recipient,
-        uint256[] calldata _amounts,
-        bytes calldata _data,
-        bytes32 _type
-    ) external override returns (address) {
+    function create(address _recipient, uint256[] calldata _amounts, bytes calldata _data, bytes32 _type)
+        external
+        override
+        returns (address)
+    {
         uint256 _version = currentVersions[_type];
         address _implementation = implementations[_type][_version];
         if (_implementation == address(0)) revert ImplementationDoesNotExist();
@@ -96,10 +92,7 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory, AccessControl {
      * @param _salt The salt used to determine the address.
      * @return The predicted address of the deterministic clone.
      */
-    function predictDeterministicAddress(
-        bytes32 _type,
-        bytes32 _salt
-    ) external view override returns (address) {
+    function predictDeterministicAddress(bytes32 _type, bytes32 _salt) external view override returns (address) {
         uint256 _version = currentVersions[_type];
         address _implementation = implementations[_type][_version];
         return Clones.predictDeterministicAddress(_implementation, _salt);
@@ -125,10 +118,7 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory, AccessControl {
         address _implementation = implementations[_type][_version];
         if (_implementation == address(0)) revert ImplementationDoesNotExist();
 
-        address invoiceAddress = Clones.cloneDeterministic(
-            _implementation,
-            _salt
-        );
+        address invoiceAddress = Clones.cloneDeterministic(_implementation, _salt);
         _init(invoiceAddress, _recipient, _amounts, _data, _type, _version);
 
         return invoiceAddress;
@@ -140,10 +130,11 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory, AccessControl {
      * @param _implementationVersion The version of the implementation.
      * @return The address of the implementation.
      */
-    function getImplementation(
-        bytes32 _implementationType,
-        uint256 _implementationVersion
-    ) external view returns (address) {
+    function getImplementation(bytes32 _implementationType, uint256 _implementationVersion)
+        external
+        view
+        returns (address)
+    {
         return implementations[_implementationType][_implementationVersion];
     }
 
@@ -161,10 +152,7 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory, AccessControl {
      * @param _resolutionRate The new resolution rate.
      * @param _details Additional details about the update.
      */
-    function updateResolutionRate(
-        uint256 _resolutionRate,
-        bytes32 _details
-    ) external {
+    function updateResolutionRate(uint256 _resolutionRate, bytes32 _details) external {
         resolutionRates[msg.sender] = _resolutionRate;
         emit UpdateResolutionRate(msg.sender, _resolutionRate, _details);
     }
@@ -174,9 +162,7 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory, AccessControl {
      * @param _resolver The address of the resolver.
      * @return The resolution rate of the resolver.
      */
-    function resolutionRateOf(
-        address _resolver
-    ) external view override returns (uint256) {
+    function resolutionRateOf(address _resolver) external view override returns (uint256) {
         return resolutionRates[_resolver];
     }
 
@@ -185,10 +171,7 @@ contract SmartInvoiceFactory is ISmartInvoiceFactory, AccessControl {
      * @param _type The type of the invoice.
      * @param _implementation The address of the new implementation.
      */
-    function addImplementation(
-        bytes32 _type,
-        address _implementation
-    ) external onlyRole(ADMIN) {
+    function addImplementation(bytes32 _type, address _implementation) external onlyRole(ADMIN) {
         if (_implementation == address(0)) revert ZeroAddressImplementation();
 
         uint256 _version = currentVersions[_type];

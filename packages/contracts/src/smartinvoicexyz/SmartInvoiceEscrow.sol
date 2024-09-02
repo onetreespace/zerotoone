@@ -16,13 +16,7 @@ import {IWRAPPED} from "./interfaces/IWRAPPED.sol";
 
 /// @title SmartInvoiceEscrow
 /// @notice A contract that acts as a digital escrow for split payments with embedded arbitration, designed for use in guild or collaborative work settings.
-contract SmartInvoiceEscrow is
-    ISmartInvoiceEscrow,
-    IArbitrable,
-    Initializable,
-    Context,
-    ReentrancyGuard
-{
+contract SmartInvoiceEscrow is ISmartInvoiceEscrow, IArbitrable, Initializable, Context, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     enum ADR {
@@ -71,11 +65,12 @@ contract SmartInvoiceEscrow is
      * @param _amounts The array of amounts associated with the provider
      * @param _data The additional data needed for initialization
      */
-    function init(
-        address _provider,
-        uint256[] calldata _amounts,
-        bytes calldata _data
-    ) external virtual override initializer {
+    function init(address _provider, uint256[] calldata _amounts, bytes calldata _data)
+        external
+        virtual
+        override
+        initializer
+    {
         if (_provider == address(0)) revert InvalidProvider();
 
         _handleData(_data);
@@ -104,23 +99,9 @@ contract SmartInvoiceEscrow is
             address _wrappedNativeToken,
             bool _requireVerification,
             address _factory
-        ) = abi.decode(
-                _data,
-                (
-                    address,
-                    uint8,
-                    address,
-                    address,
-                    uint256,
-                    string,
-                    address,
-                    bool,
-                    address
-                )
-            );
+        ) = abi.decode(_data, (address, uint8, address, address, uint256, string, address, bool, address));
 
-        uint256 _resolutionRate = ISmartInvoiceFactory(_factory)
-            .resolutionRateOf(_resolver);
+        uint256 _resolutionRate = ISmartInvoiceFactory(_factory).resolutionRateOf(_resolver);
         if (_resolutionRate == 0) {
             _resolutionRate = 20;
         }
@@ -130,11 +111,13 @@ contract SmartInvoiceEscrow is
         if (_resolver == address(0)) revert InvalidResolver();
         if (_token == address(0)) revert InvalidToken();
         if (_terminationTime <= block.timestamp) revert DurationEnded();
-        if (_terminationTime > block.timestamp + MAX_TERMINATION_TIME)
+        if (_terminationTime > block.timestamp + MAX_TERMINATION_TIME) {
             revert DurationTooLong();
+        }
         if (_resolutionRate == 0) revert InvalidResolutionRate();
-        if (_wrappedNativeToken == address(0))
+        if (_wrappedNativeToken == address(0)) {
             revert InvalidWrappedNativeToken();
+        }
 
         client = _client;
         resolverType = ADR(_resolverType);
@@ -169,10 +152,7 @@ contract SmartInvoiceEscrow is
      * @param _milestones The array of new milestones to be added
      * @param _details Additional details for the milestones
      */
-    function addMilestones(
-        uint256[] calldata _milestones,
-        string calldata _details
-    ) external override {
+    function addMilestones(uint256[] calldata _milestones, string calldata _details) external override {
         _addMilestones(_milestones, _details);
     }
 
@@ -181,14 +161,12 @@ contract SmartInvoiceEscrow is
      * @param _milestones The array of new milestones to be added
      * @param _details Additional details for the milestones
      */
-    function _addMilestones(
-        uint256[] calldata _milestones,
-        string memory _details
-    ) internal {
+    function _addMilestones(uint256[] calldata _milestones, string memory _details) internal {
         if (locked) revert Locked();
         if (block.timestamp >= terminationTime) revert Terminated();
-        if (_msgSender() != client && _msgSender() != provider)
+        if (_msgSender() != client && _msgSender() != provider) {
             revert NotParty();
+        }
         if (_milestones.length == 0) revert NoMilestones();
         if (_milestones.length > 10) revert ExceedsMilestoneLimit();
 
@@ -265,9 +243,7 @@ contract SmartInvoiceEscrow is
      * @dev External function to release funds from the contract to the provider up to a certain milestone.
      * @param _milestone The milestone to release funds to
      */
-    function release(
-        uint256 _milestone
-    ) external virtual override nonReentrant {
+    function release(uint256 _milestone) external virtual override nonReentrant {
         if (locked) revert Locked();
         if (_msgSender() != client) revert NotClient();
         if (_milestone < milestone) revert InvalidMilestone();
@@ -296,9 +272,7 @@ contract SmartInvoiceEscrow is
      * Uses the internal `_release` function to perform the actual release.
      * @param _token The token to release funds from
      */
-    function releaseTokens(
-        address _token
-    ) external virtual override nonReentrant {
+    function releaseTokens(address _token) external virtual override nonReentrant {
         if (_token == token) {
             _release();
         } else {
@@ -357,14 +331,13 @@ contract SmartInvoiceEscrow is
         uint256 balance = IERC20(token).balanceOf(address(this));
         if (balance == 0) revert BalanceIsZero();
         if (block.timestamp >= terminationTime) revert Terminated();
-        if (_msgSender() != client && _msgSender() != provider)
+        if (_msgSender() != client && _msgSender() != provider) {
             revert NotParty();
+        }
 
         if (resolverType == ADR.ARBITRATOR) {
-            disputeId = IArbitrator(resolver).createDispute{value: msg.value}(
-                NUM_RULING_OPTIONS,
-                abi.encodePacked(details)
-            );
+            disputeId =
+                IArbitrator(resolver).createDispute{value: msg.value}(NUM_RULING_OPTIONS, abi.encodePacked(details));
         }
         locked = true;
 
@@ -377,11 +350,12 @@ contract SmartInvoiceEscrow is
      * @param _providerAward The amount to award the provider
      * @param _details Details of the dispute
      */
-    function resolve(
-        uint256 _clientAward,
-        uint256 _providerAward,
-        string calldata _details
-    ) external virtual override nonReentrant {
+    function resolve(uint256 _clientAward, uint256 _providerAward, string calldata _details)
+        external
+        virtual
+        override
+        nonReentrant
+    {
         if (resolverType != ADR.INDIVIDUAL) revert InvalidIndividualResolver();
         if (!locked) revert Locked();
         uint256 balance = IERC20(token).balanceOf(address(this));
@@ -390,8 +364,9 @@ contract SmartInvoiceEscrow is
 
         uint256 resolutionFee = balance / resolutionRate;
 
-        if (_clientAward + _providerAward != balance - resolutionFee)
+        if (_clientAward + _providerAward != balance - resolutionFee) {
             revert ResolutionMismatch();
+        }
 
         if (_providerAward > 0) {
             _transferPayment(token, _providerAward);
@@ -406,13 +381,7 @@ contract SmartInvoiceEscrow is
         milestone = amounts.length;
         locked = false;
 
-        emit Resolve(
-            _msgSender(),
-            _clientAward,
-            _providerAward,
-            resolutionFee,
-            _details
-        );
+        emit Resolve(_msgSender(), _clientAward, _providerAward, resolutionFee, _details);
     }
 
     /**
@@ -420,10 +389,7 @@ contract SmartInvoiceEscrow is
      * @param _disputeId The ID of the dispute
      * @param _ruling The ruling of the arbitrator
      */
-    function rule(
-        uint256 _disputeId,
-        uint256 _ruling
-    ) external virtual override nonReentrant {
+    function rule(uint256 _disputeId, uint256 _ruling) external virtual override nonReentrant {
         if (resolverType != ADR.ARBITRATOR) revert InvalidArbitratorResolver();
         if (!locked) revert Locked();
         if (_msgSender() != resolver) revert NotResolver();
@@ -457,9 +423,7 @@ contract SmartInvoiceEscrow is
      * @dev Internal function to get the ruling of the arbitrator.
      * @param _ruling The ruling of the arbitrator
      */
-    function _getRuling(
-        uint256 _ruling
-    ) internal pure returns (uint8[2] memory ruling) {
+    function _getRuling(uint256 _ruling) internal pure returns (uint8[2] memory ruling) {
         uint8[2][6] memory rulings = [
             [1, 1], // 0 = refused to arbitrate
             [1, 0], // 1 = 100% to client
@@ -476,10 +440,7 @@ contract SmartInvoiceEscrow is
      * @param _token The token to transfer
      * @param _amount The amount to transfer
      */
-    function _transferPayment(
-        address _token,
-        uint256 _amount
-    ) internal virtual {
+    function _transferPayment(address _token, uint256 _amount) internal virtual {
         IERC20(_token).safeTransfer(provider, _amount);
     }
 
@@ -488,10 +449,7 @@ contract SmartInvoiceEscrow is
      * @param _token The token to withdraw
      * @param _amount The amount to withdraw
      */
-    function _withdrawDeposit(
-        address _token,
-        uint256 _amount
-    ) internal virtual {
+    function _withdrawDeposit(address _token, uint256 _amount) internal virtual {
         IERC20(_token).safeTransfer(client, _amount);
     }
 

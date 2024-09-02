@@ -1,0 +1,234 @@
+specVersion: 0.0.8
+description: "Zero To One"
+schema:
+  file: ./src/schema.graphql
+features:
+  - ipfsOnEthereumContracts
+  - nonFatalErrors
+dataSources:
+  - kind: ethereum/contract
+    name: GigManager
+    network: {{network}}
+    source:
+      address: '{{GigManager}}'
+      abi: GigManager
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Invoice
+        - Gig
+        - Proposal
+      abis:
+        - name: GigManager
+          file: ./src/abis/GigManager.json
+      eventHandlers:
+        - event: GigCreated(uint256)
+          handler: handleGigCreated
+        - event: ProposalCreated(uint256)
+          handler: handleProposalCreated
+        - event: ProposalAccepted(uint256,address)
+          handler: handleProposalAccepted
+        - event: ProposalEdited(uint256)
+          handler: handleProposalEdited
+        - event: GigManagerInit()
+          handler: handleGigManagerInit
+      file: ./src/mappings/gigManager.ts
+  - kind: ethereum/contract
+    name: SmartInvoiceFactory
+    network: {{network}}
+    source:
+      address: '{{SmartInvoiceFactory}}'
+      abi: SmartInvoiceFactory
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Invoice
+      abis:
+        - name: ERC20
+          file: ./src/abis/ERC20.json
+        - name: SmartInvoiceUpdatable
+          file: ./src/abis/SmartInvoiceUpdatable.json
+        - name: SmartInvoiceFactory
+          file: ./src/abis/SmartInvoiceFactory.json
+      eventHandlers:
+        - event: SmartInvoiceFactoryInit()
+          handler: handleSmartInvoiceFactoryInit
+        - event: LogNewInvoice(indexed uint256,indexed address,uint256[],indexed bytes32,uint256)
+          handler: handleLogNewInvoice
+      file: ./src/mappings/smartinvoicexyz/factory.ts
+  - kind: ethereum/contract
+    name: QuestChainFactory
+    network: {{network}}
+    source:
+      address: '{{QuestChainFactory}}'
+      abi: QuestChainFactory
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - QuestChain
+        - QuestStatus
+        - Quest
+        - User
+      abis:
+        - name: QuestChain
+          file: ./src/abis/QuestChain.json
+        - name: QuestChainFactory
+          file: ./src/abis/QuestChainFactory.json
+        - name: QuestChainToken
+          file: ./src/abis/QuestChainToken.json
+        - name: ERC20
+          file: ./src/abis/ERC20.json
+      eventHandlers:
+        - event: FactorySetup()
+          handler: handleFactorySetup
+        - event: QuestChainCreated(uint256,address)
+          handler: handleQuestChainCreated
+        - event: AdminReplaced(address)
+          handler: handleAdminReplaced
+      file: ./src/mappings/questchainsxyz/factory.ts
+templates:
+  - kind: ethereum/contract
+    name: SmartInvoiceUpdatable
+    network: {{network}}
+    source:
+      abi: SmartInvoiceUpdatable
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Invoice
+        - Release
+        - Deposit
+        - Resolution
+        - Token
+      abis:
+        - name: ERC20
+          file: ./src/abis/ERC20.json
+        - name: SmartInvoiceUpdatable
+          file: ./src/abis/SmartInvoiceUpdatable.json
+        - name: SmartInvoiceFactory
+          file: ./src/abis/SmartInvoiceFactory.json
+      eventHandlers:
+        - event: Release(uint256,uint256)
+          handler: handleRelease
+        - event: Withdraw(uint256)
+          handler: handleWithdraw
+        - event: Lock(indexed address,string)
+          handler: handleLock
+        - event: Rule(indexed address,uint256,uint256,uint256)
+          handler: handleRule
+        - event: Resolve(indexed address,uint256,uint256,uint256,string)
+          handler: handleResolve
+        - event: Deposit(indexed address,uint256)
+          handler: handleDeposit
+        - event: Verified(indexed address,indexed address)
+          handler: handleVerified
+        - event: MilestonesAdded(indexed address,indexed address,uint256[])
+          handler: handleMilestonesAdded
+        - event: UpdatedClient(indexed address)
+          handler: handleUpdateClient
+        - event: UpdatedProvider(indexed address)
+          handler: handleUpdateProvider
+        - event: UpdatedProviderReceiver(indexed address)
+          handler: handleUpdateProviderReceiver
+      file: ./src/mappings/smartinvoicexyz/invoice.ts
+  - kind: ethereum/contract
+    name: ERC20
+    network: {{network}}
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Token
+        - Deposit
+      abis:
+        - name: ERC20
+          file: ./src/abis/ERC20.json
+        - name: SmartInvoiceUpdatable
+          file: ./src/abis/SmartInvoiceUpdatable.json
+        - name: SmartInvoiceFactory
+          file: ./src/abis/SmartInvoiceFactory.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mappings/smartinvoicexyz/token.ts
+  - kind: ethereum/contract
+    name: QuestChain
+    network: {{network}}
+    source:
+      abi: QuestChain
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - QuestChain
+        - QuestStatus
+        - Quest
+        - User
+      abis:
+        - name: QuestChain
+          file: ./src/abis/QuestChain.json
+        - name: QuestChainFactory
+          file: ./src/abis/QuestChainFactory.json
+        - name: QuestChainToken
+          file: ./src/abis/QuestChainToken.json
+      eventHandlers:
+        - event: QuestChainInit()
+          handler: handleChainInit
+        - event: QuestChainEdited(indexed address,string)
+          handler: handleChainEdited
+        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleGranted
+        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleRevoked
+        - event: Paused(address)
+          handler: handlePaused
+        - event: Unpaused(address)
+          handler: handleUnpaused
+        - event: QuestsAdded(indexed address,uint256)
+          handler: handleQuestsAdded
+        - event: QuestsEdited(indexed address,uint256[])
+          handler: handleQuestsEdited
+        - event: QuestProofsSubmitted(indexed address,uint256[],string[])
+          handler: handleQuestProofsSubmitted
+        - event: QuestProofsReviewed(indexed address,address[],uint256[],bool[],string[])
+          handler: handleQuestProofsReviewed
+      file: ./src/mappings/questchainsxyz/questChain.ts
+  - kind: ethereum/contract
+    name: QuestChainToken
+    network: {{network}}
+    source:
+      abi: QuestChainToken
+    mapping:
+      file: ./src/mappings/questchainsxyz/token.ts
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - QuestChain
+      abis:
+        - name: QuestChain
+          file: ./src/abis/QuestChain.json
+        - name: QuestChainFactory
+          file: ./src/abis/QuestChainFactory.json
+        - name: QuestChainToken
+          file: ./src/abis/QuestChainToken.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+        - event: URI(string,indexed uint256)
+          handler: handleURIUpdated

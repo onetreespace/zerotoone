@@ -1,0 +1,383 @@
+type Invoice @entity {
+  id: ID!
+  network: String!
+  chainId: String!
+  address: Bytes!
+  factoryAddress: Bytes!
+  token: Bytes!
+  client: Bytes!
+  provider: Bytes!
+  resolverType: ADR!
+  resolver: Bytes!
+  resolutionRate: BigInt!
+  isLocked: Boolean!
+  amounts: [BigInt!]!
+  numMilestones: Int!
+  currentMilestone: BigInt!
+  total: BigInt!
+  released: BigInt!
+  createdAt: BigInt! # seconds since epoch
+  creationTxHash: Bytes!
+  terminationTime: BigInt! # seconds since epoch
+  details: String!
+  ipfsHash: String!
+  disputeId: BigInt!
+  projectName: String!
+  projectDescription: String!
+  projectAgreement: [Agreement!]!
+  startDate: BigInt # seconds since epoch
+  endDate: BigInt # seconds since epoch
+  deposits: [Deposit!]!
+  withdraws: [Withdraw!]!
+  releases: [Release!]!
+  disputes: [Dispute!]!
+  resolutions: [Resolution!]!
+  tokenMetadata: Token!
+  verified: [Verified!]!
+  milestonesAdded: [MilestonesAdded!]!
+  # left nullable to allow for previous factory
+  invoiceType: String
+  version: BigInt
+  # instant type specific
+  lateFee: BigInt
+  lateFeeTimeInterval: BigInt
+  tipAmount: [Tip!]
+  deadline: BigInt
+  fulfilled: Boolean
+  # split-escrow type specific
+  dao: Bytes
+  daoFee: BigInt
+  # updatable fields
+  providerReceiver: Bytes
+}
+
+enum ADR @entity {
+  individual
+  arbitrator
+}
+
+type Deposit @entity {
+  id: ID!
+  txHash: Bytes!
+  sender: Bytes!
+  invoice: Invoice!
+  amount: BigInt!
+  timestamp: BigInt!
+}
+
+type Agreement @entity {
+  id: ID!
+  type: String!
+  src: String!
+  createdAt: BigInt!
+}
+
+type Release @entity {
+  id: ID!
+  txHash: Bytes!
+  invoice: Invoice!
+  milestone: BigInt!
+  amount: BigInt!
+  timestamp: BigInt!
+}
+
+type Withdraw @entity {
+  id: ID!
+  txHash: Bytes!
+  invoice: Invoice!
+  amount: BigInt!
+  timestamp: BigInt!
+}
+
+type Dispute @entity {
+  id: ID!
+  txHash: Bytes!
+  invoice: Invoice!
+  sender: Bytes!
+  details: String!
+  ipfsHash: String!
+  disputeToken: Bytes # only arbitrator
+  disputeFee: BigInt # only arbitrator
+  disputeId: BigInt # only arbitrator
+  timestamp: BigInt!
+}
+
+type Resolution @entity {
+  id: ID!
+  txHash: Bytes!
+  details: String!
+  ipfsHash: String!
+  invoice: Invoice!
+  resolverType: ADR!
+  resolver: Bytes!
+  clientAward: BigInt!
+  providerAward: BigInt!
+  resolutionDetails: String # only individual
+  resolutionFee: BigInt # only individual
+  ruling: BigInt # only arbitrator
+  timestamp: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  name: String!
+  symbol: String!
+  decimals: Int!
+}
+
+type Verified @entity {
+  id: ID!
+  client: Bytes!
+  invoice: Bytes!
+}
+
+type MilestonesAdded @entity {
+  id: ID!
+  sender: Bytes!
+  invoice: Bytes!
+  milestones: [BigInt!]!
+}
+
+type Tip @entity {
+  id: ID!
+  sender: Bytes!
+  amount: BigInt!
+}
+
+type Global @entity {
+  id: ID!
+  questChainFactory: Bytes!
+  questChainToken: Bytes!
+  smartInvoiceFactory: Bytes!
+  wrappedNativeToken: Bytes!
+  gigManager: Bytes!
+  admin: Bytes!
+  questChainCount: Int!
+}
+
+type ERC20Token @entity {
+  id: ID!
+  name: String!
+  symbol: String!
+  decimals: Int!
+}
+
+type QuestChainToken @entity {
+  id: ID!
+  questChain: QuestChain!
+  tokenId: BigInt!
+  tokenAddress: Bytes!
+  details: String!
+  name: String
+  description: String
+  imageUrl: String
+  animationUrl: String
+  mimeType: String
+  externalUrl: String
+  owners: [User!]!
+}
+
+type QuestChainEdit @entity {
+  id: ID!
+  questChain: QuestChain!
+  editor: User!
+  timestamp: BigInt!
+  txHash: Bytes!
+  details: String
+  name: String
+  description: String
+  imageUrl: String
+  externalUrl: String
+  slug: String
+  categories: [String!]
+}
+
+type QuestChain @entity {
+  id: ID!
+  paused: Boolean!
+  network: String!
+  chainId: String!
+  address: Bytes!
+  factoryAddress: Bytes!
+  numCompletedQuesters: Int!
+  completedQuesters: [User!]!
+  numQuesters: Int!
+  questers: [User!]!
+  owners: [User!]!
+  admins: [User!]!
+  reviewers: [User!]!
+  editors: [User!]!
+  createdBy: User!
+  createdAt: BigInt!
+  updatedAt: BigInt!
+  editedBy: User
+  editedAt: BigInt
+  creationTxHash: Bytes!
+  details: String
+  name: String
+  description: String
+  search: String
+  imageUrl: String
+  externalUrl: String
+  slug: String
+  categories: [String!]
+  questsPassed: [QuestStatus!]!
+  questsFailed: [QuestStatus!]!
+  questsInReview: [QuestStatus!]!
+  questCount: Int! # includes number of quests which are not paused
+  totalQuestCount: Int! # includes all quests
+  quests: [Quest!]! @derivedFrom(field: "questChain")
+  edits: [QuestChainEdit!]! @derivedFrom(field: "questChain")
+  status: [QuestStatus!]! @derivedFrom(field: "questChain")
+  submittedProofs: [ProofSubmission!]! @derivedFrom(field: "questChain")
+  submittedReviews: [ReviewSubmission!]! @derivedFrom(field: "questChain")
+  token: QuestChainToken! @derivedFrom(field: "questChain")
+}
+
+type QuestEdit @entity {
+  id: ID!
+  quest: Quest!
+  editor: User!
+  timestamp: BigInt!
+  txHash: Bytes!
+  details: String
+  name: String
+  description: String
+  imageUrl: String
+  externalUrl: String
+}
+
+type Quest @entity {
+  id: ID!
+  optional: Boolean!
+  skipReview: Boolean!
+  paused: Boolean!
+  questChain: QuestChain!
+  questId: BigInt!
+  numCompletedQuesters: Int!
+  completedQuesters: [User!]!
+  numQuesters: Int!
+  questers: [User!]!
+  details: String!
+  name: String
+  description: String
+  search: String
+  imageUrl: String
+  externalUrl: String
+  createdBy: User!
+  createdAt: BigInt!
+  updatedAt: BigInt!
+  editedBy: User
+  editedAt: BigInt
+  creationTxHash: Bytes!
+  usersPassed: [QuestStatus!]!
+  usersFailed: [QuestStatus!]!
+  usersInReview: [QuestStatus!]!
+  status: [QuestStatus!]! @derivedFrom(field: "quest")
+  edits: [QuestEdit!]! @derivedFrom(field: "quest")
+  submittedProofs: [ProofSubmission!]! @derivedFrom(field: "quest")
+  submittedReviews: [ReviewSubmission!]! @derivedFrom(field: "quest")
+}
+
+type User @entity {
+  id: ID!
+  questsPassed: [QuestStatus!]!
+  questsFailed: [QuestStatus!]!
+  questsInReview: [QuestStatus!]!
+  questEdits: [QuestEdit!]! @derivedFrom(field: "editor")
+  ownerOf: [QuestChain!]! @derivedFrom(field: "owners")
+  adminOf: [QuestChain!]! @derivedFrom(field: "admins")
+  editorOf: [QuestChain!]! @derivedFrom(field: "editors")
+  reviewerOf: [QuestChain!]! @derivedFrom(field: "reviewers")
+  status: [QuestStatus!]! @derivedFrom(field: "user")
+  submittedProofs: [ProofSubmission!]! @derivedFrom(field: "user")
+  submittedReviews: [ReviewSubmission!]! @derivedFrom(field: "reviewer")
+  tokens: [QuestChainToken!]! @derivedFrom(field: "owners")
+  completedQuests: [Quest!]! @derivedFrom(field: "completedQuesters")
+  completedQuestChains: [QuestChain!]! @derivedFrom(field: "completedQuesters")
+}
+
+enum Status {
+  init
+  review
+  pass
+  fail
+}
+
+type QuestStatus @entity {
+  id: ID!
+  quest: Quest!
+  questChain: QuestChain!
+  user: User!
+  status: Status!
+  updatedAt: BigInt!
+  submissions: [ProofSubmission!]!
+  reviews: [ReviewSubmission!]! @derivedFrom(field: "questStatus")
+}
+
+type ProofSubmission @entity {
+  id: ID!
+  quest: Quest!
+  questChain: QuestChain!
+  questStatus: QuestStatus!
+  user: User!
+  details: String!
+  name: String
+  description: String
+  search: String
+  imageUrl: String
+  externalUrl: String
+  timestamp: BigInt!
+  txHash: Bytes!
+}
+
+type ReviewSubmission @entity {
+  id: ID!
+  quest: Quest!
+  questChain: QuestChain!
+  questStatus: QuestStatus!
+  proof: ProofSubmission
+  accepted: Boolean!
+  user: User!
+  reviewer: User!
+  details: String!
+  name: String
+  description: String
+  search: String
+  imageUrl: String
+  externalUrl: String
+  timestamp: BigInt!
+  txHash: Bytes!
+}
+
+type Gig @entity {
+  id: ID!
+  network: String!
+  chainId: String!
+  gigId: BigInt!
+  gigManager: Bytes!
+  details: String!
+  minPrice: BigInt!
+  maxPrice: BigInt!
+  token: Token!
+  isOpen: Boolean!
+  client: Bytes!
+  deadline: BigInt!
+  proposals: [Proposal!]! @derivedFrom(field: "gig")
+}
+
+type Proposal @entity {
+  id: ID!
+  network: String!
+  chainId: String!
+  proposalId: BigInt!
+  gig: Gig!
+  price: BigInt!
+  details: String!
+  milestoneAmounts: [BigInt!]!
+  provider: Bytes!
+  isAccepted: Boolean!
+  deadline: BigInt!
+  escrow: Invoice
+}
+

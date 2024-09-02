@@ -57,6 +57,7 @@ pids
 
 # subgraph
 packages/subgraph/src/types
+packages/subgraph/src/abis
 packages/subgraph/subgraph.yaml
 
 # yarn version
@@ -71,3 +72,17 @@ packages/subgraph/subgraph.yaml
 # typescript
 dist/
 *.tsbuildinfo
+
+# contracts
+# Compiler files
+packages/contracts/cache/
+packages/contracts/out/
+packages/contracts/build/
+
+# Ignores development broadcast logs
+!packages/contracts/broadcast
+packages/contracts/broadcast/*/31337/
+packages/contracts/broadcast/**/dry-run/
+
+# Docs
+packages/contracts/docs/

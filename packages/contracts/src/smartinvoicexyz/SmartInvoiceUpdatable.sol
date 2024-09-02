@@ -73,9 +73,7 @@ contract SmartInvoiceUpdatable is SmartInvoiceEscrow {
      * @notice Updates the provider's receiver address.
      * @param _providerReceiver The updated provider receiver address.
      */
-    function updateProviderReceiver(
-        address _providerReceiver
-    ) external onlyProvider {
+    function updateProviderReceiver(address _providerReceiver) external onlyProvider {
         if (_providerReceiver == address(0)) revert InvalidProviderReceiver();
         _updateProviderReceiver(_providerReceiver);
     }
@@ -114,21 +112,7 @@ contract SmartInvoiceUpdatable is SmartInvoiceEscrow {
             bool _requireVerification,
             address _factory,
             address _providerReceiver
-        ) = abi.decode(
-                _data,
-                (
-                    address,
-                    uint8,
-                    address,
-                    address,
-                    uint256,
-                    string,
-                    address,
-                    bool,
-                    address,
-                    address
-                )
-            );
+        ) = abi.decode(_data, (address, uint8, address, address, uint256, string, address, bool, address, address));
 
         if (_providerReceiver == address(0)) revert InvalidProviderReceiver();
         if (_client == address(0)) revert InvalidClient();
@@ -136,13 +120,14 @@ contract SmartInvoiceUpdatable is SmartInvoiceEscrow {
         if (_resolver == address(0)) revert InvalidResolver();
         if (_token == address(0)) revert InvalidToken();
         if (_terminationTime <= block.timestamp) revert DurationEnded();
-        if (_terminationTime > block.timestamp + MAX_TERMINATION_TIME)
+        if (_terminationTime > block.timestamp + MAX_TERMINATION_TIME) {
             revert DurationTooLong();
-        if (_wrappedNativeToken == address(0))
+        }
+        if (_wrappedNativeToken == address(0)) {
             revert InvalidWrappedNativeToken();
+        }
 
-        uint256 _resolutionRate = ISmartInvoiceFactory(_factory)
-            .resolutionRateOf(_resolver);
+        uint256 _resolutionRate = ISmartInvoiceFactory(_factory).resolutionRateOf(_resolver);
         if (_resolutionRate == 0) {
             _resolutionRate = 20;
         }
@@ -165,10 +150,7 @@ contract SmartInvoiceUpdatable is SmartInvoiceEscrow {
      * @param _token The address of the token to transfer.
      * @param _amount The amount of tokens to transfer.
      */
-    function _transferPayment(
-        address _token,
-        uint256 _amount
-    ) internal virtual override {
+    function _transferPayment(address _token, uint256 _amount) internal virtual override {
         IERC20(_token).safeTransfer(providerReceiver, _amount);
     }
 }
