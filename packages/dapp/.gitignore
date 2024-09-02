@@ -4,7 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-.yarn/install-state.gz
 
 # testing
 /coverage
@@ -26,11 +25,24 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+.env*
+.sw[a-z]
 
 # vercel
 .vercel
 
+# songaday
+layers
+output
+
+# vim
+*.sw[a-z]
+
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+
+# yarn
+.yarn
+.yarnrc.yml
+.pnp.*
+package-lock.json
