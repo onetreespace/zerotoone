@@ -49,23 +49,25 @@ const Step = ({
   image: string;
   title: string;
   description: string;
-}) => (
-  <Flex flexDir="column" alignItems="center" p={8}>
-    <Image
-      src={image}
-      alt={title}
-      filter="invert(100%)"
-      mb={6}
-      w="80%"
-      maxW="10rem"
-    />
-    <Text fontWeight="bold" mt={3} fontSize="lg" mb={2}>
-      {title}
-    </Text>
-    <Text marginBottom="auto" fontSize="sm" textAlign="center">
-      {description}
-    </Text>
-  </Flex>
-);
+}) => {
+  return (
+    <Flex flexDir="column" alignItems="center" p={8}>
+      <Image
+        src={image}
+        alt={title}
+        filter="invert(100%)"
+        mb={6}
+        w="80%"
+        maxW="10rem"
+      />
+      <Text fontWeight="bold" mt={3} fontSize="lg" mb={2}>
+        {title}
+      </Text>
+      <Text marginBottom="auto" fontSize="sm" textAlign="center">
+        {description}
+      </Text>
+    </Flex>
+  );
+};
 
 export default Step0;

@@ -12,15 +12,15 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import { useAccount } from 'wagmi';
 
 import { useNFTsToMintForAllChains } from '@/hooks/useNFTsToMintForAllChains';
 import { getQuestChainURL } from '@/utils/uriHelpers';
-import { useWallet } from '@/web3';
 
 import { MintNFTTile } from '../MintNFTTile';
 
 export const NFTsToMint: React.FC = () => {
-  const { address } = useWallet();
+  const { address } = useAccount();
   const {
     isOpen: isOpenSeeAll,
     onOpen: onOpenSeeAll,

@@ -5,22 +5,21 @@ import { toast } from 'react-hot-toast';
 
 import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
-import { AVAILABLE_NETWORK_INFO, useWallet } from '@/web3';
-import { getQuestChainContract } from '@/web3/contract';
 
 import { PowerIcon } from './icons/PowerIcon';
+
 export const QuestChainPauseStatus: React.FC<{
   questChain: graphql.QuestChainInfoFragment;
   refresh: () => void | Promise<void>;
 }> = ({ questChain, refresh }) => {
-  const { provider, chainId } = useWallet();
   const [isLoading, setLoading] = useState(false);
 
   const togglePause = useCallback(async () => {
+    /*
     if (!chainId || chainId !== questChain.chainId || !provider) {
       toast.error(
         `Incorrect Network. Please switch your wallet to ${
-          AVAILABLE_NETWORK_INFO[questChain.chainId].name
+          questChain.chainId
         }`,
       );
       return;
@@ -61,7 +60,8 @@ export const QuestChainPauseStatus: React.FC<{
     } finally {
       setLoading(false);
     }
-  }, [chainId, refresh, questChain, provider]);
+    */
+  }, [refresh, questChain]);
 
   return (
     <Button

@@ -9,15 +9,13 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
-
-import { ConnectWallet } from '@/components/Layout/ConnectWallet';
-import { useWallet } from '@/web3';
+import { useAccount } from 'wagmi';
 
 import { NavToggle } from './NavToggle';
-import { WalletDisplay } from './WalletDisplay';
 
 export const MobileMenu: React.FC<{
   isOpen: boolean;
@@ -25,22 +23,19 @@ export const MobileMenu: React.FC<{
   onSearchOpen: () => void;
 }> = ({ isOpen, toggleOpen, onSearchOpen }) => {
   const { asPath } = useRouter();
-  const { isConnected, address, user, ens } = useWallet();
+  const { isConnected, address } = useAccount();
 
-  const name = useMemo(
-    () => user?.username ?? ens ?? address,
-    [user, ens, address],
-  );
+  const name = address;
 
   const isProfilePath = useMemo(() => {
     if (!asPath.startsWith('/profile/')) return false;
     const param = asPath.slice('/profile/'.length);
     return (
-      param === user?.username ||
-      param === ens ||
+      // param === user?.username ||
+      // param === ens ||
       param.toLowerCase() === address
     );
-  }, [asPath, user, ens, address]);
+  }, [asPath, address]);
 
   return (
     <>
@@ -58,7 +53,7 @@ export const MobileMenu: React.FC<{
         >
           <ModalBody h="100%">
             <VStack spacing={6} h="100%" w="100%" justify="center">
-              {isConnected ? <WalletDisplay /> : <ConnectWallet />}
+              <ConnectButton />
               <ChakraLink
                 as={NextLink}
                 href="/create"

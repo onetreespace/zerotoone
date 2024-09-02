@@ -1,5 +1,4 @@
 import {
-  Image,
   ImageProps,
   Stack,
   StackProps,
@@ -9,19 +8,18 @@ import {
   TextProps,
 } from '@chakra-ui/react';
 
-import { AVAILABLE_NETWORK_INFO } from '@/web3';
+import { CHAINS, isSupportedChain } from '@/web3';
 
 export const NetworkDisplay: React.FC<
   {
-    chainId: string;
+    chainId: number;
     asTag?: boolean;
     imageProps?: ImageProps;
     textProps?: TextProps;
   } & StackProps
 > = ({ chainId, imageProps, asTag = false, textProps, ...props }) => {
-  const networkInfo = AVAILABLE_NETWORK_INFO[chainId];
-  if (!networkInfo) return null;
-  const { image, label } = networkInfo;
+  if (!isSupportedChain(chainId)) return null;
+  const { name } = CHAINS[chainId];
   const TextComponent = asTag ? TagLabel : Text;
   const inner = (
     <Stack
@@ -31,9 +29,9 @@ export const NetworkDisplay: React.FC<
       color="white"
       {...props}
     >
-      <Image src={image} alt={label} boxSize="1.5rem" {...imageProps} />
+      {/* <Image src={image} alt={label} boxSize="1.5rem" {...imageProps} /> */}
       <TextComponent as="span" {...textProps}>
-        {label}
+        {name}
       </TextComponent>
     </Stack>
   );

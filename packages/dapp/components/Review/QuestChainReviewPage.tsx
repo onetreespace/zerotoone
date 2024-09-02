@@ -9,7 +9,7 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { contracts, graphql } from '@quest-chains/sdk';
+import { graphql } from '@quest-chains/sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
@@ -32,10 +32,7 @@ import {
   SubmissionType,
 } from '@/components/Review/SubmissionTile';
 import { SubmitButton } from '@/components/SubmitButton';
-import { waitUntilBlock } from '@/utils/graphHelpers';
-import { handleError, handleTxLoading } from '@/utils/helpers';
-import { useWallet } from '@/web3';
-import { getQuestChainContract } from '@/web3/contract';
+import { handleError } from '@/utils/helpers';
 
 import { LoadingState } from '../LoadingState';
 
@@ -46,13 +43,13 @@ type Props = {
   refresh: () => void;
 };
 
-export const QuestChainV1ReviewPage: React.FC<Props> = ({
+export const QuestChainReviewPage: React.FC<Props> = ({
   questStatuses,
   questChain,
   fetching,
   refresh,
 }) => {
-  const { provider, chainId } = useWallet();
+  const chainId = undefined;
   const isDisabled = chainId !== questChain?.chainId;
   const {
     isOpen: isModalOpen,
@@ -86,6 +83,7 @@ export const QuestChainV1ReviewPage: React.FC<Props> = ({
 
   const setCheckedItemAwaitingReview = useCallback((index: number) => {
     setDisplayAwaitingReview(oldDisplayAwaitingReview => {
+      // eslint-disable-next-line no-param-reassign
       oldDisplayAwaitingReview[index].checked =
         !oldDisplayAwaitingReview[index].checked;
       return oldDisplayAwaitingReview.slice();
@@ -94,6 +92,7 @@ export const QuestChainV1ReviewPage: React.FC<Props> = ({
 
   const setCheckedItemReviewed = useCallback((index: number) => {
     setDisplayReviewed(oldDisplayReviewed => {
+      // eslint-disable-next-line no-param-reassign
       oldDisplayReviewed[index].checked = !oldDisplayReviewed[index].checked;
       return oldDisplayReviewed.slice();
     });
@@ -182,24 +181,26 @@ export const QuestChainV1ReviewPage: React.FC<Props> = ({
 
   const clearChecked = useCallback(() => {
     setDisplayAwaitingReview(old =>
-      old.map(old => {
-        old.checked = false;
-        return old;
+      old.map(o => {
+        // eslint-disable-next-line no-param-reassign
+        o.checked = false;
+        return o;
       }),
     );
     setDisplayReviewed(old =>
-      old.map(old => {
-        old.checked = false;
-        return old;
+      old.map(o => {
+        // eslint-disable-next-line no-param-reassign
+        o.checked = false;
+        return o;
       }),
     );
   }, []);
 
   const onSelectSubmissions = useCallback(
     (selected: SubmissionType[]) => {
-      setReviewed(reviewed => [
+      setReviewed(r => [
         // first clear all of the reviewed items, then set the new reviews
-        ...removeSelectedFromReviewed(reviewed, selected),
+        ...removeSelectedFromReviewed(r, selected),
         ...selected,
       ]);
       if (selected[0]?.reviewComment) {
@@ -256,13 +257,15 @@ export const QuestChainV1ReviewPage: React.FC<Props> = ({
     [addAwaitingReview, clearChecked],
   );
 
+  const provider = undefined;
+
   const onSubmit = useCallback(async () => {
     if (
       !chainId ||
       !questChain ||
       !provider ||
       chainId !== questChain.chainId ||
-      reviewed.length == 0
+      reviewed.length === 0
     )
       return;
 
@@ -273,25 +276,25 @@ export const QuestChainV1ReviewPage: React.FC<Props> = ({
         'Waiting for Confirmation - Confirm the transaction in your Wallet',
       );
 
-      const contract = getQuestChainContract(
-        questChain.address,
-        questChain.version,
-        provider.getSigner(),
-      );
-      const tx = await (contract as contracts.V1.QuestChain).reviewProofs(
-        reviewed.map(q => q.userId),
-        reviewed.map(q => q.questId),
-        reviewed.map(q => !!q.success),
-        reviewed.map(q => q.reviewCommentUri ?? ''),
-      );
-      toast.dismiss(tid);
-      tid = handleTxLoading(tx.hash, chainId);
-      const receipt = await tx.wait(1);
-      toast.dismiss(tid);
-      tid = toast.loading(
-        'Transaction confirmed. Waiting for The Graph to index the transaction data.',
-      );
-      await waitUntilBlock(chainId, receipt.blockNumber);
+      // const contract = getQuestChainContract(
+      //   questChain.address,
+      //   questChain.version,
+      //   provider.getSigner(),
+      // );
+      // const tx = await (contract as contracts.V1.QuestChain).reviewProofs(
+      //   reviewed.map(q => q.userId),
+      //   reviewed.map(q => q.questId),
+      //   reviewed.map(q => !!q.success),
+      //   reviewed.map(q => q.reviewCommentUri ?? ''),
+      // );
+      // toast.dismiss(tid);
+      // tid = handleTxLoading(tx.hash, chainId);
+      // const receipt = await tx.wait(1);
+      // toast.dismiss(tid);
+      // tid = toast.loading(
+      //   'Transaction confirmed. Waiting for The Graph to index the transaction data.',
+      // );
+      // await waitUntilBlock(chainId, receipt.blockNumber);
       toast.dismiss(tid);
       toast.success(`Successfully Reviewed the Submissions!`);
       refresh();
@@ -323,10 +326,10 @@ export const QuestChainV1ReviewPage: React.FC<Props> = ({
             {questChain.name}
           </Text>
           <Box>
-            <NetworkDisplay chainId={questChain.chainId} />
+            <NetworkDisplay chainId={Number(questChain.chainId)} />
           </Box>
         </Flex>
-        {reviewed.length != 0 && (
+        {reviewed.length !== 0 && (
           <Flex
             bgColor="whiteAlpha.100"
             borderRadius="full"
@@ -363,7 +366,7 @@ export const QuestChainV1ReviewPage: React.FC<Props> = ({
             />
 
             {/* ReviewToolbar Awaiting Review */}
-            {tabIndex === 0 && awaitingReview.length != 0 && (
+            {tabIndex === 0 && awaitingReview.length !== 0 && (
               <ReviewToolbar
                 allQuestIds={[
                   ...new Set(awaitingReview.map(({ questId }) => questId)),
@@ -380,7 +383,7 @@ export const QuestChainV1ReviewPage: React.FC<Props> = ({
             )}
 
             {/* ReviewToolbar Reviewed */}
-            {tabIndex === 1 && reviewed.length != 0 && (
+            {tabIndex === 1 && reviewed.length !== 0 && (
               <ReviewToolbar
                 allQuestIds={[
                   ...new Set(reviewed.map(({ questId }) => questId)),
@@ -408,12 +411,12 @@ export const QuestChainV1ReviewPage: React.FC<Props> = ({
                     allowMultiple
                     index={displayAwaitingReview
                       .map((d, i) => (d.expanded ? i : -1))
-                      .filter(d => d != -1)}
+                      .filter(d => d !== -1)}
                     onChange={(idxs: number[]) =>
                       setDisplayAwaitingReview(v =>
                         v.map((d, i) => ({
                           ...d,
-                          expanded: idxs.includes(i) ? true : false,
+                          expanded: !!idxs.includes(i),
                         })),
                       )
                     }
@@ -444,12 +447,12 @@ export const QuestChainV1ReviewPage: React.FC<Props> = ({
                     allowMultiple
                     index={displayReviewed
                       .map((d, i) => (d.expanded ? i : -1))
-                      .filter(d => d != -1)}
+                      .filter(d => d !== -1)}
                     onChange={(idxs: number[]) =>
                       setDisplayReviewed(v =>
                         v.map((d, i) => ({
                           ...d,
-                          expanded: idxs.includes(i) ? true : false,
+                          expanded: !!idxs.includes(i),
                         })),
                       )
                     }

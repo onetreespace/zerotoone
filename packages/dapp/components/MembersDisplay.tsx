@@ -5,7 +5,7 @@ import { UserDisplay } from '@/components/UserDisplay';
 import { EditIcon } from './icons/EditIcon';
 
 type RolesProps = {
-  role: string;
+  roleLabel: string;
   addresses: string[];
   statusesPoH: {
     [addr: string]: boolean;
@@ -24,7 +24,7 @@ type MembersProps = {
 };
 
 const MemberSection: React.FC<RolesProps> = ({
-  role,
+  roleLabel,
   addresses,
   statusesPoH,
 }) => (
@@ -39,7 +39,7 @@ const MemberSection: React.FC<RolesProps> = ({
           </Box>
         ))}
       </Flex>
-      <Text color="whiteAlpha.600">{role}</Text>
+      <Text color="whiteAlpha.600">{roleLabel}</Text>
     </Flex>
     <Divider />
   </>
@@ -70,24 +70,28 @@ export const MembersDisplay: React.FC<MembersProps> = ({
       )}
     </Flex>
     <Divider />
-    <MemberSection role="OWNERS" addresses={owners} statusesPoH={statusesPoH} />
+    <MemberSection
+      roleLabel="OWNERS"
+      addresses={owners}
+      statusesPoH={statusesPoH}
+    />
     {admins.length !== 0 && (
       <MemberSection
-        role="ADMINS"
+        roleLabel="ADMINS"
         addresses={admins}
         statusesPoH={statusesPoH}
       />
     )}
     {editors.length !== 0 && (
       <MemberSection
-        role="EDITORS"
+        roleLabel="EDITORS"
         addresses={editors}
         statusesPoH={statusesPoH}
       />
     )}
     {reviewers.length !== 0 && (
       <MemberSection
-        role="REVIEWERS"
+        roleLabel="REVIEWERS"
         addresses={reviewers}
         statusesPoH={statusesPoH}
       />

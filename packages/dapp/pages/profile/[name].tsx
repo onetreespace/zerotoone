@@ -1,6 +1,5 @@
 import { CopyIcon } from '@chakra-ui/icons';
 import {
-  Box,
   Button,
   Divider,
   Grid,
@@ -17,10 +16,11 @@ import {
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router';
 import { getAddress, isAddress } from 'viem';
+import { normalize } from 'viem/ens';
+import { useAccount, useChainId } from 'wagmi';
 
 import { Page } from '@/components/Layout/Page';
 import { LoadingState } from '@/components/LoadingState';
-import { PoHBadge } from '@/components/PoHBadge';
 import { EditProfileModal } from '@/components/ProfileView/EditProfileModal';
 import { UserActionsNeeded } from '@/components/ProfileView/UserActionsNeeded';
 import { UserBadges } from '@/components/ProfileView/UserBadges';
@@ -28,18 +28,15 @@ import { UserProgress } from '@/components/ProfileView/UserProgress';
 import { UserRoles } from '@/components/ProfileView/UserRoles';
 import { HeadComponent } from '@/components/Seo';
 import { UserAvatar } from '@/components/UserAvatar';
-import { fetchAddressFromENS, fetchENSFromAddress } from '@/hooks/useENS';
-import { fetchPoH } from '@/hooks/usePoH';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { fetchProfileFromName } from '@/lib/profile';
 import { QUESTCHAINS_URL } from '@/utils/constants';
-import { formatAddress, getAddressUrl, useWallet } from '@/web3';
+import { formatAddress, getAddressUrl, getPublicClient } from '@/web3';
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
 const Profile: React.FC<Props> = ({
   name,
-  pohRegistered,
   displayName,
   profileAddress,
   profile: inputProfile,
@@ -48,7 +45,8 @@ const Profile: React.FC<Props> = ({
 
   const { isFallback } = useRouter();
 
-  const { address, chainId } = useWallet();
+  const { address } = useAccount();
+  const chainId = useChainId();
 
   const isLoggedInUser = profileAddress === address?.toLowerCase();
 
@@ -77,7 +75,7 @@ const Profile: React.FC<Props> = ({
       <HeadComponent
         title="Profile"
         description={`Quest Chains profile of ${displayName}`}
-        url={QUESTCHAINS_URL + '/profile/' + name}
+        url={`${QUESTCHAINS_URL}/profile/${name}`}
       />
       <VStack spacing={6} pb={8}>
         <Heading color="white" fontSize={50}>
@@ -99,11 +97,6 @@ const Profile: React.FC<Props> = ({
                 <Text fontSize={20} fontWeight="bold">
                   {displayName}
                 </Text>
-                {pohRegistered && (
-                  <Box pl={2}>
-                    <PoHBadge address={profileAddress} size={6} />
-                  </Box>
-                )}
               </HStack>
               <Divider w="2rem" />
             </>
@@ -159,25 +152,27 @@ export const getStaticProps = async (
 ) => {
   const name = context.params?.name ?? '';
 
-  const [address, ens] = await Promise.all([
-    fetchAddressFromENS(name),
-    fetchENSFromAddress(name),
-  ]);
-  const isENS = isAddress(name) ? false : address ? true : false;
+  const publicClient = getPublicClient(1);
+
+  const profileAddress =
+    (isAddress(name)
+      ? name
+      : await publicClient.getEnsAddress({
+          name: normalize(name),
+        })) ?? '';
+  const profileENS = !isAddress(name)
+    ? name
+    : await publicClient.getEnsName({
+        address: getAddress(name),
+      });
+
+  const isENS = name.endsWith('.eth');
 
   const { user: profile } = await fetchProfileFromName(
-    isENS && address ? address : name,
+    isAddress(profileAddress) ? profileAddress : name,
   );
 
-  const profileAddress = (
-    isAddress(name) ? name : profile?.address ?? address ?? ''
-  ).toLowerCase();
-
-  const profileENS = isENS ? name : ens ?? '';
-
-  const displayName = profile?.username ?? (isENS ? name : ens ?? '');
-
-  const pohRegistered = await fetchPoH(profileAddress);
+  const displayName = profile?.username ?? (isENS ? name : (profileENS ?? ''));
 
   const props = {
     name,
@@ -185,7 +180,6 @@ export const getStaticProps = async (
     profileENS,
     displayName,
     profile: profile ? { ...profile, _id: profile._id.toString() } : null,
-    pohRegistered,
   };
 
   return {

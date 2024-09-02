@@ -1,7 +1,7 @@
 import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
-import { SUPPORTED_NETWORKS } from '@/web3/networks';
+import { CHAINS } from '@/web3';
 
 import { useRefresh } from './useRefresh';
 
@@ -28,15 +28,15 @@ export const useNFTsToMintForAllChains = (
       setFetching(false);
       setError(new Error('No address provider'));
       setResults([]);
-      return;
+      return () => {};
     }
     let isMounted = true;
     (async () => {
       try {
         setFetching(true);
         const allResults = await Promise.all(
-          SUPPORTED_NETWORKS.map(async chainId =>
-            graphql.getStatusForUser(chainId, address ?? ''),
+          CHAINS.map(async ({ id: chainId }) =>
+            graphql.getStatusForUser(chainId.toString(), address ?? ''),
           ),
         );
         if (!isMounted) return;
@@ -66,7 +66,7 @@ export const useNFTsToMintForAllChains = (
                 userStatus[quest.questId] = status;
               });
 
-              for (let i = 0; i < questChain.quests.length; ++i) {
+              for (let i = 0; i < questChain.quests.length; i += 1) {
                 const quest = questChain.quests[i];
                 const status = userStatus[quest.questId];
 

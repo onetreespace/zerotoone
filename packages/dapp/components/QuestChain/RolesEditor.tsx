@@ -22,8 +22,6 @@ import { SubmitButton } from '@/components/SubmitButton';
 import { UserDisplay } from '@/components/UserDisplay';
 import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
-import { AVAILABLE_NETWORK_INFO, useWallet } from '@/web3';
-import { getQuestChainContract } from '@/web3/contract';
 
 const QuestChainRoles = {
   Owner: '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -47,24 +45,26 @@ const changeRole = async (
       return contract.grantRole(QuestChainRoles[newRole], address);
     case 'Editor':
       if (newRole === 'Reviewer') {
-        return contract.revokeRole(QuestChainRoles['Editor'], address);
+        return contract.revokeRole(QuestChainRoles.Editor, address);
       }
       return contract.grantRole(QuestChainRoles[newRole], address);
     case 'Admin':
       if (newRole === 'Reviewer') {
-        return contract.revokeRole(QuestChainRoles['Editor'], address);
-      } else if (newRole === 'Editor') {
-        return contract.revokeRole(QuestChainRoles['Admin'], address);
+        return contract.revokeRole(QuestChainRoles.Editor, address);
       }
-      return contract.grantRole(QuestChainRoles['Owner'], address);
+      if (newRole === 'Editor') {
+        return contract.revokeRole(QuestChainRoles.Admin, address);
+      }
+      return contract.grantRole(QuestChainRoles.Owner, address);
     case 'Owner':
     default:
       if (newRole === 'Reviewer') {
-        return contract.revokeRole(QuestChainRoles['Editor'], address);
-      } else if (newRole === 'Editor') {
-        return contract.revokeRole(QuestChainRoles['Admin'], address);
+        return contract.revokeRole(QuestChainRoles.Editor, address);
       }
-      return contract.revokeRole(QuestChainRoles['Owner'], address);
+      if (newRole === 'Editor') {
+        return contract.revokeRole(QuestChainRoles.Admin, address);
+      }
+      return contract.revokeRole(QuestChainRoles.Owner, address);
   }
 };
 
@@ -127,8 +127,6 @@ export const RolesEditor: React.FC<{
 
   const memberToSave = Object.entries(members).find(([, m]) => m.editing);
 
-  const { chainId, provider } = useWallet();
-
   const isEditing = useMemo(
     () =>
       !!memberToSave &&
@@ -143,53 +141,55 @@ export const RolesEditor: React.FC<{
     if (!memberToSave) return;
     const [address, { newRole, oldRole }] = memberToSave;
 
-    if (!chainId || !provider || questChain?.chainId !== chainId) {
-      toast.error(
-        `Wrong Chain, please switch to ${
-          AVAILABLE_NETWORK_INFO[questChain?.chainId].label
-        }`,
-      );
-      return;
-    }
-    setSaving(true);
-    let tid = toast.loading(
-      'Waiting for Confirmation - Confirm the transaction in your Wallet',
-    );
-    try {
-      const contract = getQuestChainContract(
-        questChain.address,
-        questChain.version,
-        provider.getSigner(),
-      );
-      let tx;
-      if (oldRole === newRole || !newRole) return;
-      if (!oldRole) {
-        if (!newRole || newRole === 'Remove') return;
-        tx = await contract.grantRole(QuestChainRoles[newRole], address);
-      } else if (newRole === 'Remove') {
-        tx = await contract.revokeRole(QuestChainRoles['Reviewer'], address);
-      } else {
-        tx = await changeRole(contract, address, oldRole, newRole);
-      }
-      toast.dismiss(tid);
-      tid = handleTxLoading(tx.hash, chainId);
-      const receipt = await tx.wait(1);
-      toast.dismiss(tid);
-      tid = toast.loading(
-        'Transaction confirmed. Waiting for The Graph to index the transaction data.',
-      );
-      await waitUntilBlock(chainId, receipt.blockNumber);
-      toast.dismiss(tid);
-      toast.success(`Successfully updated members`);
-      refresh();
-    } catch (error) {
-      toast.dismiss(tid);
-      handleError(error);
-    } finally {
-      setSaving(false);
-      onExit();
-    }
-  }, [chainId, provider, memberToSave, questChain, onExit, refresh]);
+    /*
+          if (!chainId || !provider || questChain?.chainId !== chainId) {
+            toast.error(
+              `Wrong Chain, please switch to ${
+                AVAILABLE_NETWORK_INFO[questChain?.chainId].label
+              }`,
+            );
+            return;
+          }
+          setSaving(true);
+          let tid = toast.loading(
+            'Waiting for Confirmation - Confirm the transaction in your Wallet',
+          );
+          try {
+            const contract = getQuestChainContract(
+              questChain.address,
+              questChain.version,
+              provider.getSigner(),
+            );
+            let tx;
+            if (oldRole === newRole || !newRole) return;
+            if (!oldRole) {
+              if (!newRole || newRole === 'Remove') return;
+              tx = await contract.grantRole(QuestChainRoles[newRole], address);
+            } else if (newRole === 'Remove') {
+              tx = await contract.revokeRole(QuestChainRoles.Reviewer, address);
+            } else {
+              tx = await changeRole(contract, address, oldRole, newRole);
+            }
+            toast.dismiss(tid);
+            tid = handleTxLoading(tx.hash, chainId);
+            const receipt = await tx.wait(1);
+            toast.dismiss(tid);
+            tid = toast.loading(
+              'Transaction confirmed. Waiting for The Graph to index the transaction data.',
+            );
+            await waitUntilBlock(chainId, receipt.blockNumber);
+            toast.dismiss(tid);
+            toast.success(`Successfully updated members`);
+            refresh();
+          } catch (error) {
+            toast.dismiss(tid);
+            handleError(error);
+          } finally {
+            setSaving(false);
+            onExit();
+          }
+          */
+  }, [memberToSave, questChain, onExit, refresh]);
 
   return (
     <Flex flexDir="column" w="full" gap={4} my={8}>
@@ -270,12 +270,12 @@ export const RolesEditor: React.FC<{
                 }
                 w="auto"
               >
-                <option value={'Owner'}>Owner</option>
-                <option value={'Admin'}>Admin</option>
-                <option value={'Editor'}>Editor</option>
-                <option value={'Reviewer'}>Reviewer</option>
+                <option value="Owner">Owner</option>
+                <option value="Admin">Admin</option>
+                <option value="Editor">Editor</option>
+                <option value="Reviewer">Reviewer</option>
                 {oldRole && (
-                  <option value={'Remove'} style={{ color: 'red' }}>
+                  <option value="Remove" style={{ color: 'red' }}>
                     Remove
                   </option>
                 )}

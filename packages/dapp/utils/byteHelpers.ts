@@ -1,6 +1,6 @@
-export const randomBytes = (nBytes: number): string => {
+export const randomBytes = (_nBytes: number): string => {
   // convert number number of bytes
-  nBytes = Math.ceil(+nBytes || 1);
+  const nBytes = Math.ceil(+_nBytes || 1);
 
   // create a typed array of that many bytes
   const u = new Uint8Array(nBytes);

@@ -35,10 +35,10 @@ const Carousel: React.FC<Props> = ({
         gap={5}
       >
         {slides.map((slide, index) => (
-          <GridItem key={index}>
+          <GridItem key={`${index.toString()}key`}>
             <SimpleGrid columns={maxChildrenPerSlide} gap={5} w="100%">
-              {slide.map((child, index) => (
-                <Box key={index}>{child}</Box>
+              {slide.map((child, ind) => (
+                <Box key={`${ind.toString()}key`}>{child}</Box>
               ))}
             </SimpleGrid>
           </GridItem>

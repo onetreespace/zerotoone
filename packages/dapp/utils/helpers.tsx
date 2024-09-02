@@ -21,6 +21,7 @@ export const handleError = (error: unknown) => {
   );
 };
 
+// eslint-disable-next-line no-promise-executor-return
 export const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 export const uniqueList = (arr: string[]): string[] => {
@@ -28,7 +29,7 @@ export const uniqueList = (arr: string[]): string[] => {
   return arr.filter(item => (seen.has(item) ? false : seen.add(item)));
 };
 
-export const handleTxLoading = (txHash: string, chainId: string): string => {
+export const handleTxLoading = (txHash: string, chainId: number): string => {
   return toast.loading(
     <Link href={getTxUrl(txHash, chainId)} _hover={{}} isExternal>
       <HStack>

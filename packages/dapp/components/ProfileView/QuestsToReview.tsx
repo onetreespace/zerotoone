@@ -17,13 +17,13 @@ import {
 } from '@chakra-ui/react';
 import { graphql } from '@quest-chains/sdk';
 import NextLink from 'next/link';
+import { useAccount } from 'wagmi';
 
 import { NetworkDisplay } from '@/components/NetworkDisplay';
 import { useQuestsToReviewForAllChains } from '@/hooks/useQuestsToReviewForAllChains';
-import { AVAILABLE_NETWORK_INFO, useWallet } from '@/web3';
 
 export const QuestsToReview: React.FC = () => {
-  const { address } = useWallet();
+  const { address } = useAccount();
   const { results: chainsToReview, fetching } =
     useQuestsToReviewForAllChains(address);
 
@@ -86,10 +86,8 @@ const QuestChainStatusView: React.FC<{
   questChain: graphql.QuestChainReviewInfoFragment;
 }> = ({ questChain: chain }) => (
   <NextLink
-    as={`/${AVAILABLE_NETWORK_INFO[chain.chainId].urlName}/${
-      chain.address
-    }/review`}
-    href={`/${AVAILABLE_NETWORK_INFO[chain.chainId].urlName}/[address]/review`}
+    as={`/${chain.chainId}/${chain.address}/review`}
+    href={`/${chain.chainId}/[address]/review`}
     passHref
   >
     <ChakraLink
@@ -125,7 +123,7 @@ const QuestChainStatusView: React.FC<{
           </VStack>
         </SimpleGrid>
         <Flex justify="right">
-          <NetworkDisplay asTag chainId={chain.chainId} />
+          <NetworkDisplay asTag chainId={Number(chain.chainId)} />
         </Flex>
       </VStack>
     </ChakraLink>

@@ -1,12 +1,13 @@
 import { Button, HStack, Text } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { useMemo } from 'react';
+import { Address } from 'viem';
+import { useEnsName } from 'wagmi';
+import { mainnet } from 'wagmi/chains';
 
-import { useENS } from '@/hooks/useENS';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import { formatAddress, useWallet } from '@/web3';
+import { formatAddress } from '@/web3';
 
-import { PoHBadge } from './PoHBadge';
 import { UserAvatar } from './UserAvatar';
 
 export const UserDisplay: React.FC<{
@@ -15,20 +16,15 @@ export const UserDisplay: React.FC<{
   size?: 'sm' | 'md' | 'lg' | 'xs';
   hasPoH?: boolean;
   noLink?: boolean;
-}> = ({ address, color = 'white', size = 'md', hasPoH, noLink }) => {
-  const {
-    address: walletAddress,
-    ens: walletENS,
-    user: walletProfile,
-  } = useWallet();
+}> = ({ address, color = 'white', size = 'md', noLink }) => {
+  const result = useEnsName({
+    chainId: mainnet.id,
+    address: address as Address,
+  });
+  const displayENS = result.data ?? '';
 
-  const isWalletUser = walletAddress?.toLowerCase() === address?.toLowerCase();
-
-  const { ens } = useENS(isWalletUser ? '' : address);
-  const displayENS = isWalletUser ? walletENS : ens;
-
-  const { profile } = useUserProfile(isWalletUser ? '' : address ?? '');
-  const displayProfile = isWalletUser ? walletProfile : profile;
+  const { profile } = useUserProfile(address ?? '');
+  const displayProfile = profile;
 
   const displayName =
     displayProfile?.username ?? formatAddress(address, displayENS);
@@ -49,7 +45,7 @@ export const UserDisplay: React.FC<{
 
   if (!address) return null;
 
-  const name = profile?.username ?? ens ?? address;
+  const name = profile?.username ?? address;
 
   const inner = (
     <Button
@@ -63,9 +59,8 @@ export const UserDisplay: React.FC<{
       <HStack position="relative" color={color}>
         <UserAvatar address={address} profile={profile} size={avatarSize} />
         <Text transition="opacity 0.25s" textAlign="left" fontWeight={700}>
-          {isWalletUser ? 'YOURSELF' : displayName}
+          {displayName}
         </Text>
-        {hasPoH && !noLink && <PoHBadge address={address} />}
       </HStack>
     </Button>
   );

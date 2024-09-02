@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import { Spinner, SpinnerProps } from '@chakra-ui/react';
 
 export const LoadingState: React.FC<SpinnerProps> = props => {

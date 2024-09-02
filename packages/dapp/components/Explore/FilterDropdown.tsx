@@ -38,17 +38,18 @@ export const FilterDropdown: React.FC<{
   const [trueValue, trueLabel] = useMemo(() => {
     if (isMultiple) return [null, null];
 
-    const trueValue = Object.keys(filter).find(k => filter[k] === true);
+    const trueV = Object.keys(filter).find(k => filter[k] === true);
 
-    const trueLabel = options.find(o => o.value === trueValue)?.label;
+    const trueL = options.find(o => o.value === trueV)?.label;
 
-    return [trueValue ?? null, trueLabel ?? null];
+    return [trueV ?? null, trueL ?? null];
   }, [isMultiple, filter, options]);
 
   const numSelected = useMemo(
     () =>
       Object.values(filter).reduce((t: number, v: boolean) => {
-        if (v) t = t + 1;
+        // eslint-disable-next-line no-param-reassign
+        if (v) t += 1;
         return t;
       }, 0),
     [filter],
@@ -70,7 +71,9 @@ export const FilterDropdown: React.FC<{
             borderRadius="full"
             size={{ base: 'md', md: 'lg' }}
           >
-            <Text fontSize="sm">{isMultiple ? label : trueLabel ?? label}</Text>
+            <Text fontSize="sm">
+              {isMultiple ? label : (trueLabel ?? label)}
+            </Text>
             {isMultiple && numSelected !== 0 && showSelected && (
               <Flex
                 justify="center"

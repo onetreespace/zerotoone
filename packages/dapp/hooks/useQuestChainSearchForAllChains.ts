@@ -1,7 +1,7 @@
 import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
-import { SUPPORTED_NETWORKS } from '@/web3/networks';
+import { CHAINS } from '@/web3';
 
 export const useQuestChainSearchForAllChains = (
   search: graphql.QuestChainFiltersInfo,
@@ -22,8 +22,8 @@ export const useQuestChainSearchForAllChains = (
       try {
         setFetching(true);
         const allResults = await Promise.all(
-          SUPPORTED_NETWORKS.map(async chainId =>
-            graphql.getQuestChainsFromFilters(chainId, search),
+          CHAINS.map(async ({ id: chainId }) =>
+            graphql.getQuestChainsFromFilters(chainId.toString(), search),
           ),
         );
         if (!isMounted) return;

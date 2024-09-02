@@ -84,9 +84,7 @@ export const SubmissionTile: React.FC<{
           >
             <Flex alignItems="center" justifyContent="space-between" h={20}>
               <Flex gap={4}>
-                {onCheck && (
-                  <Checkbox isChecked={checked} onChange={onCheck}></Checkbox>
-                )}
+                {onCheck && <Checkbox isChecked={checked} onChange={onCheck} />}
                 <Text fontWeight="bold">{`${
                   1 + Number(questId)
                 }. ${name}`}</Text>
@@ -222,7 +220,7 @@ export const SubmissionTile: React.FC<{
                               toReview={[submission]}
                               onReview={onReview}
                               isDisabled={isDisabled}
-                              success={true}
+                              success
                             />
                           )}
                           <Button
@@ -272,7 +270,7 @@ export const SubmissionTile: React.FC<{
                     toReview={[submission]}
                     onReview={onReview}
                     isDisabled={isDisabled}
-                    success={true}
+                    success
                   />
                 </Flex>
               )}
@@ -281,7 +279,7 @@ export const SubmissionTile: React.FC<{
               <Flex w="100%" mt={4}>
                 <Link isExternal color="#10B981" href={externalUrl}>
                   <AttachmentIcon mr={2} />
-                  {'View attachments'}
+                  View attachments
                 </Link>
               </Flex>
             )}

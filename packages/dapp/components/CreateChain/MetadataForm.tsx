@@ -21,7 +21,7 @@ import { useInputText } from '@/hooks/useInputText';
 import { MongoCategory } from '@/lib/mongodb/types';
 import { handleError } from '@/utils/helpers';
 import { Metadata, uploadFiles, uploadMetadata } from '@/utils/metadata';
-import { isSupportedNetwork, useWallet } from '@/web3';
+import { isSupportedChain } from '@/web3';
 
 import { UploadImageForm } from '../UploadImageForm';
 import { Categories } from './Categories';
@@ -38,7 +38,7 @@ const makeId = () => {
   let result = '';
   const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
   const charactersLength = characters.length;
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 6; i += 1) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
@@ -49,9 +49,8 @@ const fetchValidSlug = async (name: string, chainId: string) => {
   const valid = await graphql.validateQuestChainSlug(chainId, slug);
   if (valid) {
     return slug;
-  } else {
-    return `${slug}-${makeId()}`;
   }
+  return `${slug}-${makeId()}`;
 };
 
 export const MetadataForm: React.FC<{
@@ -72,24 +71,19 @@ export const MetadataForm: React.FC<{
   const uploadImageProps = useDropImage();
   const { imageFile } = uploadImageProps;
 
-  const { isConnected, chainId } = useWallet();
-
-  const isDisabled =
-    !isConnected ||
-    !isSupportedNetwork(chainId) ||
-    !categories.length ||
-    !slug.match(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+  // const isDisabled =
+  //   !isConnected ||
+  //   !isSupportedChain(chainId) ||
+  //   !categories.length ||
+  //   !slug.match(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
   const [isSubmitting, setSubmitting] = useState(false);
 
-  const updateValidSlug = useCallback(
-    (name: string) => {
-      if (chainId) {
-        fetchValidSlug(name, chainId).then(setSlug);
-      }
-    },
-    [chainId],
-  );
+  const updateValidSlug = useCallback((name: string) => {
+    // if (chainId) {
+    //   fetchValidSlug(name, chainId).then(setSlug);
+    // }
+  }, []);
 
   const delayedUpdateValidSlug = useDelay(updateValidSlug);
 
@@ -176,7 +170,7 @@ export const MetadataForm: React.FC<{
       </HStack>
       <form>
         <VStack w="100%" align="stretch" mb={10} spacing={4}>
-          <FormControl w="full" isRequired={true}>
+          <FormControl w="full" isRequired>
             <Flex align="center" justify="space-between" w="100%">
               <FormLabel htmlFor="name">Name</FormLabel>
               <Text fontSize="sm">{nameLength} / 90</Text>
@@ -195,7 +189,7 @@ export const MetadataForm: React.FC<{
               placeholder="Quest chain name"
             />
           </FormControl>
-          <FormControl w="full" isRequired={true}>
+          <FormControl w="full" isRequired>
             <FormLabel htmlFor="category">Category</FormLabel>
             <Categories
               setCategories={setCategories}
@@ -203,7 +197,7 @@ export const MetadataForm: React.FC<{
             />
           </FormControl>
 
-          <FormControl w="full" isRequired={true}>
+          <FormControl w="full" isRequired>
             <FormLabel htmlFor="description">Description</FormLabel>
             {/* TODO add hover effect similar to Name */}
             <MarkdownEditor
@@ -248,7 +242,7 @@ export const MetadataForm: React.FC<{
           )}
           <SubmitButton
             isLoading={isSubmitting}
-            isDisabled={isDisabled}
+            // isDisabled={isDisabled}
             onClick={() => {
               if (!nameRef.current || !descRef.current) {
                 toast.error('Please enter a name & description');

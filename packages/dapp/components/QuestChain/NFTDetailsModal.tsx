@@ -38,7 +38,7 @@ export const NFTDetailsModal: React.FC<{
         <ModalBody>
           <Flex mb={3} alignItems="start" direction="column">
             <Flex w="full" gap={4} mb={2} justifyContent="space-between">
-              <NetworkDisplay chainId={questChain.chainId} asTag />
+              <NetworkDisplay chainId={Number(questChain.chainId)} asTag />
             </Flex>
             <Image
               src={ipfsUriToHttp(questChain.token.imageUrl)}

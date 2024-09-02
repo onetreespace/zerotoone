@@ -81,9 +81,7 @@ export const QuestsForm: React.FC<{
     setIsEditingQuest(false);
     setQuests(
       quests.map((q, i) =>
-        i === index
-          ? { ...(questAdvSetting ? questAdvSetting : q), name, description }
-          : q,
+        i === index ? { ...(questAdvSetting || q), name, description } : q,
       ),
     );
   };
@@ -188,7 +186,7 @@ export const QuestsForm: React.FC<{
                 ) : (
                   <Flex
                     w="100%"
-                    key={index + name + description}
+                    key={index.toString() + name + description}
                     onDragStart={() => setDraggingQuest(index)}
                     onDragOver={e => e.preventDefault()}
                     onDrop={() => onDropQuest(index)}
@@ -276,11 +274,11 @@ export const QuestsForm: React.FC<{
           fontSize="sm"
           color="whiteAlpha.600"
           w="full"
-          justifyContent={'center'}
-          alignContent={'center'}
+          justifyContent="center"
+          alignContent="center"
           textAlign="center"
           direction="column"
-          mt={'0.5rem'}
+          mt="0.5rem"
         >
           <Text>All the quests in this quest chain are optional.</Text>
           <Text>
@@ -307,10 +305,10 @@ export const QuestsForm: React.FC<{
             fontSize="xs"
             color="whiteAlpha.600"
             w="full"
-            justifyContent={'center'}
-            alignContent={'center'}
+            justifyContent="center"
+            alignContent="center"
             textAlign="center"
-            mt={'0.5rem'}
+            mt="0.5rem"
           >
             This action will trigger 2 transactions.
           </Flex>

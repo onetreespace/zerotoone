@@ -7,14 +7,16 @@ import {
 import NoImageAvailable from 'assets/no-image-available.svg';
 import React, { useEffect, useState } from 'react';
 
-const FallbackImage = (props: BoxProps) => (
-  <ChakraImage src={NoImageAvailable} p="1.5rem" {...props} />
-);
-const LoadingImage = (props: BoxProps) => (
-  <Flex p="1.5rem" justify="center" align="center" {...props}>
-    <Spinner color="main" size="xl" speed="0.75s" thickness="3px" />
-  </Flex>
-);
+const FallbackImage = (props: BoxProps) => {
+  return <ChakraImage src={NoImageAvailable} p="1.5rem" {...props} />;
+};
+const LoadingImage = (props: BoxProps) => {
+  return (
+    <Flex p="1.5rem" justify="center" align="center" {...props}>
+      <Spinner color="main" size="xl" speed="0.75s" thickness="3px" />
+    </Flex>
+  );
+};
 
 export const ImageOrVideo: React.FC<
   {

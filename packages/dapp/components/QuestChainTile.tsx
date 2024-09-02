@@ -12,7 +12,6 @@ import NextLink from 'next/link';
 import removeMd from 'remove-markdown';
 
 import { ipfsUriToHttp } from '@/utils/uriHelpers';
-import { AVAILABLE_NETWORK_INFO } from '@/web3';
 
 import { NetworkDisplay } from './NetworkDisplay';
 import { UserDisplay } from './UserDisplay';
@@ -47,7 +46,7 @@ export const QuestChainTile: React.FC<QuestChainTileProps> = ({
   featured = false,
 }) => (
   <NextLink
-    as={`/${AVAILABLE_NETWORK_INFO[chainId].urlName}/${slug || address}`}
+    as={`/${chainId}/${slug || address}`}
     href="/[chainId]/[address]"
     passHref
   >
@@ -85,7 +84,7 @@ export const QuestChainTile: React.FC<QuestChainTileProps> = ({
         flex={1}
         borderRadius={8}
         pos="relative"
-        justifyContent={'end'}
+        justifyContent="end"
         background={
           imageUrl
             ? `linear-gradient(180deg, rgba(0, 0, 0, 0.6) 25%, rgba(0, 0, 0, 0.95) 70%), url(${ipfsUriToHttp(
@@ -96,11 +95,7 @@ export const QuestChainTile: React.FC<QuestChainTileProps> = ({
         backgroundPosition="center"
         backgroundSize="cover"
       >
-        <Flex
-          justifyContent={'space-between'}
-          flexDirection={'column'}
-          flex={'1'}
-        >
+        <Flex justifyContent="space-between" flexDirection="column" flex="1">
           <Flex ml={-2}>
             <UserDisplay address={createdBy} size="xs" noLink />
           </Flex>
@@ -109,7 +104,7 @@ export const QuestChainTile: React.FC<QuestChainTileProps> = ({
             <Flex justifyContent="space-between">
               <Text
                 fontSize={featured ? '2xl' : 'xl'}
-                fontFamily={'Museo Moderno'}
+                fontFamily="Museo Moderno"
                 fontWeight="700"
                 lineHeight="24px"
                 display="-webkit-box"
@@ -150,7 +145,7 @@ export const QuestChainTile: React.FC<QuestChainTileProps> = ({
             <Flex w="100%" align="end" h="3rem">
               <Text
                 display="-webkit-box"
-                lineHeight={'20px'}
+                lineHeight="20px"
                 color="whiteAlpha.700"
                 textOverflow="ellipsis"
                 overflow="hidden"
@@ -171,7 +166,7 @@ export const QuestChainTile: React.FC<QuestChainTileProps> = ({
                 {quests} quests
               </Text>
               <NetworkDisplay
-                chainId={chainId}
+                chainId={Number(chainId)}
                 imageProps={{ boxSize: '1rem' }}
                 textProps={{ color: 'purple.100', fontSize: '13px' }}
                 spacing={1}

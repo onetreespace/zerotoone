@@ -1,10 +1,10 @@
 import { Box } from '@chakra-ui/react';
+import { Address } from 'viem';
+import { useEnsName } from 'wagmi';
 
-import { useENSAvatar } from '@/hooks/useENS';
 import { MongoUser } from '@/lib/mongodb/types';
 import { ZERO_ADDRESS } from '@/utils/constants';
 import { ipfsUriToHttp } from '@/utils/uriHelpers';
-import { useWallet } from '@/web3';
 
 import { Jazzicon } from './Jazzicon';
 
@@ -13,26 +13,15 @@ export const UserAvatar: React.FC<{
   profile: MongoUser | null | undefined;
   size: number;
 }> = ({ address, profile, size }) => {
-  const {
-    ensAvatar: walletENSAvatar,
-    address: walletAddress,
-    user: walletProfile,
-  } = useWallet();
+  const { data: ensAvatar } = useEnsName({ address: address as Address });
 
-  const isWalletUser = walletAddress === address?.toLowerCase();
-
-  const { avatar: ensAvatar } = useENSAvatar(isWalletUser ? '' : address);
-
-  const displayProfile = isWalletUser ? walletProfile ?? profile : profile;
-
-  const avatarUri =
-    displayProfile?.avatarUri ?? (isWalletUser ? walletENSAvatar : ensAvatar);
+  const avatarUri = profile?.avatarUri ?? ensAvatar;
 
   if (avatarUri)
     return (
       <Box
-        width={size + 'px'}
-        height={size + 'px'}
+        width={`${size}px`}
+        height={`${size}px`}
         borderRadius="50%"
         bgColor="whiteAlpha.300"
         bgImage={`url(${ipfsUriToHttp(avatarUri)})`}

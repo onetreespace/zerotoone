@@ -14,17 +14,11 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
-import { contracts, graphql } from '@quest-chains/sdk';
+import { graphql } from '@quest-chains/sdk';
 import { useCallback, useState } from 'react';
-import { toast } from 'react-hot-toast';
 
 import { useDropFiles, useDropImage } from '@/hooks/useDropFiles';
 import { useInputText } from '@/hooks/useInputText';
-import { waitUntilBlock } from '@/utils/graphHelpers';
-import { handleError, handleTxLoading } from '@/utils/helpers';
-import { Metadata, uploadFiles, uploadMetadata } from '@/utils/metadata';
-import { AVAILABLE_NETWORK_INFO, useWallet } from '@/web3';
-import { getQuestChainContract } from '@/web3/contract';
 
 import { MarkdownEditor } from './MarkdownEditor';
 import { SubmitButton } from './SubmitButton';
@@ -37,7 +31,6 @@ export const UploadProof: React.FC<{
   questChain: graphql.QuestChainDisplayFragment;
   profile?: boolean;
 }> = ({ refresh, quest, questChain, profile }) => {
-  const { chainId, provider, address } = useWallet();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isSubmitting, setSubmitting] = useState(false);
@@ -59,6 +52,7 @@ export const UploadProof: React.FC<{
     onClose();
   }, [onClose, onResetFiles, onResetImage, setProofDescription]);
 
+  /*
   const onSubmit = useCallback(async () => {
     if (
       !chainId ||
@@ -136,20 +130,19 @@ export const UploadProof: React.FC<{
     provider,
     setProofDescription,
   ]);
+  */
 
   return (
     <Box>
       <Tooltip
         shouldWrapChildren
-        label={`Please connect or switch to ${
-          AVAILABLE_NETWORK_INFO[questChain.chainId].label
-        }`}
-        isDisabled={chainId === questChain.chainId}
+        label={`Please connect or switch to ${questChain.chainId}`}
+        // isDisabled={chainId === questChain.chainId}
       >
         {!profile && (
           <Button
             onClick={onOpen}
-            isDisabled={chainId !== questChain.chainId || !address}
+            // isDisabled={chainId !== questChain.chainId || !address}
             borderWidth={1}
             borderColor="white"
             px={5}
@@ -163,7 +156,7 @@ export const UploadProof: React.FC<{
           <Button
             w="full"
             onClick={onOpen}
-            isDisabled={chainId !== questChain.chainId || !address}
+            // isDisabled={chainId !== questChain.chainId || !address}
             variant="outline"
           >
             Re-submit Proof
@@ -199,8 +192,8 @@ export const UploadProof: React.FC<{
               fontSize="xs"
               color="whiteAlpha.600"
               w="full"
-              justifyContent={'center'}
-              alignContent={'center'}
+              justifyContent="center"
+              alignContent="center"
             >
               This submission will be{' '}
               {quest.skipReview ? 'automatically' : 'manually'} reviewed.
@@ -218,22 +211,22 @@ export const UploadProof: React.FC<{
             </Button>
             <SubmitButton
               mt={4}
-              onClick={() => {
-                if (!chainId || chainId !== questChain.chainId || !provider) {
-                  toast.error(
-                    `Wrong Chain, please switch to ${
-                      AVAILABLE_NETWORK_INFO[questChain.chainId].label
-                    }`,
-                  );
-                  return;
-                }
-                if (!proofDescRef.current) {
-                  toast.error('Proof description cannot be empty');
-                  return;
-                }
-
-                onSubmit();
-              }}
+              // onClick={() => {
+              //   if (!chainId || chainId !== questChain.chainId || !provider) {
+              //     toast.error(
+              //       `Wrong Chain, please switch to ${
+              //         AVAILABLE_NETWORK_INFO[questChain.chainId].label
+              //       }`,
+              //     );
+              //     return;
+              //   }
+              //   if (!proofDescRef.current) {
+              //     toast.error('Proof description cannot be empty');
+              //     return;
+              //   }
+              //
+              //   onSubmit();
+              // }}
               isLoading={isSubmitting}
             >
               Submit

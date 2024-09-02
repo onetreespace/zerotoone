@@ -10,7 +10,7 @@ const Explore: React.FC = () => {
       <HeadComponent
         title="Explore quest chains"
         description="Browse through the catalogue of quest chains"
-        url={QUESTCHAINS_URL + '/explore'}
+        url={`${QUESTCHAINS_URL}/explore`}
       />
       <Featured />
       <QuestChains />

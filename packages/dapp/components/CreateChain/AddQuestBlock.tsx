@@ -14,7 +14,12 @@ import { SubmitButton } from '@/components/SubmitButton';
 import { useInputText } from '@/hooks/useInputText';
 
 import QuestAdvancedSettings from '../QuestAdvancedSettings';
-import { QuestAdvSetting } from './QuestsForm';
+
+export type QuestAdvSetting = {
+  paused: boolean;
+  optional: boolean;
+  skipReview: boolean;
+};
 
 export const defaultQuestAdvSetting: QuestAdvSetting = {
   paused: false,
@@ -31,7 +36,7 @@ export const AddQuestBlock: React.FC<{
   ) => Promise<boolean>;
   isAdding?: boolean;
   questVersion?: string;
-}> = ({ onClose, onAdd, isAdding = false, questVersion = '2' }) => {
+}> = ({ onClose, onAdd, isAdding = false }) => {
   const [nameRef, setName] = useInputText();
   const [descRef, setDescription] = useInputText();
 
@@ -95,16 +100,13 @@ export const AddQuestBlock: React.FC<{
           />
         </FormControl>
 
-        {/* Do not show advance quest settings for quest version < 2 */}
-        {Number(questVersion) >= 2 ? (
-          <FormControl>
-            <QuestAdvancedSettings
-              questAdvSetting={questAdvSetting}
-              setQuestAdvSetting={setQuestAdvSetting}
-              isCreatingQuest={true}
-            />
-          </FormControl>
-        ) : null}
+        <FormControl>
+          <QuestAdvancedSettings
+            questAdvSetting={questAdvSetting}
+            setQuestAdvSetting={setQuestAdvSetting}
+            isCreatingQuest
+          />
+        </FormControl>
 
         <Flex
           align="center"

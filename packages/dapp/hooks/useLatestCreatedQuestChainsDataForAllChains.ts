@@ -1,9 +1,9 @@
 import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
 
 import { useRefresh } from '@/hooks/useRefresh';
-import { useWallet } from '@/web3';
-import { SUPPORTED_NETWORKS } from '@/web3/networks';
+import { CHAINS } from '@/web3';
 
 export const useLatestCreatedQuestChainsDataForAllChains = (): {
   questChains: graphql.QuestChainDisplayFragment[];
@@ -17,7 +17,7 @@ export const useLatestCreatedQuestChainsDataForAllChains = (): {
     [],
   );
 
-  const { address } = useWallet();
+  const { address } = useAccount();
   const [refreshCount, refresh] = useRefresh();
 
   useEffect(() => {
@@ -27,8 +27,8 @@ export const useLatestCreatedQuestChainsDataForAllChains = (): {
       try {
         setFetching(true);
         const allResults = await Promise.all(
-          SUPPORTED_NETWORKS.map(async chainId =>
-            graphql.getCreatedQuestChains(chainId, address),
+          CHAINS.map(async ({ id: chainId }) =>
+            graphql.getCreatedQuestChains(chainId.toString(), address),
           ),
         );
         if (!isMounted) return;

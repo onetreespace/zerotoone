@@ -37,8 +37,8 @@ const textLinks: TextLinkType[] = [
   { label: 'Support', href: 'https://discord.gg/sjnh6cuVcN', external: true },
 ];
 
-const TextLink = ({ label, href, external }: TextLinkType) =>
-  external ? (
+const TextLink = ({ label, href, external }: TextLinkType) => {
+  return external ? (
     <ChakraLink
       href={href}
       color="main"
@@ -61,6 +61,7 @@ const TextLink = ({ label, href, external }: TextLinkType) =>
       {label}
     </ChakraLink>
   );
+};
 
 type IconLinkType = {
   Icon: ComponentWithAs<'svg', IconProps>;
@@ -83,8 +84,8 @@ const iconLinks: IconLinkType[] = [
   { Icon: MediumIcon, href: 'https://medium.com/quest-chains', external: true },
 ];
 
-const IconLink = ({ Icon, href, external }: IconLinkType) =>
-  external ? (
+const IconLink = ({ Icon, href, external }: IconLinkType) => {
+  return external ? (
     <ChakraLink href={href} color="white" _hover={{ color: 'main' }} isExternal>
       <Icon />
     </ChakraLink>
@@ -98,6 +99,7 @@ const IconLink = ({ Icon, href, external }: IconLinkType) =>
       <Icon />
     </ChakraLink>
   );
+};
 
 export const Footer: React.FC = () => (
   <VStack

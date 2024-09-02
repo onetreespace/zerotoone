@@ -88,7 +88,7 @@ export const ReviewCommentModal: React.FC<{
         boxShadow="0 0.25rem 0.25rem rgba(0, 0, 0, 0.25)"
         borderRadius="0.5rem"
       >
-        <ModalHeader textTransform={'uppercase'} fontSize="md">
+        <ModalHeader textTransform="uppercase" fontSize="md">
           You are about to {reviewing[0]?.success ? 'approve' : 'reject'}{' '}
           {reviewing.length} submission{reviewing.length > 1 ? 's' : ''} with a
           comment

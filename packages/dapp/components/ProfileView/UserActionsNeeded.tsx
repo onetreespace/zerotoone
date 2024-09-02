@@ -1,9 +1,9 @@
 import { Button, Flex, Heading } from '@chakra-ui/react';
 import { useState } from 'react';
+import { useAccount } from 'wagmi';
 
 import { QuestsRejected } from '@/components/ProfileView/QuestsRejected';
 import { QuestsToReview } from '@/components/ProfileView/QuestsToReview';
-import { useWallet } from '@/web3';
 
 import { NFTsToMint } from './NFTsToMint';
 
@@ -14,7 +14,7 @@ enum Tab {
 }
 
 export const UserActionsNeeded: React.FC = () => {
-  const { address } = useWallet();
+  const { address } = useAccount();
   const [tab, setTab] = useState<Tab>(Tab.NFTS);
 
   if (!address) return null;

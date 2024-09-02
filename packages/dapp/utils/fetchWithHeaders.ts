@@ -17,9 +17,9 @@ export const fetchWithHeaders = async (
   url: string,
   method = RequestTypes.Get,
   data = {},
-  headers = {},
+  _headers = {},
 ): Promise<Response> => {
-  headers = { ...headers, ...defaultHeaders };
+  let headers: Record<string, string> = { ..._headers, ...defaultHeaders };
 
   const authToken = getFromStorage(STORAGE_KEYS.AUTH_TOKEN);
   if (authToken) {
@@ -30,11 +30,12 @@ export const fetchWithHeaders = async (
     method,
     headers,
     body:
+      // eslint-disable-next-line no-nested-ternary
       method === RequestTypes.Get
         ? null
         : data instanceof FormData
-        ? data
-        : JSON.stringify(data),
+          ? data
+          : JSON.stringify(data),
   };
 
   return fetch(url, request);
