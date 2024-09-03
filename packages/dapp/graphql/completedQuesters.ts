@@ -7,7 +7,7 @@ import {
 } from './generated';
 
 export const getQuestChainCompletedInfo = async (
-  chainId: string,
+  chainId: number,
   address: string,
 ): Promise<QuestChainCompletedInfoFragment | null> => {
   const { data, error } = await getClient(chainId)

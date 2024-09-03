@@ -1,7 +1,7 @@
 type Invoice @entity {
   id: ID!
   network: String!
-  chainId: String!
+  chainId: Int!
   address: Bytes!
   factoryAddress: Bytes!
   token: Bytes!
@@ -146,6 +146,8 @@ type Tip @entity {
 
 type Global @entity {
   id: ID!
+  network: String!
+  chainId: Int!
   questChainFactory: Bytes!
   questChainToken: Bytes!
   smartInvoiceFactory: Bytes!
@@ -196,7 +198,7 @@ type QuestChain @entity {
   id: ID!
   paused: Boolean!
   network: String!
-  chainId: String!
+  chainId: Int!
   address: Bytes!
   factoryAddress: Bytes!
   numCompletedQuesters: Int!
@@ -353,7 +355,7 @@ type ReviewSubmission @entity {
 type Gig @entity {
   id: ID!
   network: String!
-  chainId: String!
+  chainId: Int!
   gigId: BigInt!
   gigManager: Bytes!
   details: String!
@@ -369,7 +371,7 @@ type Gig @entity {
 type Proposal @entity {
   id: ID!
   network: String!
-  chainId: String!
+  chainId: Int!
   proposalId: BigInt!
   gig: Gig!
   price: BigInt!

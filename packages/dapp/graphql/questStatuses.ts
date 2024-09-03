@@ -13,7 +13,7 @@ import {
 } from './generated';
 
 export const getStatusesForChain = async (
-  chainId: string,
+  chainId: number,
   chain: string,
 ): Promise<QuestStatusInfoFragment[]> => {
   const { data, error } = await getClient(chainId)
@@ -35,7 +35,7 @@ export const getStatusesForChain = async (
 };
 
 export const getStatusesForUserAndChain = async (
-  chainId: string,
+  chainId: number,
   chain: string,
   user: string,
 ): Promise<QuestStatusInfoFragment[]> => {
@@ -59,7 +59,7 @@ export const getStatusesForUserAndChain = async (
 };
 
 export const getQuestsRejectedForUserAndChain = async (
-  chainId: string,
+  chainId: number,
   address: string,
 ): Promise<QuestStatusInfoFragment[]> => {
   const { data, error } = await getClient(chainId)

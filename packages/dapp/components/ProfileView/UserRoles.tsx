@@ -29,7 +29,7 @@ import { useUserRolesForAllChains } from '@/hooks/useUserRolesForAllChains';
 type QuestChainRoleInfo = {
   address: string;
   createdAt: string;
-  chainId: string;
+  chainId: number;
   paused: boolean;
   name?: string | null | undefined;
   slug?: string | null;
@@ -57,7 +57,7 @@ export const UserRoles: React.FC<{
         const id = chain.address
           .toLowerCase()
           .concat('-')
-          .concat(chain.chainId.toLowerCase());
+          .concat(chain.chainId.toString());
         questRoles[id] = {
           ...chain,
           role: 'Reviewer' as Role,
@@ -67,7 +67,7 @@ export const UserRoles: React.FC<{
         const id = chain.address
           .toLowerCase()
           .concat('-')
-          .concat(chain.chainId.toLowerCase());
+          .concat(chain.chainId.toString());
         questRoles[id] = {
           ...chain,
           role: 'Editor' as Role,
@@ -77,7 +77,7 @@ export const UserRoles: React.FC<{
         const id = chain.address
           .toLowerCase()
           .concat('-')
-          .concat(chain.chainId.toLowerCase());
+          .concat(chain.chainId.toString());
         questRoles[id] = {
           ...chain,
           role: 'Admin' as Role,
@@ -87,7 +87,7 @@ export const UserRoles: React.FC<{
         const id = chain.address
           .toLowerCase()
           .concat('-')
-          .concat(chain.chainId.toLowerCase());
+          .concat(chain.chainId.toString());
         questRoles[id] = {
           ...chain,
           role: 'Owner' as Role,

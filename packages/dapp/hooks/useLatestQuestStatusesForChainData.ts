@@ -5,8 +5,8 @@ import { getStatusesForChain, QuestStatusInfoFragment } from '@/graphql';
 import { useRefresh } from './useRefresh';
 
 export const useLatestQuestStatusesForChainData = (
-  chainId: string | undefined | null,
-  chain: string | undefined | null,
+  chainId: number | undefined,
+  chain: string | undefined,
   inputQuestStatuses: QuestStatusInfoFragment[] = [],
 ): {
   questStatuses: QuestStatusInfoFragment[];

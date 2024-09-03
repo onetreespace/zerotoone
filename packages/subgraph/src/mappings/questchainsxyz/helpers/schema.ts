@@ -24,10 +24,12 @@ export function getUser(address: Address): User {
 }
 
 export function getGlobal(): Global {
-  let network = getChainId();
+  let network = dataSource.network();
   let globalNode = Global.load(network);
   if (globalNode == null) {
     globalNode = new Global(network);
+    globalNode.network = network;
+    globalNode.chainId = getChainId();
     globalNode.questChainFactory = ADDRESS_ZERO;
     globalNode.questChainToken = ADDRESS_ZERO;
     globalNode.admin = ADDRESS_ZERO;

@@ -18,7 +18,7 @@ export type UserStatus = {
 };
 
 export const getStatusForUser = async (
-  chainId: string,
+  chainId: number,
   address: string,
 ): Promise<UserStatus[]> => {
   const { data, error } = await getClient(chainId)

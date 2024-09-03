@@ -30,7 +30,7 @@ export const useQuestsToReviewForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            getQuestChainsToReview(chainId.toString(), address),
+            getQuestChainsToReview(chainId, address),
           ),
         );
         if (!isMounted) return;

@@ -25,7 +25,7 @@ export const useQuestChainSearchForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            getQuestChainsFromFilters(chainId.toString(), search),
+            getQuestChainsFromFilters(chainId, search),
           ),
         );
         if (!isMounted) return;

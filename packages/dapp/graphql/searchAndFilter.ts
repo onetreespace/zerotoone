@@ -21,7 +21,7 @@ export type QuestChainFiltersInfo = {
 };
 
 const fetchWithFilters = async (
-  chainId: string,
+  chainId: number,
   query: QuestChainSearchQueryVariables,
 ): Promise<QuestChainDisplayFragment[]> => {
   const { data, error } = await getClient(chainId)
@@ -40,7 +40,7 @@ const fetchWithFilters = async (
 };
 
 export const getQuestChainsFromFilters = async (
-  chainId: string,
+  chainId: number,
   filters: QuestChainFiltersInfo,
 ): Promise<QuestChainDisplayFragment[]> => {
   const query: QuestChainSearchQueryVariables = {};

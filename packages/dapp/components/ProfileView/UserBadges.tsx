@@ -30,7 +30,7 @@ import { TwitterIcon } from '../icons/TwitterIcon';
 import { NFTDetail } from '../QuestChain/NFTDetail';
 
 type QuestChainBadgeInfo = {
-  chainId: string;
+  chainId: number;
   name?: string | null | undefined;
   description?: string | null | undefined;
   imageUrl?: string | null | undefined;

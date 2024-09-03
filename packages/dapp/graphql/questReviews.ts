@@ -7,7 +7,7 @@ import {
 } from './generated';
 
 export const getQuestChainsToReview = async (
-  chainId: string,
+  chainId: number,
   address: string,
 ): Promise<QuestChainReviewInfoFragment[]> => {
   const { data, error } = await getClient(chainId)

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Address } from 'viem';
 
 import {
   getQuestChainsFromAddresses,
@@ -6,48 +7,11 @@ import {
 } from '@/graphql';
 import { isSupportedChain } from '@/web3';
 
-const featuredQuestChains = [
-  {
-    chainId: '0x89',
-    address: '0x5d8c1d6eab5fd643ad60dce741310dae3807acfc',
-  },
-  {
-    chainId: '0x89',
-    address: '0x64baec377babbbb62419af890e459d0a26b11074',
-  },
-  {
-    chainId: '0x89',
-    address: '0x0bf17bedbd42f6cf89f4064d5d70da1e44f70f14',
-  },
-  {
-    chainId: '0x89',
-    address: '0x9a2684fef5d043bf848999bbf66f0e66c3a4ce80',
-  },
-  {
-    chainId: '0x89',
-    address: '0x1ed08e85b948566623cc23c3744e5abe656e9564',
-  },
-  {
-    chainId: '0x89',
-    address: '0x6a7f3c7c2c00d169dfdb2a462839a1741942cd78',
-  },
-  // testnet quest chains are only featured in `dev.questchains.xyz`
-  {
-    chainId: '0x5',
-    address: '0x674c8a0e864ccf8906c5e3644e462473918e9362',
-  },
-  {
-    chainId: '0x5',
-    address: '0xe610513b10a238d1f1e54a114f327473af9e08b8',
-  },
-].map(a => ({
-  chainId: a.chainId.toLowerCase(),
-  address: a.address.toLowerCase(),
-}));
+const featuredQuestChains: { chainId: number; address: Address }[] = [];
 
-const networkAddresses = featuredQuestChains.reduce(
-  (t: Record<string, string[]>, a: { address: string; chainId: string }) => {
-    if (isSupportedChain(Number(a.chainId))) {
+const networkAddresses: Record<number, Address[]> = featuredQuestChains.reduce(
+  (t: Record<number, Address[]>, a: { address: Address; chainId: number }) => {
+    if (isSupportedChain(a.chainId)) {
       if (t[a.chainId]) {
         return { ...t, [a.chainId]: [...t[a.chainId], a.address] };
       }
@@ -55,7 +19,7 @@ const networkAddresses = featuredQuestChains.reduce(
     }
     return t;
   },
-  {},
+  {} as Record<number, Address[]>,
 );
 
 export const useFeaturedQuestChains = (): {
@@ -72,9 +36,10 @@ export const useFeaturedQuestChains = (): {
     (async () => {
       try {
         setFetching(true);
+        const networks = Object.keys(networkAddresses).map(Number);
         const allResults = await Promise.all(
-          Object.entries(networkAddresses).map(async ([chainId, addresses]) =>
-            getQuestChainsFromAddresses(chainId, addresses),
+          networks.map(async chainId =>
+            getQuestChainsFromAddresses(chainId, networkAddresses[chainId]),
           ),
         );
 

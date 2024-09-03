@@ -64,7 +64,6 @@ import {
 } from '@/graphql';
 import { useDropImage } from '@/hooks/useDropFiles';
 import { useInputText } from '@/hooks/useInputText';
-import { usePoHs } from '@/hooks/usePoH';
 import { useToggleQuestChainPauseStatus } from '@/hooks/useToggleQuestChainPauseStatus';
 import { useUserProgress } from '@/hooks/useUserProgress';
 import { useUserStatus } from '@/hooks/useUserStatus';
@@ -270,8 +269,6 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
 
     return memberRoles;
   }, [questChain]);
-
-  const { statuses } = usePoHs(members);
 
   const owners = Object.entries(members)
     .filter(([, role]) => role === 'Owner')
@@ -1242,7 +1239,6 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                   admins={admins}
                   editors={editors}
                   reviewers={reviewers}
-                  statusesPoH={statuses}
                   onEdit={
                     isOwner &&
                     mode === Mode.MEMBER &&

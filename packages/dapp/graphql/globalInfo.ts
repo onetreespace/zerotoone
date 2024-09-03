@@ -1,4 +1,6 @@
-import { getClient, SUPPORTED_NETWORKS } from './client';
+import { CHAINS, SupportedChainId } from '@/web3';
+
+import { getClient } from './client';
 import {
   GlobalInfoDocument,
   GlobalInfoFragment,
@@ -6,13 +8,21 @@ import {
   GlobalInfoQueryVariables,
 } from './generated';
 
+const NETWORK_NAMES: Record<SupportedChainId, string> = {
+  31337: 'local',
+};
+
 export const getChainInfo = async (
-  chainId: string,
+  chainId: number,
 ): Promise<GlobalInfoFragment | null> => {
   const { data, error } = await getClient(chainId)
     .query<GlobalInfoQuery, GlobalInfoQueryVariables>(GlobalInfoDocument, {})
     .toPromise();
-  if (!data || !data.globals.length || data.globals[0].network !== chainId) {
+  if (
+    !data ||
+    !data.globals.length ||
+    data.globals[0].network !== NETWORK_NAMES[chainId]
+  ) {
     if (error) {
       throw error;
     }
@@ -28,10 +38,10 @@ export const getGlobalInfo = async (): Promise<
   const globalInfo: Record<string, GlobalInfoFragment> = {};
 
   await Promise.all(
-    SUPPORTED_NETWORKS.map(async chainId => {
-      const info = await getChainInfo(chainId);
+    CHAINS.map(async chain => {
+      const info = await getChainInfo(chain.id);
       if (info !== null) {
-        globalInfo[chainId] = info;
+        globalInfo[chain.id] = info;
       }
     }),
   );

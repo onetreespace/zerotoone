@@ -18,7 +18,7 @@ import { UserDisplay } from './UserDisplay';
 
 type QuestChainTileProps = {
   address: string;
-  chainId: string;
+  chainId: number;
   createdBy: string;
   name?: string | undefined | null;
   description?: string | undefined | null;

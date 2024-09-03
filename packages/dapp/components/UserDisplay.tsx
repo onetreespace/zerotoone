@@ -14,7 +14,6 @@ export const UserDisplay: React.FC<{
   address?: string | undefined | null;
   color?: string;
   size?: 'sm' | 'md' | 'lg' | 'xs';
-  hasPoH?: boolean;
   noLink?: boolean;
 }> = ({ address, color = 'white', size = 'md', noLink }) => {
   const result = useEnsName({

@@ -8,7 +8,7 @@ import {
   QuestChainDisplayFragment,
   QuestChainFiltersInfo,
 } from '@/graphql';
-import { CHAINS } from '@/web3';
+import { CHAINS, SupportedChainId } from '@/web3';
 
 const getSortKey = (
   orderBy: QuestChain_OrderBy = QuestChain_OrderBy.UpdatedAt,
@@ -26,7 +26,7 @@ const getSortKey = (
 
 export const useFilteredQuestChains = (
   filters: QuestChainFiltersInfo,
-  networksMap: Record<string, boolean> = {},
+  networksMap: Record<SupportedChainId, boolean> = {},
 ): {
   error: unknown;
   fetching: boolean;
@@ -42,9 +42,9 @@ export const useFilteredQuestChains = (
       try {
         setFetching(true);
         let chains: QuestChainDisplayFragment[] = [];
-        const networksList = Object.entries(networksMap)
-          .filter(([_, value]) => value)
-          .map(([key]) => key);
+        const networksList = Object.keys(networksMap)
+          .map(Number)
+          .filter(n => !!networksMap[n]);
 
         if (networksList.length > 0) {
           const allResults = await Promise.all(
@@ -56,9 +56,7 @@ export const useFilteredQuestChains = (
           }, []);
         } else {
           const allResults = await Promise.all(
-            CHAINS.map(async c =>
-              getQuestChainsFromFilters(c.id.toString(), filters),
-            ),
+            CHAINS.map(async c => getQuestChainsFromFilters(c.id, filters)),
           );
           chains = allResults.reduce((t, a) => {
             t.push(...a);

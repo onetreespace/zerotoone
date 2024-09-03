@@ -97,7 +97,7 @@ export async function getStaticPaths() {
 export const getStaticProps = async (
   context: GetStaticPropsContext<QueryParams>,
 ) => {
-  const network = context.params?.network;
+  const network = Number(context.params?.network);
   const address = context.params?.address;
 
   let questStatuses: QuestStatusInfoFragment[] = [];

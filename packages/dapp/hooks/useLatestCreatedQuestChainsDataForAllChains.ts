@@ -26,7 +26,7 @@ export const useLatestCreatedQuestChainsDataForAllChains = (): {
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            getCreatedQuestChains(chainId.toString(), address),
+            getCreatedQuestChains(chainId, address),
           ),
         );
         if (!isMounted) return;

@@ -2,7 +2,7 @@
 import { Address, GetTransactionReceiptReturnType, parseEventLogs } from 'viem';
 
 import { getSubgraphLatestBlock } from '@/graphql';
-import { iQuestChainFactoryAbi } from '@/web3';
+import { iQuestChainFactoryAbi, SupportedChainId } from '@/web3';
 
 import { sleep } from './helpers';
 
@@ -11,7 +11,7 @@ const UPDATE_INTERVAL = 10000;
 const MAX_RETRIES = 6;
 
 export const waitUntilBlock = async (
-  chainId: string,
+  chainId: SupportedChainId,
   block: number,
 ): Promise<boolean> => {
   let latestBlock = await getSubgraphLatestBlock(chainId);
