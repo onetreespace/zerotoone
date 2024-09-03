@@ -12,16 +12,16 @@ const MAX_RETRIES = 6;
 
 export const waitUntilBlock = async (
   chainId: SupportedChainId,
-  block: number,
+  block: number | bigint,
 ): Promise<boolean> => {
   let latestBlock = await getSubgraphLatestBlock(chainId);
   let tries = 0;
-  while (latestBlock < block && tries < MAX_RETRIES) {
+  while (latestBlock < Number(block) && tries < MAX_RETRIES) {
     await sleep(UPDATE_INTERVAL);
     tries += 1;
     latestBlock = await getSubgraphLatestBlock(chainId);
   }
-  return latestBlock >= block;
+  return latestBlock >= Number(block);
 };
 
 export const parseQuestChainAddress = async (

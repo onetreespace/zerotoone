@@ -13,8 +13,10 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { TwitterShareButton } from 'react-share';
-import { useAccount, useChainId } from 'wagmi';
+import { Address } from 'viem';
+import { useAccount, useChainId, useConfig, usePublicClient } from 'wagmi';
 
 import { MetadataForm } from '@/components/CreateChain/MetadataForm';
 import NFTForm from '@/components/CreateChain/NFTForm';
@@ -27,10 +29,17 @@ import { MarkdownViewer } from '@/components/MarkdownViewer';
 import { MastodonShareButton } from '@/components/MastodonShareButton';
 import { MembersDisplay } from '@/components/MembersDisplay';
 import { NetworkDisplay } from '@/components/NetworkDisplay';
+import { QuestAdvSetting } from '@/components/QuestAdvancedSettings';
 import { HeadComponent } from '@/components/Seo';
 import { SubmitButton } from '@/components/SubmitButton';
+import { useGlobalInfo } from '@/hooks/useGlobal';
+import { randomBytes } from '@/utils/byteHelpers';
 import { QUESTCHAINS_URL } from '@/utils/constants';
+import { parseQuestChainAddress, waitUntilBlock } from '@/utils/graphHelpers';
+import { handleError, handleTxLoading } from '@/utils/helpers';
+import { Metadata, uploadMetadata } from '@/utils/metadata';
 import { getQuestChainURL, ipfsUriToHttp } from '@/utils/uriHelpers';
+import { isSupportedChain, useWriteQuestChainFactoryCreate } from '@/web3';
 
 const Create: React.FC = () => {
   const router = useRouter();
@@ -103,139 +112,111 @@ const Create: React.FC = () => {
     setStep(4);
   };
 
+  const globalInfo = useGlobalInfo();
+
+  const { writeContractAsync } = useWriteQuestChainFactoryCreate();
+
+  const publicClient = usePublicClient();
+
   const onPublishQuestChain = useCallback(
-    async () =>
-      // quests: {
-      //   name: string;
-      //   description: string;
-      //   optional: boolean;
-      //   skipReview: boolean;
-      //   paused: boolean;
-      // }[],
-      // startAsDisabled: boolean,
-      {
-        /*
-setSubmitting(true);
-if (!address || !chainId || !provider || !isSupportedChain(chainId))
-  return;
+    async (
+      quests: {
+        name: string;
+        description: string;
+        optional: boolean;
+        skipReview: boolean;
+        paused: boolean;
+      }[],
+      startAsDisabled: boolean,
+    ) => {
+      setSubmitting(true);
+      if (!address || !chainId || !isSupportedChain(chainId) || !publicClient)
+        return;
 
-let tid;
-let questsDetails: string[] = [];
-if (quests.length) {
-  tid = toast.loading('Uploading Quests, please wait...');
-  const metadata: Metadata[] = quests;
-  const hashes = await Promise.all(
-    metadata.map(({ name, description }) =>
-      uploadMetadata({ name, description }),
-    ),
-  );
-  questsDetails = hashes.map(hash => `ipfs://${hash}`);
-  toast.dismiss(tid);
-}
+      let tid;
+      const questsDetails: {
+        disabled: boolean;
+        skipReview: boolean;
+        optional: boolean;
+        details: string;
+      }[] = [];
+      if (quests.length) {
+        tid = toast.loading('Uploading Quests, please wait...');
+        const allDetails = await Promise.all(
+          quests.map(async ({ name, description, ...rest }) => {
+            const hash = await uploadMetadata({ name, description });
+            const details = `ipfs://${hash}`;
+            return {
+              ...rest,
+              disabled: rest.paused,
+              details,
+            };
+          }),
+        );
+        questsDetails.push(...allDetails);
+        toast.dismiss(tid);
+      }
 
-try {
-  const { factoryAddress } = globalInfo[chainId];
+      try {
+        const { questChainFactory: factoryAddress } = globalInfo[chainId];
 
-  const info: QuestChainCommons.QuestChainInfoStruct = {
-    details: chainUri,
-    tokenURI: nftUri,
-    owners: ownerAddresses.filter(address => address !== ''),
-    admins: adminAddresses.filter(address => address !== ''),
-    editors: editorAddresses.filter(address => address !== ''),
-    reviewers: reviewerAddresses.filter(address => address !== ''),
-    quests: questsDetails,
-    paused: startAsDisabled,
-  };
-  const factoryContract: contracts.V2.QuestChainFactory =
-    contracts.V2.QuestChainFactory__factory.connect(
-      factoryAddress,
-      provider.getSigner(),
-    );
+        const info = {
+          details: chainUri,
+          tokenURI: nftUri,
+          owners: ownerAddresses.filter(a => a !== '') as Address[],
+          admins: adminAddresses.filter(a => a !== '') as Address[],
+          editors: editorAddresses.filter(a => a !== '') as Address[],
+          reviewers: reviewerAddresses.filter(a => a !== '') as Address[],
+          quests: questsDetails,
+          paused: startAsDisabled,
+        };
 
-  tid = toast.loading(
-    'Waiting for Confirmation - Confirm the transaction in your Wallet',
-  );
-  const tx = await factoryContract.createAndUpgrade(
-    info,
-    randomBytes(32),
-  );
-  toast.dismiss(tid);
-  tid = handleTxLoading(tx.hash, chainId);
-  let receipt = await tx.wait(1);
-  toast.dismiss(tid);
+        tid = toast.loading(
+          'Waiting for Confirmation - Confirm the transaction in your Wallet',
+        );
+        const txHash = await writeContractAsync({
+          address: factoryAddress as Address,
+          args: [info, randomBytes(32)],
+        });
+        toast.dismiss(tid);
+        tid = handleTxLoading(txHash, chainId);
+        const receipt = await publicClient.waitForTransactionReceipt({
+          hash: txHash,
+        });
+        toast.dismiss(tid);
 
-  const chainAddress = await awaitQuestChainAddress(receipt);
+        const chainAddr = await parseQuestChainAddress(receipt);
+        if (!chainAddr) {
+          throw new Error('Failed to parse chain address');
+        }
 
-  const advanceSettingQuests: {
-    index: number;
-    settings: QuestAdvSetting;
-  }[] = [];
+        tid = toast.loading(
+          'Transaction confirmed. Waiting for The Graph to index the transaction data.',
+        );
+        await waitUntilBlock(chainId, receipt.blockNumber);
+        toast.dismiss(tid);
+        onOpen();
 
-  quests.forEach((q, index) => {
-    if (q.optional || q.skipReview || q.paused) {
-      advanceSettingQuests.push({ index, settings: q });
-    }
-  });
-
-  // Send second tx to set questDetails
-  if (advanceSettingQuests.length > 0) {
-    tid = toast.loading(
-      'Waiting for Confirmation - Confirm the transaction in your Wallet',
-    );
-    const questContract: contracts.V2.QuestChain =
-      contracts.V2.QuestChain__factory.connect(
-        chainAddress,
-        provider.getSigner(),
-      );
-
-    const tx = await questContract.configureQuests(
-      advanceSettingQuests.map(({ index }) => index),
-      advanceSettingQuests.map(
-        ({ settings: { optional, skipReview, paused } }) => ({
-          optional,
-          paused,
-          skipReview,
-        }),
-      ),
-    );
-    toast.dismiss(tid);
-    tid = handleTxLoading(tx.hash, chainId);
-    receipt = await tx.wait(1);
-    toast.dismiss(tid);
-  }
-  tid = toast.loading(
-    'Transaction confirmed. Waiting for The Graph to index the transaction data.',
-  );
-  await waitUntilBlock(chainId, receipt.blockNumber);
-  toast.dismiss(tid);
-  onOpen();
-
-  // @ts-ignore
-  window.plausible(TrackEvent.ChainCreated);
-  setChainAddress(chainAddress);
-} catch (error) {
-  // @ts-ignore
-  window.plausible(TrackEvent.ChainCreateFailed);
-  toast.dismiss(tid);
-  handleError(error);
-} finally {
-  setSubmitting(false);
-}
-
-*/
-      },
+        setChainAddress(chainAddr);
+      } catch (error) {
+        toast.dismiss(tid);
+        handleError(error);
+      } finally {
+        setSubmitting(false);
+      }
+    },
     [
-      // address,
-      // chainId,
-      // provider,
-      // chainUri,
-      // nftUri,
-      // ownerAddresses,
-      // adminAddresses,
-      // editorAddresses,
-      // reviewerAddresses,
-      // globalInfo,
-      // onOpen,
+      address,
+      chainId,
+      publicClient,
+      chainUri,
+      nftUri,
+      ownerAddresses,
+      adminAddresses,
+      editorAddresses,
+      reviewerAddresses,
+      globalInfo,
+      onOpen,
     ],
   );
 
