@@ -1,5 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
+
+import { QuestChainInfoFragment, QuestInfoFragment, Status } from '@/graphql';
 
 import { UploadProof } from './UploadProof';
 
@@ -17,14 +18,14 @@ export type UserStatusType = {
       reviewer: string;
       accepted: boolean;
     }[];
-    status: graphql.Status;
+    status: Status;
   };
 };
 
 type UploadProofButtonProps = {
   userStatus: UserStatusType;
-  questChain: graphql.QuestChainInfoFragment;
-  quest: graphql.QuestInfoFragment;
+  questChain: QuestChainInfoFragment;
+  quest: QuestInfoFragment;
   refresh: () => void;
 };
 

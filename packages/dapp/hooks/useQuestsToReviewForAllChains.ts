@@ -1,6 +1,9 @@
-import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
+import {
+  getQuestChainsToReview,
+  QuestChainReviewInfoFragment,
+} from '@/graphql';
 import { CHAINS } from '@/web3';
 
 export const useQuestsToReviewForAllChains = (
@@ -8,13 +11,11 @@ export const useQuestsToReviewForAllChains = (
 ): {
   error: unknown;
   fetching: boolean;
-  results: graphql.QuestChainReviewInfoFragment[];
+  results: QuestChainReviewInfoFragment[];
 } => {
   const [error, setError] = useState<unknown>();
   const [fetching, setFetching] = useState<boolean>(false);
-  const [results, setResults] = useState<
-    graphql.QuestChainReviewInfoFragment[]
-  >([]);
+  const [results, setResults] = useState<QuestChainReviewInfoFragment[]>([]);
 
   useEffect(() => {
     if (!address) {
@@ -29,7 +30,7 @@ export const useQuestsToReviewForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            graphql.getQuestChainsToReview(chainId.toString(), address),
+            getQuestChainsToReview(chainId.toString(), address),
           ),
         );
         if (!isMounted) return;

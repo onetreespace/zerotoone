@@ -9,7 +9,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
@@ -32,13 +31,18 @@ import {
   SubmissionType,
 } from '@/components/Review/SubmissionTile';
 import { SubmitButton } from '@/components/SubmitButton';
+import {
+  QuestChainInfoFragment,
+  QuestStatusInfoFragment,
+  Status,
+} from '@/graphql';
 import { handleError } from '@/utils/helpers';
 
 import { LoadingState } from '../LoadingState';
 
 type Props = {
-  questChain: graphql.QuestChainInfoFragment;
-  questStatuses: graphql.QuestStatusInfoFragment[];
+  questChain: QuestChainInfoFragment;
+  questStatuses: QuestStatusInfoFragment[];
   fetching: boolean;
   refresh: () => void;
 };
@@ -102,16 +106,12 @@ export const QuestChainReviewPage: React.FC<Props> = ({
     setAllSubmissions(questStatuses.map(statusToSubmission));
     setSubmitted(
       questStatuses
-        .filter(
-          q =>
-            q.status === graphql.Status.Pass ||
-            q.status === graphql.Status.Fail,
-        )
+        .filter(q => q.status === Status.Pass || q.status === Status.Fail)
         .map(statusToSubmission),
     );
     setAwaitingReview(
       questStatuses
-        .filter(q => q.status === graphql.Status.Review)
+        .filter(q => q.status === Status.Review)
         .map(statusToSubmission),
     );
     setReviewed([]);
@@ -323,7 +323,7 @@ export const QuestChainReviewPage: React.FC<Props> = ({
             fontFamily="heading"
             mb={3}
           >
-            {questChain.name}
+            {/* questChain.name */ 'QuestChain Name'}
           </Text>
           <Box>
             <NetworkDisplay chainId={Number(questChain.chainId)} />

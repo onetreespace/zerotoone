@@ -1,12 +1,12 @@
-import { graphql } from '@quest-chains/sdk';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
+import { QuestChainInfoFragment } from '@/graphql';
 import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
 
 export const useToggleQuestChainPauseStatus = (
-  questChain: graphql.QuestChainInfoFragment,
+  questChain: QuestChainInfoFragment,
   refresh: () => void | Promise<void>,
 ): { isTogglingPauseStatus: boolean; togglePause: () => Promise<void> } => {
   const [isLoading, setLoading] = useState(false);

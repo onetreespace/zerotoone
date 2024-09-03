@@ -1,6 +1,9 @@
-import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
+import {
+  getQuestChainsFromAddresses,
+  QuestChainDisplayFragment,
+} from '@/graphql';
 import { isSupportedChain } from '@/web3';
 
 const featuredQuestChains = [
@@ -58,13 +61,11 @@ const networkAddresses = featuredQuestChains.reduce(
 export const useFeaturedQuestChains = (): {
   error: unknown;
   fetching: boolean;
-  results: graphql.QuestChainDisplayFragment[];
+  results: QuestChainDisplayFragment[];
 } => {
   const [error, setError] = useState<unknown>();
   const [fetching, setFetching] = useState<boolean>(false);
-  const [results, setResults] = useState<graphql.QuestChainDisplayFragment[]>(
-    [],
-  );
+  const [results, setResults] = useState<QuestChainDisplayFragment[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -73,7 +74,7 @@ export const useFeaturedQuestChains = (): {
         setFetching(true);
         const allResults = await Promise.all(
           Object.entries(networkAddresses).map(async ([chainId, addresses]) =>
-            graphql.getQuestChainsFromAddresses(chainId, addresses),
+            getQuestChainsFromAddresses(chainId, addresses),
           ),
         );
 

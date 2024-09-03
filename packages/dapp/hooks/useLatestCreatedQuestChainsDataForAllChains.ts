@@ -1,21 +1,19 @@
-import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
+import { getCreatedQuestChains, QuestChainDisplayFragment } from '@/graphql';
 import { useRefresh } from '@/hooks/useRefresh';
 import { CHAINS } from '@/web3';
 
 export const useLatestCreatedQuestChainsDataForAllChains = (): {
-  questChains: graphql.QuestChainDisplayFragment[];
+  questChains: QuestChainDisplayFragment[];
   refresh: () => void;
   fetching: boolean;
   error: unknown;
 } => {
   const [error, setError] = useState<unknown>();
   const [fetching, setFetching] = useState<boolean>(false);
-  const [results, setResults] = useState<graphql.QuestChainDisplayFragment[]>(
-    [],
-  );
+  const [results, setResults] = useState<QuestChainDisplayFragment[]>([]);
 
   const { address } = useAccount();
   const [refreshCount, refresh] = useRefresh();
@@ -28,7 +26,7 @@ export const useLatestCreatedQuestChainsDataForAllChains = (): {
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            graphql.getCreatedQuestChains(chainId.toString(), address),
+            getCreatedQuestChains(chainId.toString(), address),
           ),
         );
         if (!isMounted) return;

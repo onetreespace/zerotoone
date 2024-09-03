@@ -14,11 +14,11 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
 import removeMd from 'remove-markdown';
 import { useAccount } from 'wagmi';
 
 import { UploadProof } from '@/components/UploadProof';
+import { QuestStatusInfoFragment } from '@/graphql';
 import { useUserQuestsRejectedForAllChains } from '@/hooks/useUserQuestsRejectedForAllChains';
 
 export const QuestsRejected: React.FC = () => {
@@ -93,9 +93,15 @@ export const QuestsRejected: React.FC = () => {
 };
 
 export const QuestRejectedStatus: React.FC<{
-  statusInfo: graphql.QuestStatusInfoFragment;
+  statusInfo: QuestStatusInfoFragment;
   refresh: () => void;
-}> = ({ statusInfo, refresh }) => (
+}> = ({ statusInfo, refresh }) => {
+  return null;
+};
+/*
+
+
+(
   <VStack
     background="rgba(180, 83, 9, 0.2)"
     p={6}
@@ -130,3 +136,5 @@ export const QuestRejectedStatus: React.FC<{
     )}
   </VStack>
 );
+
+*/

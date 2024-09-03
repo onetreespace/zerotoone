@@ -1,6 +1,6 @@
-import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
+import { getBadgesForUser, UserBadges } from '@/graphql';
 import { CHAINS } from '@/web3';
 
 export const useUserBadgesForAllChains = (
@@ -8,13 +8,11 @@ export const useUserBadgesForAllChains = (
 ): {
   error: unknown;
   fetching: boolean;
-  results: (graphql.UserBadges | undefined | null)[];
+  results: (UserBadges | undefined | null)[];
 } => {
   const [error, setError] = useState<unknown>();
   const [fetching, setFetching] = useState<boolean>(false);
-  const [results, setResults] = useState<
-    (graphql.UserBadges | undefined | null)[]
-  >([]);
+  const [results, setResults] = useState<(UserBadges | undefined | null)[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -23,7 +21,7 @@ export const useUserBadgesForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            graphql.getBadgesForUser(chainId.toString(), address ?? ''),
+            getBadgesForUser(chainId.toString(), address ?? ''),
           ),
         );
         if (!isMounted) return;

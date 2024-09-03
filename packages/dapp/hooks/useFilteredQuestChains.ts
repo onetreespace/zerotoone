@@ -1,14 +1,18 @@
 /* eslint-disable camelcase */
-import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
+import {
+  getQuestChainsFromFilters,
+  OrderDirection,
+  QuestChain_OrderBy,
+  QuestChainDisplayFragment,
+  QuestChainFiltersInfo,
+} from '@/graphql';
 import { CHAINS } from '@/web3';
 
-const { OrderDirection, QuestChain_OrderBy } = graphql;
-
 const getSortKey = (
-  orderBy: graphql.QuestChain_OrderBy = QuestChain_OrderBy.UpdatedAt,
-): keyof graphql.QuestChainDisplayFragment => {
+  orderBy: QuestChain_OrderBy = QuestChain_OrderBy.UpdatedAt,
+): keyof QuestChainDisplayFragment => {
   switch (orderBy) {
     case QuestChain_OrderBy.NumCompletedQuesters:
       return 'numCompletedQuesters';
@@ -21,34 +25,30 @@ const getSortKey = (
 };
 
 export const useFilteredQuestChains = (
-  filters: graphql.QuestChainFiltersInfo,
+  filters: QuestChainFiltersInfo,
   networksMap: Record<string, boolean> = {},
 ): {
   error: unknown;
   fetching: boolean;
-  results: graphql.QuestChainDisplayFragment[];
+  results: QuestChainDisplayFragment[];
 } => {
   const [error, setError] = useState<unknown>();
   const [fetching, setFetching] = useState<boolean>(true);
-  const [results, setResults] = useState<graphql.QuestChainDisplayFragment[]>(
-    [],
-  );
+  const [results, setResults] = useState<QuestChainDisplayFragment[]>([]);
 
   useEffect(() => {
     let isMounted = true;
     (async () => {
       try {
         setFetching(true);
-        let chains: graphql.QuestChainDisplayFragment[] = [];
+        let chains: QuestChainDisplayFragment[] = [];
         const networksList = Object.entries(networksMap)
           .filter(([_, value]) => value)
           .map(([key]) => key);
 
         if (networksList.length > 0) {
           const allResults = await Promise.all(
-            networksList.map(async n =>
-              graphql.getQuestChainsFromFilters(n, filters),
-            ),
+            networksList.map(async n => getQuestChainsFromFilters(n, filters)),
           );
           chains = allResults.reduce((t, a) => {
             t.push(...a);
@@ -57,7 +57,7 @@ export const useFilteredQuestChains = (
         } else {
           const allResults = await Promise.all(
             CHAINS.map(async c =>
-              graphql.getQuestChainsFromFilters(c.id.toString(), filters),
+              getQuestChainsFromFilters(c.id.toString(), filters),
             ),
           );
           chains = allResults.reduce((t, a) => {

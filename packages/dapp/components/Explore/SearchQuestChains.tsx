@@ -9,14 +9,14 @@ import {
   Spinner,
   VStack,
 } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
-import {
-  OrderDirection,
-  QuestChain_OrderBy,
-} from '@quest-chains/sdk/dist/graphql';
 import { useMemo, useState } from 'react';
 
 import { QuestChainTile } from '@/components/QuestChainTile';
+import {
+  OrderDirection,
+  QuestChain_OrderBy,
+  QuestChainFiltersInfo,
+} from '@/graphql';
 import { useDelay } from '@/hooks/useDelay';
 import { useQuestChainSearchForAllChains } from '@/hooks/useQuestChainSearchForAllChains';
 
@@ -26,8 +26,8 @@ const SearchQuestChains: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const [value, setValue] = useState('');
   const delayedSetValue = useDelay(setValue);
 
-  const filters: graphql.QuestChainFiltersInfo = useMemo(() => {
-    const f: graphql.QuestChainFiltersInfo = {};
+  const filters: QuestChainFiltersInfo = useMemo(() => {
+    const f: QuestChainFiltersInfo = {};
     f.search = value.toLowerCase();
 
     f.orderBy = QuestChain_OrderBy.UpdatedAt;
@@ -99,24 +99,24 @@ const SearchQuestChains: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
             {results.map(
               ({
                 address,
-                name,
-                description,
-                slug,
+                // name,
+                // description,
+                // slug,
                 chainId,
                 numQuests,
-                imageUrl,
+                // imageUrl,
                 createdBy,
               }) => (
                 <QuestChainTile
                   {...{
                     address,
-                    name,
-                    description,
-                    slug,
+                    // name,
+                    // description,
+                    // slug,
                     chainId,
                     createdBy: createdBy.id,
                     quests: numQuests,
-                    imageUrl,
+                    // imageUrl,
                     onClick: onClose,
                   }}
                   key={address}

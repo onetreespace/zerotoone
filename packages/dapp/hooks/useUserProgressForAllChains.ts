@@ -1,6 +1,6 @@
-import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
+import { getStatusForUser, UserStatus } from '@/graphql';
 import { CHAINS } from '@/web3';
 
 export const useUserProgressForAllChains = (
@@ -8,11 +8,11 @@ export const useUserProgressForAllChains = (
 ): {
   error: unknown;
   fetching: boolean;
-  results: graphql.UserStatus[];
+  results: UserStatus[];
 } => {
   const [error, setError] = useState<unknown>();
   const [fetching, setFetching] = useState<boolean>(false);
-  const [results, setResults] = useState<graphql.UserStatus[]>([]);
+  const [results, setResults] = useState<UserStatus[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -21,7 +21,7 @@ export const useUserProgressForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            graphql.getStatusForUser(chainId.toString(), address ?? ''),
+            getStatusForUser(chainId.toString(), address ?? ''),
           ),
         );
         if (!isMounted) return;

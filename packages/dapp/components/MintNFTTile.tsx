@@ -11,12 +11,12 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { contracts, graphql } from '@quest-chains/sdk';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { TwitterShareButton } from 'react-share';
 
 import VictoryCupImage from '@/assets/victory-cup.svg';
+import { QuestChainInfoFragment } from '@/graphql';
 import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
 import { ipfsUriToHttp } from '@/utils/uriHelpers';
@@ -25,7 +25,7 @@ import { TwitterIcon } from './icons/TwitterIcon';
 import { MastodonShareButton } from './MastodonShareButton';
 
 type QuestChainTileProps = {
-  questChain: graphql.QuestChainInfoFragment;
+  questChain: QuestChainInfoFragment;
   onSuccess?: () => void;
   QCURL: string;
 };
@@ -93,9 +93,8 @@ export const MintNFTTile: React.FC<QuestChainTileProps> = ({
     >
       <Image src={VictoryCupImage.src} alt="Success" />
       <Text>
-        {`You have successfully completed all required quests from ${
-          questChain.name ?? 'this quest chain'
-        }.`}
+        You have successfully completed all required quests from this quest
+        chain.
       </Text>
       <Button
         w="100%"
@@ -129,7 +128,7 @@ export const MintNFTTile: React.FC<QuestChainTileProps> = ({
             <Flex justifyContent="center" flexDir="column" alignItems="center">
               <Image
                 w="14rem"
-                src={ipfsUriToHttp(questChain.token.imageUrl)}
+                // src={ipfsUriToHttp(questChain.token.imageUrl)}
                 alt="Quest chain NFT badge"
               />
             </Flex>
