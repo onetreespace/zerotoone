@@ -61,6 +61,7 @@ export const SUPPORTED_NETWORK_INFO: NetworkInfo = {
 
 export const getClient = (chainId: SupportedChainId): Client => {
   const info = SUPPORTED_NETWORK_INFO[chainId];
+  if (!info) throw new Error(`Unsupported chainId: ${chainId}`);
   return createClient({
     url: GRAPH_API_KEY ? info.prodSubgraphUrl : info.devSubgraphUrl,
     exchanges: [dedupExchange, fetchExchange],

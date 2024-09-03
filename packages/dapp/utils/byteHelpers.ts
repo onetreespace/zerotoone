@@ -1,4 +1,6 @@
-export const randomBytes = (_nBytes: number): string => {
+import { Hex } from 'viem';
+
+export const randomBytes = (_nBytes: number): Hex => {
   // convert number number of bytes
   const nBytes = Math.ceil(+_nBytes || 1);
 

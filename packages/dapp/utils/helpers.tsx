@@ -1,6 +1,7 @@
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import { HStack, Link, Text } from '@chakra-ui/react';
 import { toast } from 'react-hot-toast';
+import { Hex } from 'viem';
 
 import { getExplorerLabel, getTxUrl } from '@/web3';
 
@@ -29,7 +30,7 @@ export const uniqueList = (arr: string[]): string[] => {
   return arr.filter(item => (seen.has(item) ? false : seen.add(item)));
 };
 
-export const handleTxLoading = (txHash: string, chainId: number): string => {
+export const handleTxLoading = (txHash: Hex, chainId: number): string => {
   return toast.loading(
     <Link href={getTxUrl(txHash, chainId)} _hover={{}} isExternal>
       <HStack>
