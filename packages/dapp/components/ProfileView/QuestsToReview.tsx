@@ -15,11 +15,11 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
 import NextLink from 'next/link';
 import { useAccount } from 'wagmi';
 
 import { NetworkDisplay } from '@/components/NetworkDisplay';
+import { QuestChainReviewInfoFragment } from '@/graphql';
 import { useQuestsToReviewForAllChains } from '@/hooks/useQuestsToReviewForAllChains';
 
 export const QuestsToReview: React.FC = () => {
@@ -83,7 +83,7 @@ export const QuestsToReview: React.FC = () => {
 };
 
 const QuestChainStatusView: React.FC<{
-  questChain: graphql.QuestChainReviewInfoFragment;
+  questChain: QuestChainReviewInfoFragment;
 }> = ({ questChain: chain }) => (
   <NextLink
     as={`/${chain.chainId}/${chain.address}/review`}
@@ -100,7 +100,7 @@ const QuestChainStatusView: React.FC<{
     >
       <VStack p={6} align="stretch" gap={4}>
         <Heading fontSize="xl" fontWeight="bold">
-          {chain.name}
+          {/* chain.name */}Quest Chain
         </Heading>
         <SimpleGrid columns={3} w="100%">
           <VStack color="neutral">

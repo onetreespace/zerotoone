@@ -9,18 +9,18 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
 import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { NetworkDisplay } from '@/components/NetworkDisplay';
+import { QuestChainInfoFragment } from '@/graphql';
 import { ipfsUriToHttp } from '@/utils/uriHelpers';
 import { formatAddress } from '@/web3';
 
 import { NFTDetail } from './NFTDetail';
 
 export const NFTDetailsModal: React.FC<{
-  questChain: graphql.QuestChainInfoFragment;
+  questChain: QuestChainInfoFragment;
   isOpen: boolean;
   onClose: () => void;
 }> = ({ questChain, isOpen, onClose }) => {
@@ -33,7 +33,7 @@ export const NFTDetailsModal: React.FC<{
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{questChain.token?.name}</ModalHeader>
+        {/* <ModalHeader>{questChain.token?.name}</ModalHeader> */}
         <ModalCloseButton />
         <ModalBody>
           <Flex mb={3} alignItems="start" direction="column">
@@ -41,7 +41,7 @@ export const NFTDetailsModal: React.FC<{
               <NetworkDisplay chainId={Number(questChain.chainId)} asTag />
             </Flex>
             <Image
-              src={ipfsUriToHttp(questChain.token.imageUrl)}
+              // src={ipfsUriToHttp(questChain.token.imageUrl)}
               alt="quest chain NFT badge"
               maxW="100%"
               maxH="100%"

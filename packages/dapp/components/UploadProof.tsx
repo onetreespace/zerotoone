@@ -14,9 +14,9 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
 import { useCallback, useState } from 'react';
 
+import { QuestChainDisplayFragment, QuestInfoFragment } from '@/graphql';
 import { useDropFiles, useDropImage } from '@/hooks/useDropFiles';
 import { useInputText } from '@/hooks/useInputText';
 
@@ -27,8 +27,8 @@ import { UploadImageForm } from './UploadImageForm';
 
 export const UploadProof: React.FC<{
   refresh: () => void;
-  quest: graphql.QuestInfoFragment;
-  questChain: graphql.QuestChainDisplayFragment;
+  quest: QuestInfoFragment;
+  questChain: QuestChainDisplayFragment;
   profile?: boolean;
 }> = ({ refresh, quest, questChain, profile }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -167,7 +167,7 @@ export const UploadProof: React.FC<{
       <Modal isOpen={isOpen} onClose={onModalClose} size="xl">
         <ModalOverlay />
         <ModalContent maxW="40rem">
-          <ModalHeader>Upload Proof - {quest.name}</ModalHeader>
+          <ModalHeader>Upload Proof Of Completion</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl isRequired>

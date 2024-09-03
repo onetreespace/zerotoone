@@ -71,11 +71,11 @@ export const Featured: React.FC = () => {
               quests={item.numQuests}
               chainId={item.chainId}
               address={item.address}
-              name={item.name}
-              description={item.description}
-              imageUrl={item.imageUrl}
+              // name={item.name}
+              // description={item.description}
+              // imageUrl={item.imageUrl}
               createdBy={item.createdBy.id}
-              slug={item.slug}
+              // slug={item.slug}
               featured
             />
           ))}

@@ -1,5 +1,5 @@
 {
-  "name": "@quest-chains/dapp",
+  "name": "@zerotoone/dapp",
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
@@ -23,7 +23,6 @@
     "@graphql-codegen/typescript-urql": "^4.0.0",
     "@next/bundle-analyzer": "^14.2.7",
     "@next/eslint-plugin-next": "^14.2.7",
-    "@quest-chains/sdk": "^0.2.12",
     "@rainbow-me/rainbowkit": "^2.1.5",
     "@tanstack/react-query": "^5.53.2",
     "@types/busboy": "^1.5.3",

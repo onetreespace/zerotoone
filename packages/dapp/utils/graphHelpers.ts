@@ -1,5 +1,37 @@
-import { helpers } from '@quest-chains/sdk';
+/* eslint-disable no-await-in-loop */
+import { Address, GetTransactionReceiptReturnType, parseEventLogs } from 'viem';
 
-export const waitUntilBlock = helpers.waitUntilSubgraphIndexed;
+import { getSubgraphLatestBlock } from '@/graphql';
+import { iQuestChainFactoryAbi } from '@/web3';
 
-export const awaitQuestChainAddress = helpers.getQuestChainAddressFromTx;
+import { sleep } from './helpers';
+
+const UPDATE_INTERVAL = 10000;
+
+const MAX_RETRIES = 6;
+
+export const waitUntilBlock = async (
+  chainId: string,
+  block: number,
+): Promise<boolean> => {
+  let latestBlock = await getSubgraphLatestBlock(chainId);
+  let tries = 0;
+  while (latestBlock < block && tries < MAX_RETRIES) {
+    await sleep(UPDATE_INTERVAL);
+    tries += 1;
+    latestBlock = await getSubgraphLatestBlock(chainId);
+  }
+  return latestBlock >= block;
+};
+
+export const parseQuestChainAddress = async (
+  receipt: GetTransactionReceiptReturnType,
+): Promise<Address | null> => {
+  if (!receipt || !receipt.logs) return null;
+  const logs = parseEventLogs({
+    abi: iQuestChainFactoryAbi,
+    logs: receipt.logs,
+    eventName: 'QuestChainCreated',
+  });
+  return (logs[0]?.args.questChainAddress as Address) ?? null;
+};

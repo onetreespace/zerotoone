@@ -1,20 +1,22 @@
-import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
+
+import { getQuestChainInfo, QuestChainInfoFragment } from '@/graphql';
 
 import { useRefresh } from './useRefresh';
 
 export const useLatestQuestChainData = (
-  inputQuestChain: graphql.QuestChainInfoFragment | null,
+  inputQuestChain: QuestChainInfoFragment | null,
 ): {
-  questChain: graphql.QuestChainInfoFragment | null;
+  questChain: QuestChainInfoFragment | null;
   refresh: () => void;
   fetching: boolean;
   error: unknown;
 } => {
   const [fetching, setFetching] = useState<boolean>(false);
   const [error, setError] = useState<unknown>();
-  const [questChain, setQuestChain] =
-    useState<graphql.QuestChainInfoFragment | null>(inputQuestChain);
+  const [questChain, setQuestChain] = useState<QuestChainInfoFragment | null>(
+    inputQuestChain,
+  );
 
   const [refreshCount, refresh] = useRefresh();
 
@@ -24,7 +26,7 @@ export const useLatestQuestChainData = (
       if (!inputQuestChain?.chainId || !inputQuestChain?.address) return;
       try {
         setFetching(true);
-        const data = await graphql.getQuestChainInfo(
+        const data = await getQuestChainInfo(
           inputQuestChain.chainId,
           inputQuestChain.address,
         );

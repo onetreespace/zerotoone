@@ -13,7 +13,6 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { contracts, graphql } from '@quest-chains/sdk';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
@@ -21,6 +20,7 @@ import { PowerIcon } from '@/components/icons/PowerIcon';
 import { TrashOutlinedIcon } from '@/components/icons/TrashOutlinedIcon';
 import { MarkdownViewer } from '@/components/MarkdownViewer';
 import { UploadProofButton } from '@/components/UploadProofButton';
+import { QuestChainInfoFragment, Status } from '@/graphql';
 import { UserStatusType } from '@/hooks/useUserStatus';
 import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
@@ -42,7 +42,7 @@ export const QuestTile: React.FC<{
   bgColor?: string;
   questId?: string;
   userStatus?: UserStatusType;
-  questChain?: graphql.QuestChainInfoFragment;
+  questChain?: QuestChainInfoFragment;
   refresh?: () => void;
   advSettings?: QuestAdvSetting;
   onTogglePause?: (questId: string, pause: boolean) => void;
@@ -74,47 +74,47 @@ export const QuestTile: React.FC<{
   const toggleQuestPaused = useCallback(
     async (pause: boolean) => {
       /*
-        if (!chainId || !provider || !questChain || !questId) {
-          return;
-        }
-  
-        setToggling(true);
-        let tid = toast.loading(`${pause ? 'Disabling' : 'Enabling'} the quest`);
-        try {
-          const contract = getQuestChainContract(
-            questChain.address,
-            questChain.version,
-            provider.getSigner(),
-          );
-  
-          const tx = await (Number(questChain.version) > 0
-            ? (contract as contracts.V1.QuestChain).pauseQuests(
-                [questId],
-                [pause],
-              )
-            : (contract as contracts.V0.QuestChain).functions[
-                pause ? 'pauseQuest' : 'unpauseQuest'
-              ](questId));
-          toast.dismiss(tid);
-          tid = handleTxLoading(tx.hash, chainId);
-          const receipt = await tx.wait(1);
-          toast.dismiss(tid);
-          tid = toast.loading(
-            'Transaction confirmed. Waiting for The Graph to index the transaction data.',
-          );
-          await waitUntilBlock(chainId, receipt.blockNumber);
-          toast.dismiss(tid);
-          toast.success(
-            `Successfully ${pause ? 'disabled' : 'enabled'} the quest`,
-          );
-          refresh?.();
-        } catch (error) {
-          toast.dismiss(tid);
-          handleError(error);
-        } finally {
-          setToggling(false);
-        }
-        */
+          if (!chainId || !provider || !questChain || !questId) {
+            return;
+          }
+    
+          setToggling(true);
+          let tid = toast.loading(`${pause ? 'Disabling' : 'Enabling'} the quest`);
+          try {
+            const contract = getQuestChainContract(
+              questChain.address,
+              questChain.version,
+              provider.getSigner(),
+            );
+    
+            const tx = await (Number(questChain.version) > 0
+              ? (contract as contracts.V1.QuestChain).pauseQuests(
+                  [questId],
+                  [pause],
+                )
+              : (contract as contracts.V0.QuestChain).functions[
+                  pause ? 'pauseQuest' : 'unpauseQuest'
+                ](questId));
+            toast.dismiss(tid);
+            tid = handleTxLoading(tx.hash, chainId);
+            const receipt = await tx.wait(1);
+            toast.dismiss(tid);
+            tid = toast.loading(
+              'Transaction confirmed. Waiting for The Graph to index the transaction data.',
+            );
+            await waitUntilBlock(chainId, receipt.blockNumber);
+            toast.dismiss(tid);
+            toast.success(
+              `Successfully ${pause ? 'disabled' : 'enabled'} the quest`,
+            );
+            refresh?.();
+          } catch (error) {
+            toast.dismiss(tid);
+            handleError(error);
+          } finally {
+            setToggling(false);
+          }
+          */
     },
     [questChain, questId, refresh],
   );
@@ -205,24 +205,6 @@ export const QuestTile: React.FC<{
                   </Tooltip>
                 )}
 
-                {/* Only show for version lesser than 2 */}
-                {Number(questChain?.version) < 2 &&
-                  !pauseDisabled &&
-                  questId && (
-                    <Tooltip label={paused ? 'Enable Quest' : 'Disable Quest'}>
-                      <IconButton
-                        aria-label=""
-                        bg={!paused ? 'transparent' : 'whiteAlpha.200'}
-                        isLoading={isToggling}
-                        onClick={() =>
-                          onTogglePause
-                            ? onTogglePause(questId, !paused)
-                            : toggleQuestPaused(!paused)
-                        }
-                        icon={<PowerIcon />}
-                      />
-                    </Tooltip>
-                  )}
                 {onRemoveQuest && (
                   <Tooltip label="Delete Quest">
                     <IconButton
@@ -273,8 +255,8 @@ const ReviewComment: React.FC<{
     !questId ||
     !userStatus ||
     !userStatus[questId] ||
-    userStatus[questId].status === graphql.Status.Init ||
-    userStatus[questId].status === graphql.Status.Review ||
+    userStatus[questId].status === Status.Init ||
+    userStatus[questId].status === Status.Review ||
     userStatus[questId].reviews.length === 0
   )
     return null;

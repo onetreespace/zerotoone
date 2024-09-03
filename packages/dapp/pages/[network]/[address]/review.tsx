@@ -1,6 +1,5 @@
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { Flex, Heading, Link as ChakraLink, Text } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -12,12 +11,16 @@ import { Page } from '@/components/Layout/Page';
 import { LoadingState } from '@/components/LoadingState';
 import { QuestChainReviewPage } from '@/components/Review/QuestChainReviewPage';
 import { HeadComponent } from '@/components/Seo';
+import {
+  getQuestChainFromSlug,
+  getQuestChainInfo,
+  getStatusesForChain,
+  QuestChainInfoFragment,
+  QuestStatusInfoFragment,
+} from '@/graphql';
 import { useLatestQuestChainData } from '@/hooks/useLatestQuestChainData';
 import { useLatestQuestStatusesForChainData } from '@/hooks/useLatestQuestStatusesForChainData';
 import { getQuestChainURL } from '@/utils/uriHelpers';
-
-const { getQuestChainInfo, getStatusesForChain, getQuestChainFromSlug } =
-  graphql;
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
@@ -113,7 +116,7 @@ export const getStaticProps = async (
   const network = context.params?.network;
   const address = context.params?.address;
 
-  let questStatuses: graphql.QuestStatusInfoFragment[] = [];
+  let questStatuses: QuestStatusInfoFragment[] = [];
   let questChain = null;
 
   if (address && network) {
@@ -150,15 +153,11 @@ export const getStaticProps = async (
   };
 };
 
-const ReviewHead = ({
-  questChain,
-}: {
-  questChain: graphql.QuestChainInfoFragment;
-}) => {
+const ReviewHead = ({ questChain }: { questChain: QuestChainInfoFragment }) => {
   return (
     <>
       <HeadComponent
-        title={`Review - ${questChain.name} - ${questChain.chainId}`}
+        title={`Review - ${questChain.address} - ${questChain.chainId}`}
         description="Review submissions for this quest chain"
         url={getQuestChainURL(questChain)}
       />

@@ -1,15 +1,15 @@
 /* eslint-disable camelcase */
 import { CloseIcon } from '@chakra-ui/icons';
 import { Button, Flex, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
-import {
-  OrderDirection,
-  QuestChain_OrderBy,
-} from '@quest-chains/sdk/dist/graphql';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Chain } from 'viem';
 
 import { QuestChainTile } from '@/components/QuestChainTile';
+import {
+  OrderDirection,
+  QuestChain_OrderBy,
+  QuestChainFiltersInfo,
+} from '@/graphql';
 import { useCategories } from '@/hooks/useCategories';
 import { useFilteredQuestChains } from '@/hooks/useFilteredQuestChains';
 import { CHAINS } from '@/web3';
@@ -33,7 +33,7 @@ const SortOptions: FilterOption[] = [
   { label: 'Fewest quests first', value: SortBy.FEWEST_QUESTS },
 ];
 
-const getSorter = (sortValue: string): graphql.QuestChainFiltersInfo => {
+const getSorter = (sortValue: string): QuestChainFiltersInfo => {
   switch (sortValue) {
     case SortBy.POPULARITY:
       return {
@@ -107,8 +107,8 @@ const QuestChains: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
 
   useEffect(resetFilters, [resetFilters]);
 
-  const filters: graphql.QuestChainFiltersInfo = useMemo(() => {
-    const f: graphql.QuestChainFiltersInfo = {};
+  const filters: QuestChainFiltersInfo = useMemo(() => {
+    const f: QuestChainFiltersInfo = {};
 
     const selectedCategories = Object.entries(categories)
       .filter(([_, value]) => value)
@@ -250,24 +250,24 @@ const QuestChains: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
           {results.map(
             ({
               address,
-              name,
-              description,
-              slug,
+              // name,
+              // description,
+              // slug,
               chainId,
               numQuests,
-              imageUrl,
+              // imageUrl,
               createdBy,
             }) => (
               <QuestChainTile
                 {...{
                   address,
-                  name,
-                  description,
-                  slug,
+                  // name,
+                  // description,
+                  // slug,
                   chainId,
                   createdBy: createdBy.id,
                   quests: numQuests,
-                  imageUrl,
+                  // imageUrl,
                   onClick: onClose,
                 }}
                 key={address}

@@ -1,6 +1,9 @@
-import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
+import {
+  getQuestsRejectedForUserAndChain,
+  QuestStatusInfoFragment,
+} from '@/graphql';
 import { CHAINS } from '@/web3';
 
 import { useRefresh } from './useRefresh';
@@ -10,12 +13,12 @@ export const useUserQuestsRejectedForAllChains = (
 ): {
   error: unknown;
   fetching: boolean;
-  results: graphql.QuestStatusInfoFragment[];
+  results: QuestStatusInfoFragment[];
   refresh: () => void;
 } => {
   const [error, setError] = useState<unknown>();
   const [fetching, setFetching] = useState<boolean>(false);
-  const [results, setResults] = useState<graphql.QuestStatusInfoFragment[]>([]);
+  const [results, setResults] = useState<QuestStatusInfoFragment[]>([]);
   const [refreshCount, refresh] = useRefresh();
 
   useEffect(() => {
@@ -31,10 +34,7 @@ export const useUserQuestsRejectedForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            graphql.getQuestsRejectedForUserAndChain(
-              chainId.toString(),
-              address ?? '',
-            ),
+            getQuestsRejectedForUserAndChain(chainId.toString(), address ?? ''),
           ),
         );
         if (!isMounted) return;

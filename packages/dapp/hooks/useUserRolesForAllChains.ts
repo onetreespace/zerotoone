@@ -1,6 +1,6 @@
-import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
+import { getRolesForUser, UserRoles } from '@/graphql';
 import { CHAINS } from '@/web3';
 
 export const useUserRolesForAllChains = (
@@ -8,13 +8,11 @@ export const useUserRolesForAllChains = (
 ): {
   error: unknown;
   fetching: boolean;
-  results: (graphql.UserRoles | undefined | null)[];
+  results: (UserRoles | undefined | null)[];
 } => {
   const [error, setError] = useState<unknown>();
   const [fetching, setFetching] = useState<boolean>(false);
-  const [results, setResults] = useState<
-    (graphql.UserRoles | undefined | null)[]
-  >([]);
+  const [results, setResults] = useState<(UserRoles | undefined | null)[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -23,7 +21,7 @@ export const useUserRolesForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            graphql.getRolesForUser(chainId.toString(), address ?? ''),
+            getRolesForUser(chainId.toString(), address ?? ''),
           ),
         );
         if (!isMounted) return;

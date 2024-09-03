@@ -1,5 +1,6 @@
-import { graphql } from '@quest-chains/sdk';
 import { useMemo } from 'react';
+
+import { QuestStatusInfoFragment, Status } from '@/graphql';
 
 export type UserStatusType = {
   [questId: string]: {
@@ -15,12 +16,12 @@ export type UserStatusType = {
       reviewer: string;
       accepted: boolean;
     }[];
-    status: graphql.Status;
+    status: Status;
   };
 };
 
 export const useUserStatus = (
-  questStatuses: graphql.QuestStatusInfoFragment[],
+  questStatuses: QuestStatusInfoFragment[],
   address: string,
 ): UserStatusType => {
   const userStatus: UserStatusType = useMemo(() => {
@@ -31,13 +32,13 @@ export const useUserStatus = (
         userStat[item.quest.questId] = {
           status: item.status,
           submissions: item.submissions.map(sub => ({
-            description: sub.description,
-            externalUrl: sub.externalUrl,
+            description: undefined,
+            externalUrl: undefined,
             timestamp: sub.timestamp,
           })),
           reviews: item.reviews.map(sub => ({
-            description: sub.description,
-            externalUrl: sub.externalUrl,
+            description: undefined,
+            externalUrl: undefined,
             timestamp: sub.timestamp,
             accepted: sub.accepted,
             reviewer: sub.reviewer.id,

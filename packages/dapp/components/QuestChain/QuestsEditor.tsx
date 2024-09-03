@@ -1,9 +1,11 @@
 // import { AddIcon } from '@chakra-ui/icons';
 // import { Accordion, Box, Button, Flex, HStack, Text } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
+// import { graphql } from '@quest-chains/sdk';
 // import { useCallback, useMemo, useState } from 'react';
 // import { toast } from 'react-hot-toast';
 // import { TransactionReceipt } from 'viem';
+
+import { QuestChainInfoFragment } from '@/graphql';
 
 // import {
 //   AddQuestBlock,
@@ -25,7 +27,7 @@ import { graphql } from '@quest-chains/sdk';
 export const QuestsEditor: React.FC<{
   onExit: () => void;
   refresh: () => void;
-  questChain: graphql.QuestChainInfoFragment;
+  questChain: QuestChainInfoFragment;
 }> = () => {
   return null;
 };

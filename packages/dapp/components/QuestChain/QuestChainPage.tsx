@@ -24,7 +24,6 @@ import {
   useTimeout,
   VStack,
 } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import React, {
@@ -58,6 +57,11 @@ import { HeadComponent } from '@/components/Seo';
 import { SubmitButton } from '@/components/SubmitButton';
 import { UploadImageForm } from '@/components/UploadImageForm';
 import { UserDisplay } from '@/components/UserDisplay';
+import {
+  QuestChainInfoFragment,
+  QuestStatusInfoFragment,
+  Status,
+} from '@/graphql';
 import { useDropImage } from '@/hooks/useDropFiles';
 import { useInputText } from '@/hooks/useInputText';
 import { usePoHs } from '@/hooks/usePoH';
@@ -74,17 +78,12 @@ import { NFTDetailsModal } from './NFTDetailsModal';
 import { QuestsEditor } from './QuestsEditor';
 import { RolesEditor } from './RolesEditor';
 
-const { Status } = graphql;
-
 enum Mode {
   MEMBER = 'MEMBER',
   QUESTER = 'QUESTER',
 }
 
-const getQuestBGColor = (
-  status: graphql.Status | undefined | null,
-  mode: Mode,
-) => {
+const getQuestBGColor = (status: Status | undefined | null, mode: Mode) => {
   if (mode === Mode.MEMBER || !status || status === Status.Init)
     return 'whiteAlpha.100';
 
@@ -106,8 +105,8 @@ const ChainStat: React.FC<{
 );
 
 export type QuestChainPageProps = {
-  questChain: graphql.QuestChainInfoFragment;
-  questStatuses: graphql.QuestStatusInfoFragment[];
+  questChain: QuestChainInfoFragment;
+  questStatuses: QuestStatusInfoFragment[];
   fetching: boolean;
   refresh: () => void;
 };
@@ -128,7 +127,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
   const userStatus = useUserStatus(questStatuses, address ?? '');
 
   const numSubmissionsToReview = questStatuses.filter(
-    q => q.status === graphql.Status.Review,
+    q => q.status === Status.Review,
   ).length;
 
   const { progress, canMint } = useUserProgress(
@@ -153,10 +152,8 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
   const [isEditingQuests, setEditingQuests] = useState(false);
   const [hasMetadataChanged, setMetadataChanged] = useState(false);
 
-  const [chainNameRef, setChainName] = useInputText(questChain?.name || '');
-  const [chainDescRef, setChainDescription] = useInputText(
-    questChain?.description || '',
-  );
+  const [chainNameRef, setChainName] = useInputText('');
+  const [chainDescRef, setChainDescription] = useInputText('');
 
   const uploadImageProps = useDropImage();
   const { imageFile, onResetImage } = uploadImageProps;
@@ -171,57 +168,55 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
     onClose: onEditNFTClose,
   } = useDisclosure();
 
-  const categoriesRef = useRef<MongoCategory[]>(
-    (questChain?.categories?.map(c => ({
-      value: c,
-      label: c.charAt(0).toUpperCase() + c.slice(1),
-    })) as MongoCategory[]) || [],
-  );
+  const categoriesRef = useRef<MongoCategory[]>([]);
   const setCategoriesRef = useCallback((categories: MongoCategory[]) => {
     categoriesRef.current = categories;
   }, []);
 
-  const checkMetadataChanged = useCallback(() => {
-    if (
-      hasMetadataChanged &&
-      chainNameRef.current === questChain.name &&
-      chainDescRef.current === questChain.description &&
-      categoriesRef.current
-        .map((v: MongoCategory) => v.value)
-        .sort()
-        .join(',') === questChain?.categories?.sort().join(',')
-    ) {
-      setMetadataChanged(false);
-    } else if (
-      !hasMetadataChanged &&
-      !(
-        chainNameRef.current === questChain.name &&
-        chainDescRef.current === questChain.description &&
-        categoriesRef.current
-          .map((v: MongoCategory) => v.value)
-          .sort()
-          .join(',') === questChain?.categories?.sort().join(',')
-      )
-    ) {
-      setMetadataChanged(true);
-    }
-  }, [
-    questChain?.categories,
-    questChain.name,
-    questChain.description,
-    categoriesRef,
-    chainNameRef,
-    chainDescRef,
-    hasMetadataChanged,
-  ]);
-
-  useEffect(
-    () =>
-      setMetadataChanged(
-        !!imageFile || (removeCoverImage && !!questChain.imageUrl),
-      ),
-    [imageFile, questChain, removeCoverImage],
+  const checkMetadataChanged = useCallback(
+    () => {
+      // if (
+      //   hasMetadataChanged &&
+      //   chainNameRef.current === questChain.name &&
+      //   chainDescRef.current === questChain.description &&
+      //   categoriesRef.current
+      //     .map((v: MongoCategory) => v.value)
+      //     .sort()
+      //     .join(',') === questChain?.categories?.sort().join(',')
+      // ) {
+      //   setMetadataChanged(false);
+      // } else if (
+      //   !hasMetadataChanged &&
+      //   !(
+      //     chainNameRef.current === questChain.name &&
+      //     chainDescRef.current === questChain.description &&
+      //     categoriesRef.current
+      //       .map((v: MongoCategory) => v.value)
+      //       .sort()
+      //       .join(',') === questChain?.categories?.sort().join(',')
+      //   )
+      // ) {
+      //   setMetadataChanged(true);
+      // }
+    },
+    [
+      // questChain?.categories,
+      // questChain.name,
+      // questChain.description,
+      // categoriesRef,
+      // chainNameRef,
+      // chainDescRef,
+      // hasMetadataChanged,
+    ],
   );
+
+  // useEffect(
+  //   () =>
+  //     setMetadataChanged(
+  //       !!imageFile || (removeCoverImage && !!questChain.imageUrl),
+  //     ),
+  //   [imageFile, questChain, removeCoverImage],
+  // );
 
   const isOwner: boolean = useMemo(
     () =>
@@ -447,15 +442,15 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
   return (
     <Page>
       <HeadComponent
-        title={questChain.name || 'Quest Chains'}
-        description={
-          questChain.description ||
-          'Complete this quest chain to acquire its soulbound NFT!'
-        }
+        // title={questChain.name || 'Quest Chains'}
+        // description={
+        //   questChain.description ||
+        //   'Complete this quest chain to acquire its soulbound NFT!'
+        // }
         url={QCURL}
       />
       <Box
-        bgImage={ipfsUriToHttp(questChain.imageUrl)}
+        // bgImage={ipfsUriToHttp(questChain.imageUrl)}
         position="fixed"
         height="100vh"
         width="100vw"
@@ -468,7 +463,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
       />
       <Fade in={visible} style={{ width: '100%' }}>
         <Head>
-          <title>{`${questChain.name} - ${questChain.chainId}`}</title>
+          {/* <title>{`${questChain.name} - ${questChain.chainId}`}</title> */}
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"
@@ -599,8 +594,8 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                             bgColor="rgba(71, 85, 105, 0.15)"
                             onClick={() => {
                               setEditingQuestChain(true);
-                              setChainName(questChain.name ?? '');
-                              setChainDescription(questChain.description ?? '');
+                              // setChainName(questChain.name ?? '');
+                              // setChainDescription(questChain.description ?? '');
                             }}
                             fontSize="xs"
                             leftIcon={<EditIcon fontSize="sm" />}
@@ -724,7 +719,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       fontFamily="heading"
                       mb={3}
                     >
-                      {questChain.name}
+                      {/* questChain.name */}
                     </Text>
                     <Flex gap={4} justify="space-between">
                       <HStack>
@@ -805,22 +800,21 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       checkMetadataChanged();
                     }}
                     numberOfCategories={categoriesRef.current.length}
-                    defaultValue={
-                      (questChain?.categories?.map(c => ({
-                        value: c,
-                        label: c.charAt(0).toUpperCase() + c.slice(1),
-                      })) as MongoCategory[]) || []
-                    }
+                    defaultValue={[]}
+                    // (questChain?.categories?.map(c => ({
+                    //   value: c,
+                    //   label: c.charAt(0).toUpperCase() + c.slice(1),
+                    // })) as MongoCategory[]) || []
                   />
                 </Box>
               )}
 
-              {/* quest chain Description */}
+              {/* quest chain Description
               {!isEditingQuestChain && questChain.description && (
                 <Flex mb={8}>
                   <MarkdownViewer markdown={questChain.description} />
                 </Flex>
-              )}
+              )} */}
               {isEditingQuestChain && (
                 <MarkdownEditor
                   value={chainDescRef.current}
@@ -849,7 +843,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       width: '100%',
                       height: '16rem',
                     }}
-                    defaultImageUri={ipfsUriToHttp(questChain.imageUrl)}
+                    // defaultImageUri={ipfsUriToHttp(questChain.imageUrl)}
                     onResetDefaultImage={() => setRemoveCoverImage(true)}
                     isDisabled={isSubmittingQuestChain}
                   />
@@ -863,7 +857,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                 w="100%"
                 mb={8}
               >
-                {questChain.token.imageUrl && (
+                {/* questChain.token.imageUrl && (
                   <Flex
                     align="center"
                     justify="center"
@@ -879,7 +873,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       maxH={373}
                     />
                   </Flex>
-                )}
+                ) */}
 
                 {isAdmin &&
                   mode === Mode.MEMBER &&
@@ -1143,7 +1137,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       />
                     ) : (
                       <Accordion allowMultiple w="full" defaultIndex={[]}>
-                        {questChain.quests
+                        {/* questChain.quests
                           .filter(
                             q =>
                               !!q.name && (mode === Mode.MEMBER || !q.paused),
@@ -1173,7 +1167,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                                 editDisabled
                               />
                             );
-                          })}
+                          }) */}
                       </Accordion>
                     )}
                   </>
@@ -1189,7 +1183,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                 display={{ base: 'none', lg: 'flex' }}
                 mb={12}
               >
-                {questChain.token.imageUrl && (
+                {/* questChain.token.imageUrl && (
                   <Flex
                     align="center"
                     justify="center"
@@ -1207,7 +1201,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       cursor="pointer"
                     />
                   </Flex>
-                )}
+                ) */}
                 <NFTDetailsModal
                   isOpen={isNFTModalOpen}
                   onClose={onNFTModalClose}
@@ -1276,7 +1270,8 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                 <ModalCloseButton />
                 <ModalBody p={0}>
                   <NFTForm
-                    chainName={questChain.name ?? ''}
+                    // chainName={questChain.name ?? ''}
+                    chainName=""
                     onSubmit={onSubmitNFT}
                     showStep={false}
                     submitLabel="Submit"

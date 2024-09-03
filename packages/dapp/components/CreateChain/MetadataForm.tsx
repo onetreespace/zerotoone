@@ -9,7 +9,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
@@ -44,14 +43,14 @@ const makeId = () => {
   return result;
 };
 
-const fetchValidSlug = async (name: string, chainId: string) => {
-  const slug = slugify(name);
-  const valid = await graphql.validateQuestChainSlug(chainId, slug);
-  if (valid) {
-    return slug;
-  }
-  return `${slug}-${makeId()}`;
-};
+// const fetchValidSlug = async (name: string, chainId: string) => {
+//   const slug = slugify(name);
+//   const valid = await graphql.validateQuestChainSlug(chainId, slug);
+//   if (valid) {
+//     return slug;
+//   }
+//   return `${slug}-${makeId()}`;
+// };
 
 export const MetadataForm: React.FC<{
   onBack?: () => void;

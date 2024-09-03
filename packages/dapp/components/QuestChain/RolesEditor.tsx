@@ -10,7 +10,6 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { contracts, graphql } from '@quest-chains/sdk';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { isAddress } from 'viem';
@@ -20,6 +19,7 @@ import { TrashOutlinedIcon } from '@/components/icons/TrashOutlinedIcon';
 import { Role } from '@/components/RoleTag';
 import { SubmitButton } from '@/components/SubmitButton';
 import { UserDisplay } from '@/components/UserDisplay';
+import { QuestChainInfoFragment } from '@/graphql';
 import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
 
@@ -31,45 +31,45 @@ const QuestChainRoles = {
     '0xc10c77be35aff266144ed64c26a1fa104bae2f284ae99ac4a34203454704a185',
 };
 
-const changeRole = async (
-  contract:
-    | contracts.V0.QuestChain
-    | contracts.V1.QuestChain
-    | contracts.V2.QuestChain,
-  address: string,
-  oldRole: Role,
-  newRole: Role,
-) => {
-  switch (oldRole) {
-    case 'Reviewer':
-      return contract.grantRole(QuestChainRoles[newRole], address);
-    case 'Editor':
-      if (newRole === 'Reviewer') {
-        return contract.revokeRole(QuestChainRoles.Editor, address);
-      }
-      return contract.grantRole(QuestChainRoles[newRole], address);
-    case 'Admin':
-      if (newRole === 'Reviewer') {
-        return contract.revokeRole(QuestChainRoles.Editor, address);
-      }
-      if (newRole === 'Editor') {
-        return contract.revokeRole(QuestChainRoles.Admin, address);
-      }
-      return contract.grantRole(QuestChainRoles.Owner, address);
-    case 'Owner':
-    default:
-      if (newRole === 'Reviewer') {
-        return contract.revokeRole(QuestChainRoles.Editor, address);
-      }
-      if (newRole === 'Editor') {
-        return contract.revokeRole(QuestChainRoles.Admin, address);
-      }
-      return contract.revokeRole(QuestChainRoles.Owner, address);
-  }
-};
+// const changeRole = async (
+//   contract:
+//     | contracts.V0.QuestChain
+//     | contracts.V1.QuestChain
+//     | contracts.V2.QuestChain,
+//   address: string,
+//   oldRole: Role,
+//   newRole: Role,
+// ) => {
+//   switch (oldRole) {
+//     case 'Reviewer':
+//       return contract.grantRole(QuestChainRoles[newRole], address);
+//     case 'Editor':
+//       if (newRole === 'Reviewer') {
+//         return contract.revokeRole(QuestChainRoles.Editor, address);
+//       }
+//       return contract.grantRole(QuestChainRoles[newRole], address);
+//     case 'Admin':
+//       if (newRole === 'Reviewer') {
+//         return contract.revokeRole(QuestChainRoles.Editor, address);
+//       }
+//       if (newRole === 'Editor') {
+//         return contract.revokeRole(QuestChainRoles.Admin, address);
+//       }
+//       return contract.grantRole(QuestChainRoles.Owner, address);
+//     case 'Owner':
+//     default:
+//       if (newRole === 'Reviewer') {
+//         return contract.revokeRole(QuestChainRoles.Editor, address);
+//       }
+//       if (newRole === 'Editor') {
+//         return contract.revokeRole(QuestChainRoles.Admin, address);
+//       }
+//       return contract.revokeRole(QuestChainRoles.Owner, address);
+//   }
+// };
 
 export const RolesEditor: React.FC<{
-  questChain: graphql.QuestChainInfoFragment;
+  questChain: QuestChainInfoFragment;
   members: { [addr: string]: Role };
   refresh: () => void;
   ownerAddress: string;
@@ -142,53 +142,53 @@ export const RolesEditor: React.FC<{
     const [address, { newRole, oldRole }] = memberToSave;
 
     /*
-          if (!chainId || !provider || questChain?.chainId !== chainId) {
-            toast.error(
-              `Wrong Chain, please switch to ${
-                AVAILABLE_NETWORK_INFO[questChain?.chainId].label
-              }`,
-            );
-            return;
-          }
-          setSaving(true);
-          let tid = toast.loading(
-            'Waiting for Confirmation - Confirm the transaction in your Wallet',
-          );
-          try {
-            const contract = getQuestChainContract(
-              questChain.address,
-              questChain.version,
-              provider.getSigner(),
-            );
-            let tx;
-            if (oldRole === newRole || !newRole) return;
-            if (!oldRole) {
-              if (!newRole || newRole === 'Remove') return;
-              tx = await contract.grantRole(QuestChainRoles[newRole], address);
-            } else if (newRole === 'Remove') {
-              tx = await contract.revokeRole(QuestChainRoles.Reviewer, address);
-            } else {
-              tx = await changeRole(contract, address, oldRole, newRole);
+            if (!chainId || !provider || questChain?.chainId !== chainId) {
+              toast.error(
+                `Wrong Chain, please switch to ${
+                  AVAILABLE_NETWORK_INFO[questChain?.chainId].label
+                }`,
+              );
+              return;
             }
-            toast.dismiss(tid);
-            tid = handleTxLoading(tx.hash, chainId);
-            const receipt = await tx.wait(1);
-            toast.dismiss(tid);
-            tid = toast.loading(
-              'Transaction confirmed. Waiting for The Graph to index the transaction data.',
+            setSaving(true);
+            let tid = toast.loading(
+              'Waiting for Confirmation - Confirm the transaction in your Wallet',
             );
-            await waitUntilBlock(chainId, receipt.blockNumber);
-            toast.dismiss(tid);
-            toast.success(`Successfully updated members`);
-            refresh();
-          } catch (error) {
-            toast.dismiss(tid);
-            handleError(error);
-          } finally {
-            setSaving(false);
-            onExit();
-          }
-          */
+            try {
+              const contract = getQuestChainContract(
+                questChain.address,
+                questChain.version,
+                provider.getSigner(),
+              );
+              let tx;
+              if (oldRole === newRole || !newRole) return;
+              if (!oldRole) {
+                if (!newRole || newRole === 'Remove') return;
+                tx = await contract.grantRole(QuestChainRoles[newRole], address);
+              } else if (newRole === 'Remove') {
+                tx = await contract.revokeRole(QuestChainRoles.Reviewer, address);
+              } else {
+                tx = await changeRole(contract, address, oldRole, newRole);
+              }
+              toast.dismiss(tid);
+              tid = handleTxLoading(tx.hash, chainId);
+              const receipt = await tx.wait(1);
+              toast.dismiss(tid);
+              tid = toast.loading(
+                'Transaction confirmed. Waiting for The Graph to index the transaction data.',
+              );
+              await waitUntilBlock(chainId, receipt.blockNumber);
+              toast.dismiss(tid);
+              toast.success(`Successfully updated members`);
+              refresh();
+            } catch (error) {
+              toast.dismiss(tid);
+              handleError(error);
+            } finally {
+              setSaving(false);
+              onExit();
+            }
+            */
   }, [memberToSave, questChain, onExit, refresh]);
 
   return (

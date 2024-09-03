@@ -14,36 +14,34 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
 import React from 'react';
 import { useAccount } from 'wagmi';
 
+import { UserStatus } from '@/graphql';
 import { useUserProgressForAllChains } from '@/hooks/useUserProgressForAllChains';
 
 import { QuestChainTile } from '../QuestChainTile';
 
-const QuestChainWithProgress: React.FC<{ userStatus: graphql.UserStatus }> = ({
+const QuestChainWithProgress: React.FC<{ userStatus: UserStatus }> = ({
   userStatus: {
-    chain: { chainId, address, name, description, imageUrl, slug, createdBy },
+    chain: { chainId, address, createdBy },
     completed,
     total,
   },
-}) => (
-  <QuestChainTile
-    {...{
-      address,
-      name,
-      description,
-      slug,
-      chainId,
-      quests: total,
-      completed,
-      imageUrl,
-      createdBy: createdBy.id,
-    }}
-    key={address}
-  />
-);
+}) => {
+  return (
+    <QuestChainTile
+      {...{
+        address,
+        chainId,
+        quests: total,
+        completed,
+        createdBy: createdBy.id,
+      }}
+      key={address}
+    />
+  );
+};
 
 export const UserProgress: React.FC<{
   address: string;

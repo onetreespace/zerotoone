@@ -1,5 +1,4 @@
 import { Heading } from '@chakra-ui/react';
-import { graphql } from '@quest-chains/sdk';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
@@ -8,11 +7,15 @@ import { isAddress } from 'viem';
 import { Page } from '@/components/Layout/Page';
 import { LoadingState } from '@/components/LoadingState';
 import { QuestChainPage } from '@/components/QuestChain/QuestChainPage';
+import {
+  getQuestChainFromSlug,
+  getQuestChainInfo,
+  getStatusesForChain,
+  QuestStatusInfoFragment,
+  Status,
+} from '@/graphql';
 import { useLatestQuestChainData } from '@/hooks/useLatestQuestChainData';
 import { useLatestQuestStatusesForChainData } from '@/hooks/useLatestQuestStatusesForChainData';
-
-const { getQuestChainFromSlug, getStatusesForChain, getQuestChainInfo } =
-  graphql;
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
@@ -30,7 +33,7 @@ export type UserStatusType = {
       reviewer: string;
       accepted: boolean;
     }[];
-    status: graphql.Status;
+    status: Status;
   };
 };
 
@@ -97,7 +100,7 @@ export const getStaticProps = async (
   const network = context.params?.network;
   const address = context.params?.address;
 
-  let questStatuses: graphql.QuestStatusInfoFragment[] = [];
+  let questStatuses: QuestStatusInfoFragment[] = [];
   let questChain = null;
 
   if (address && network) {

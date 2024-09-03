@@ -1,5 +1,6 @@
-import { graphql } from '@quest-chains/sdk';
 import { useMemo } from 'react';
+
+import { QuestChainInfoFragment, Status } from '@/graphql';
 
 import { UserStatusType } from './useUserStatus';
 
@@ -14,7 +15,7 @@ type UserProgresstype = {
 
 export const useUserProgress = (
   address: string | undefined | null,
-  questChain: graphql.QuestChainInfoFragment | null,
+  questChain: QuestChainInfoFragment | null,
   userStatus: UserStatusType,
 ): UserProgresstype => {
   const progress = useMemo(() => {
@@ -26,13 +27,11 @@ export const useUserProgress = (
       };
     const inReviewCount = questChain.quests.filter(
       quest =>
-        !quest.paused &&
-        userStatus[quest.questId]?.status === graphql.Status.Review,
+        !quest.paused && userStatus[quest.questId]?.status === Status.Review,
     ).length;
     const completeCount = questChain.quests.filter(
       quest =>
-        !quest.paused &&
-        userStatus[quest.questId]?.status === graphql.Status.Pass,
+        !quest.paused && userStatus[quest.questId]?.status === Status.Pass,
     ).length;
 
     return {
@@ -54,11 +53,10 @@ export const useUserProgress = (
       const quest = questChain.quests[i];
       const status = userStatus[quest.questId]?.status;
 
-      if (!(quest.optional || quest.paused || status === graphql.Status.Pass))
+      if (!(quest.optional || quest.paused || status === Status.Pass))
         return false;
 
-      if (!atLeastOnePassed && status === graphql.Status.Pass)
-        atLeastOnePassed = true;
+      if (!atLeastOnePassed && status === Status.Pass) atLeastOnePassed = true;
     }
 
     return atLeastOnePassed;

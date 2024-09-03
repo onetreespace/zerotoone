@@ -1,12 +1,12 @@
-import { graphql } from '@quest-chains/sdk';
 import { useEffect, useState } from 'react';
 
+import { getStatusForUser, QuestChainInfoFragment, Status } from '@/graphql';
 import { CHAINS } from '@/web3';
 
 import { useRefresh } from './useRefresh';
 
 export type UserNFTStatus = {
-  questChain: graphql.QuestChainInfoFragment;
+  questChain: QuestChainInfoFragment;
   completed: number;
 };
 
@@ -36,7 +36,7 @@ export const useNFTsToMintForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            graphql.getStatusForUser(chainId.toString(), address ?? ''),
+            getStatusForUser(chainId.toString(), address ?? ''),
           ),
         );
         if (!isMounted) return;
@@ -61,7 +61,7 @@ export const useNFTsToMintForAllChains = (
 
               let atLeastOnePassed = false;
 
-              const userStatus: Record<string, graphql.Status> = {};
+              const userStatus: Record<string, Status> = {};
               us.questStatuses.forEach(({ quest, status }) => {
                 userStatus[quest.questId] = status;
               });
@@ -70,16 +70,10 @@ export const useNFTsToMintForAllChains = (
                 const quest = questChain.quests[i];
                 const status = userStatus[quest.questId];
 
-                if (
-                  !(
-                    quest.optional ||
-                    quest.paused ||
-                    status === graphql.Status.Pass
-                  )
-                )
+                if (!(quest.optional || quest.paused || status === Status.Pass))
                   return false;
 
-                if (!atLeastOnePassed && status === graphql.Status.Pass)
+                if (!atLeastOnePassed && status === Status.Pass)
                   atLeastOnePassed = true;
               }
 
