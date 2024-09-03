@@ -11,11 +11,11 @@ export type UserRoles = {
   adminOf: QuestChainDisplayFragment[];
   editorOf: QuestChainDisplayFragment[];
   reviewerOf: QuestChainDisplayFragment[];
-  chainId: string;
+  chainId: number;
 };
 
 export const getRolesForUser = async (
-  chainId: string,
+  chainId: number,
   address: string,
 ): Promise<UserRoles | null> => {
   const { data, error } = await getClient(chainId)

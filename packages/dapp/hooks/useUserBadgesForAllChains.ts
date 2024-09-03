@@ -21,7 +21,7 @@ export const useUserBadgesForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            getBadgesForUser(chainId.toString(), address ?? ''),
+            getBadgesForUser(chainId, address ?? ''),
           ),
         );
         if (!isMounted) return;

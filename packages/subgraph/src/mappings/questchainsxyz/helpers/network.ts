@@ -1,24 +1,20 @@
 import { dataSource } from "@graphprotocol/graph-ts";
 
-export function getChainId(): string {
+export function getChainId(): i32 {
   const network = dataSource.network();
-  if (network == "mainnet") return "0x1";
-  else if (network == "kovan") return "0x2a";
-  else if (network == "rinkeby") return "0x4";
-  else if (network == "ropsten") return "0x3";
-  else if (network == "goerli") return "0x5";
-  else if (network == "poa-core") return "0x63";
-  else if (network == "poa-sokol") return "0x4d";
-  else if (network == "gnosis") return "0x64";
-  else if (network == "matic") return "0x89";
-  else if (network == "mumbai") return "0x13881";
-  else if (network == "arbitrum-one") return "0xa4b1";
-  else if (network == "arbitrum-goerli") return "0x66eed";
-  else if (network == "optimism") return "0xa";
-  else if (network == "optimism-kovan") return "0x45";
-  else if (network == "aurora") return "0x4e454152";
-  else if (network == "aurora-testnet") return "0x4e454153";
-  else if (network == "sepolia") return "0xaa36a7";
-  else if (network == "holesky") return "0x4268";
-  else return "unknown";
+  if (network == "mainnet") return 1;
+  else if (network == "sepolia") return 11155111;
+  else if (network == "holesky") return 17000;
+  else if (network == "gnosis") return 100;
+  else if (network == "matic") return 137;
+  else if (network == "base") return 8453;
+  else if (network == "arbitrum-one") return 42161;
+  else if (network == "arbitrum-sepolia") return 421614;
+  else if (network == "optimism") return 10;
+  else if (network == "optimism-sepolia") return 11155420;
+  else if (network == "local") return 31337;
+  else if (network == "localnet") return 31337;
+  else if (network == "hardhat") return 31337;
+  else if (network == "anvil") return 42;
+  else return 0;
 }

@@ -6,7 +6,7 @@ import {
 } from './generated';
 
 export const getSubgraphLatestBlock = async (
-  chainId: string,
+  chainId: number,
 ): Promise<number> => {
   try {
     const { data, error } = await getClient(chainId)

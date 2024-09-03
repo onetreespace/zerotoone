@@ -21,7 +21,7 @@ export const useUserRolesForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            getRolesForUser(chainId.toString(), address ?? ''),
+            getRolesForUser(chainId, address ?? ''),
           ),
         );
         if (!isMounted) return;

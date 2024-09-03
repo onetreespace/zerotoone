@@ -23,7 +23,7 @@ import {
 } from './generated';
 
 export const getQuestChainAddresses = async (
-  chainId: string,
+  chainId: number,
   limit: number,
 ): Promise<string[]> => {
   const { data, error } = await getClient(chainId)
@@ -44,7 +44,7 @@ export const getQuestChainAddresses = async (
 };
 
 export const getQuestChainsFromAddresses = async (
-  chainId: string,
+  chainId: number,
   addresses: string[],
 ): Promise<QuestChainDisplayFragment[]> => {
   const { data, error } = await getClient(chainId)
@@ -65,7 +65,7 @@ export const getQuestChainsFromAddresses = async (
 };
 
 export const getQuestChainInfo = async (
-  chainId: string,
+  chainId: number,
   address: string,
 ): Promise<QuestChainInfoFragment | null> => {
   const { data, error } = await getClient(chainId)
@@ -86,7 +86,7 @@ export const getQuestChainInfo = async (
 };
 
 export const getQuestChainFromSlug = async (
-  chainId: string,
+  chainId: number,
   slug: string,
 ): Promise<QuestChainInfoFragment | null> => {
   const { data, error } = await getClient(chainId)
@@ -107,7 +107,7 @@ export const getQuestChainFromSlug = async (
 };
 
 export const validateQuestChainSlug = async (
-  chainId: string,
+  chainId: number,
   slug: string,
 ): Promise<boolean> => {
   const { data, error } = await getClient(chainId)
@@ -128,7 +128,7 @@ export const validateQuestChainSlug = async (
 };
 
 export const getCreatedQuestChains = async (
-  chainId: string,
+  chainId: number,
   address: string,
 ): Promise<QuestChainDisplayFragment[]> => {
   const { data, error } = await getClient(chainId)

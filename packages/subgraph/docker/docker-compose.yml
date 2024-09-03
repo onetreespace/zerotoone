@@ -29,7 +29,7 @@ services:
     ports:
       - '5001:5001'
     volumes:
-      - ./data/ipfs:/data/ipfs:Z
+      - /tmp/data/ipfs:/data/ipfs:Z
   postgres:
     image: postgres
     ports:
@@ -50,4 +50,4 @@ services:
       PGDATA: "/var/lib/postgresql/data"
       POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data:Z
+      - /tmp/data/postgres:/var/lib/postgresql/data:Z

@@ -17,11 +17,11 @@ export type UserBadges = {
       slug?: string | null | undefined;
     };
   }[];
-  chainId: string;
+  chainId: number;
 };
 
 export const getBadgesForUser = async (
-  chainId: string,
+  chainId: number,
   address: string,
 ): Promise<UserBadges | null> => {
   const { data, error } = await getClient(chainId)

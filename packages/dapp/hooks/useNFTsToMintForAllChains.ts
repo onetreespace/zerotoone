@@ -36,7 +36,7 @@ export const useNFTsToMintForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            getStatusForUser(chainId.toString(), address ?? ''),
+            getStatusForUser(chainId, address ?? ''),
           ),
         );
         if (!isMounted) return;

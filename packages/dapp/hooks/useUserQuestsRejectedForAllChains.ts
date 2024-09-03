@@ -34,7 +34,7 @@ export const useUserQuestsRejectedForAllChains = (
         setFetching(true);
         const allResults = await Promise.all(
           CHAINS.map(async ({ id: chainId }) =>
-            getQuestsRejectedForUserAndChain(chainId.toString(), address ?? ''),
+            getQuestsRejectedForUserAndChain(chainId, address ?? ''),
           ),
         );
         if (!isMounted) return;
