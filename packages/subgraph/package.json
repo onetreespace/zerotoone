@@ -19,6 +19,9 @@
     "prepare-local": "mustache src/config/local.json subgraph.template.yaml > subgraph.yaml",
     "remove-local": "graph remove --node http://localhost:8020/ zerotoone",
     "deploy-local": "pnpm prepare-local && pnpm codegen && pnpm build && pnpm create-local && pnpm deploy-only-local",
-    "local-up": "sudo rm -rf docker/data && cd docker/ && docker compose up"
+    "local-up": "sudo rm -rf docker/data && cd docker/ && docker compose up",
+    "prepare-sepolia": "mustache src/config/sepolia.json subgraph.template.yaml > subgraph.yaml",
+    "deploy-only-sepolia": "graph deploy --studio zerotoone-sepolia",
+    "deploy-sepolia": "pnpm prepare-sepolia && pnpm codegen && pnpm build && pnpm deploy-only-sepolia"
   }
 }
