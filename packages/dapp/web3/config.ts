@@ -23,13 +23,19 @@ const chainConfig = {
   blockExplorerUrl: sepolia.blockExplorers?.default.url[0] as string,
 };
 
+if (
+  !process.env.NEXT_PUBLIC_WEB3AUTH_ID ||
+  !process.env.NEXT_PUBLIC_WALLETCONNECT_ID
+) {
+  throw new Error('Missing environment variables');
+}
+
 const privateKeyProvider = new EthereumPrivateKeyProvider({
   config: { chainConfig },
 });
 
 const web3AuthInstance = new Web3Auth({
-  clientId:
-    'BIhkOlDrTtu7K7Vn8IWXWm8-eed7fJLwYoabmrALMxzePFblLbkpOEJ5Ii4uCaL6lCf7OePglcFJp1KX6mmUCgk',
+  clientId: process.env.NEXT_PUBLIC_WEB3AUTH_ID!,
   web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
   chainConfig,
   privateKeyProvider,
@@ -66,7 +72,7 @@ const web3AuthWallet = (): Wallet => ({
 
 export const config = getDefaultConfig({
   appName: 'ZeroToOne.fun',
-  projectId: 'b502e765c08150ac7e9ee16666b0ec28',
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_ID!,
   chains: CHAINS,
   ssr: true, // If your dApp uses server side rendering (SSR)
   wallets: [
