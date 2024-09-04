@@ -11,10 +11,10 @@ import {
 } from '@chakra-ui/react';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { useAccount } from 'wagmi';
 
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { SubmitButton } from '@/components/SubmitButton';
-import { useDelay } from '@/hooks/useDelay';
 import { useDropImage } from '@/hooks/useDropFiles';
 import { useInputText } from '@/hooks/useInputText';
 import { MongoCategory } from '@/lib/mongodb/types';
@@ -25,66 +25,27 @@ import { isSupportedChain } from '@/web3';
 import { UploadImageForm } from '../UploadImageForm';
 import { Categories } from './Categories';
 
-const slugify = (str: string) =>
-  str
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-
-const makeId = () => {
-  let result = '';
-  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < 6; i += 1) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
-
-// const fetchValidSlug = async (name: string, chainId: string) => {
-//   const slug = slugify(name);
-//   const valid = await graphql.validateQuestChainSlug(chainId, slug);
-//   if (valid) {
-//     return slug;
-//   }
-//   return `${slug}-${makeId()}`;
-// };
-
 export const MetadataForm: React.FC<{
   onBack?: () => void;
   onSubmit: (
     name: string,
     description: string,
     metadataUri: string,
-    slug?: string,
     imageUrl?: string,
   ) => void | Promise<void>;
 }> = ({ onBack, onSubmit }) => {
   const [nameRef, setName] = useInputText();
   const [descRef, setDescription] = useInputText();
-  const [slug, setSlug] = useState('');
   const [categories, setCategories] = useState<MongoCategory[]>([]);
 
   const uploadImageProps = useDropImage();
   const { imageFile } = uploadImageProps;
+  const { isConnected, chainId } = useAccount();
 
-  // const isDisabled =
-  //   !isConnected ||
-  //   !isSupportedChain(chainId) ||
-  //   !categories.length ||
-  //   !slug.match(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+  const isDisabled =
+    !isConnected || !isSupportedChain(chainId) || !categories.length;
 
   const [isSubmitting, setSubmitting] = useState(false);
-
-  const updateValidSlug = useCallback((name: string) => {
-    // if (chainId) {
-    //   fetchValidSlug(name, chainId).then(setSlug);
-    // }
-  }, []);
-
-  const delayedUpdateValidSlug = useDelay(updateValidSlug);
 
   const exportMetadata = useCallback(async () => {
     let tid;
@@ -93,7 +54,6 @@ export const MetadataForm: React.FC<{
       const metadata: Metadata = {
         name: nameRef.current,
         description: descRef.current,
-        slug,
         categories: categories.map(c => c.value),
       };
       let imageUrl;
@@ -109,16 +69,9 @@ export const MetadataForm: React.FC<{
       const metadataUri = `ipfs://${hash}`;
       toast.dismiss(tid);
 
-      await onSubmit(
-        nameRef.current,
-        descRef.current,
-        metadataUri,
-        slug,
-        imageUrl,
-      );
+      await onSubmit(nameRef.current, descRef.current, metadataUri, imageUrl);
       setName('');
       setDescription('');
-      setSlug('');
       setCategories([]);
     } catch (error) {
       if (tid) {
@@ -131,7 +84,6 @@ export const MetadataForm: React.FC<{
   }, [
     nameRef,
     descRef,
-    slug,
     categories,
     onSubmit,
     imageFile,
@@ -183,7 +135,6 @@ export const MetadataForm: React.FC<{
               onChange={e => {
                 setName(e.target.value);
                 setNameLength(e.target.value.length);
-                delayedUpdateValidSlug(e.target.value);
               }}
               placeholder="Quest chain name"
             />
@@ -241,7 +192,7 @@ export const MetadataForm: React.FC<{
           )}
           <SubmitButton
             isLoading={isSubmitting}
-            // isDisabled={isDisabled}
+            isDisabled={isDisabled}
             onClick={() => {
               if (!nameRef.current || !descRef.current) {
                 toast.error('Please enter a name & description');
