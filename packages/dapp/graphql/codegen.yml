@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'http://localhost:8000/subgraphs/name/zerotoone'
+schema: 'https://api.studio.thegraph.com/query/71457/zerotoone-sepolia/version/latest'
 generates:
   graphql/generated.ts:
     config:
