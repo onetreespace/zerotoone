@@ -5,6 +5,9 @@ type _chains = readonly [Chain, ...Chain[]];
 
 export const CHAINS: _chains = [sepolia];
 
+export const getChain = (chainId: SupportedChainId): Chain =>
+  CHAINS.find(c => c.id === chainId)!;
+
 export type SupportedChainId = (typeof CHAINS)[number]['id'];
 
 export const getPublicClient = (

@@ -8,7 +8,7 @@ import {
   TextProps,
 } from '@chakra-ui/react';
 
-import { CHAINS, isSupportedChain } from '@/web3';
+import { CHAINS, getChain, isSupportedChain } from '@/web3';
 
 export const NetworkDisplay: React.FC<
   {
@@ -19,7 +19,7 @@ export const NetworkDisplay: React.FC<
   } & StackProps
 > = ({ chainId, imageProps, asTag = false, textProps, ...props }) => {
   if (!isSupportedChain(chainId)) return null;
-  const { name } = CHAINS[chainId];
+  const { name } = getChain(chainId);
   const TextComponent = asTag ? TagLabel : Text;
   const inner = (
     <Stack

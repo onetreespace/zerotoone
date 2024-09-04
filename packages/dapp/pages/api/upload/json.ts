@@ -16,10 +16,7 @@ export const uploadJson = authHandler(
     }
 
     try {
-      if (typeof req.body !== 'object') {
-        throw new Error('body must be a valid JSON object');
-      }
-      const blob = await put('metadata.json', JSON.stringify(req.body), {
+      const blob = await put('metadata.json', req.body, {
         access: 'public',
         contentType: 'application/json',
       });

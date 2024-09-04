@@ -6,7 +6,7 @@ export const uploadMetadata = async (
 ): Promise<string> => {
   const res = await fetch(`/api/upload/json`, {
     method: 'POST',
-    body: metadata,
+    body: JSON.stringify(metadata),
   });
   if (!res.ok) {
     throw new Error('Failed to upload metadata');

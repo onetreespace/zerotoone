@@ -11,5 +11,7 @@ export const useGlobalInfo = () => {
     getGlobalInfo().then(setGlobalInfo);
   }, []);
 
+  console.log('globalInfo', globalInfo);
+
   return globalInfo;
 };
