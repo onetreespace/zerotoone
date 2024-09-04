@@ -144,8 +144,7 @@ const Create: React.FC = () => {
         tid = toast.loading('Uploading Quests, please wait...');
         const allDetails = await Promise.all(
           quests.map(async ({ name, description, ...rest }) => {
-            const hash = await uploadMetadata({ name, description });
-            const details = `ipfs://${hash}`;
+            const details = await uploadMetadata({ name, description });
             return {
               ...rest,
               disabled: rest.paused,

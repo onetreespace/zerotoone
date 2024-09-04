@@ -65,19 +65,19 @@ export const UploadProof: React.FC<{
     setSubmitting(true);
     let tid = toast.loading('Uploading metadata to IPFS via web3.storage');
     try {
-      const [filesHash, imageHash] = await Promise.all([
-        files.length ? await uploadFiles(files) : '',
-        imageFile ? await uploadFiles([imageFile]) : '',
+      const [filesUrl, imageUrl] = await Promise.all([
+        files.length ? await uploadFiles(files) : undefined,
+        imageFile ? await uploadFiles([imageFile]) : undefined,
       ]);
       const metadata: Metadata = {
         name: `Submission - QuestChain - ${questChain.name} - Quest - ${quest.questId}. ${quest.name} User - ${address}`,
         description: proofDescRef.current,
-        image_url: imageHash ? `ipfs://${imageHash}` : undefined,
-        external_url: filesHash ? `ipfs://${filesHash}` : undefined,
+        image_url: imageUrl,
+        external_url: filesUrl,
       };
 
-      const hash = await uploadMetadata(metadata);
-      const details = `ipfs://${hash}`;
+      const metadataUrl = await uploadMetadata(metadata);
+      const details = metadataUrl;
       toast.dismiss(tid);
       tid = toast.loading(
         'Waiting for Confirmation - Confirm the transaction in your Wallet',

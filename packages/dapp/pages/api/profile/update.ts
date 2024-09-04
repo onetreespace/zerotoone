@@ -16,8 +16,9 @@ const isDuplicateKeyError = (error: any, key: string): boolean => {
 };
 
 export const updateProfile = authHandler(
-  async (user: MongoUser, req: NextApiRequest, res: NextApiResponse) => {
+  async (user: MongoUser | null, req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== 'PUT') return res.status(405).end();
+    if (!user) return res.status(401).end();
 
     const { username, avatarUri } = req.body;
 

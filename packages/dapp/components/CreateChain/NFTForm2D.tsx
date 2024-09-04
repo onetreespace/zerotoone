@@ -69,11 +69,11 @@ const NFTForm2D: React.FC<{
     try {
       const dataURI = await componentToPNG(componentRef);
       const file = dataURItoFile(dataURI, 'badge.png');
-      let hash = await uploadFiles([file]);
+      const imageUrl = await uploadFiles([file]);
       const metadata: Metadata = {
         name,
         description,
-        image_url: `ipfs://${hash}`,
+        image_url: imageUrl,
         attributes: [
           {
             trait_type: 'Background',
@@ -93,8 +93,7 @@ const NFTForm2D: React.FC<{
 
       toast.dismiss(tid);
       tid = toast.loading('Uploading metadata to IPFS via web3.storage');
-      hash = await uploadMetadata(metadata);
-      const details = `ipfs://${hash}`;
+      const details = await uploadMetadata(metadata);
       toast.dismiss(tid);
       onSubmit(details, metadata.image_url);
     } catch (error) {

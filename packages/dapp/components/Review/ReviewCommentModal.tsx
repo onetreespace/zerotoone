@@ -53,8 +53,7 @@ export const ReviewCommentModal: React.FC<{
         description: reviewCommentRef.current,
       };
 
-      const hash = await uploadMetadata(metadata);
-      const details = `ipfs://${hash}`;
+      const details = await uploadMetadata(metadata);
       onSelectSubmissions(
         reviewing.map(q => ({
           ...q,

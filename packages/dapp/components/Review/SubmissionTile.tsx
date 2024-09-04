@@ -335,8 +335,7 @@ const ReviewComment: React.FC<{
         description: newCommentRef.current,
       };
 
-      const hash = await uploadMetadata(metadata);
-      const details = `ipfs://${hash}`;
+      const details = await uploadMetadata(metadata);
       onReview(
         [
           {

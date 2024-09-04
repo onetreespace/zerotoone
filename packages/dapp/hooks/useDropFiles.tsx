@@ -37,6 +37,7 @@ export const useDropFiles = (options: DropzoneProps = {}): DropFilesType => {
     noClick: true,
     noKeyboard: true,
     onDrop,
+    maxFiles: 1,
     ...options,
   });
 

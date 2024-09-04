@@ -50,18 +50,17 @@ const CustomNFTForm2D: React.FC<{
     setLoading(true);
     let tid = toast.loading('Uploading image to IPFS via web3.storage');
     try {
-      let hash = await uploadFiles([imageFile]);
+      const imageUrl = await uploadFiles([imageFile]);
 
       const metadata: Metadata = {
         name,
         description,
-        image_url: `ipfs://${hash}`,
+        image_url: imageUrl,
       };
 
       toast.dismiss(tid);
       tid = toast.loading('Uploading metadata to IPFS via web3.storage');
-      hash = await uploadMetadata(metadata);
-      const details = `ipfs://${hash}`;
+      const details = await uploadMetadata(metadata);
       toast.dismiss(tid);
       onSubmit(details, metadata.image_url);
     } catch (error) {

@@ -315,13 +315,13 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
     try {
       if (imageFile) {
         tid = toast.loading('Uploading image to IPFS via web3.storage');
-        const imageHash = await uploadFiles([imageFile]);
-        metadata.image_url = `ipfs://${imageHash}`;
+        const imageUrl = await uploadFiles([imageFile]);
+        metadata.image_url = imageUrl
         toast.dismiss(tid);
       }
       tid = toast.loading('Uploading metadata to IPFS via web3.storage');
-      const hash = await uploadMetadata(metadata);
-      const details = `ipfs://${hash}`;
+      const metadataUrl = await uploadMetadata(metadata);
+      const details = metadataUrl;
       toast.dismiss(tid);
       tid = toast.loading(
         'Waiting for Confirmation - Confirm the transaction in your Wallet',

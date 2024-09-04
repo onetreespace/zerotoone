@@ -59,14 +59,12 @@ export const MetadataForm: React.FC<{
       let imageUrl;
       if (imageFile) {
         tid = toast.loading('Uploading image to IPFS via web3.storage');
-        const imageHash = await uploadFiles([imageFile]);
-        imageUrl = `ipfs://${imageHash}`;
+        imageUrl = await uploadFiles([imageFile]);
         metadata.image_url = imageUrl;
         toast.dismiss(tid);
       }
       tid = toast.loading('Uploading metadata to IPFS via web3.storage');
-      const hash = await uploadMetadata(metadata);
-      const metadataUri = `ipfs://${hash}`;
+      const metadataUri = await uploadMetadata(metadata);
       toast.dismiss(tid);
 
       await onSubmit(nameRef.current, descRef.current, metadataUri, imageUrl);

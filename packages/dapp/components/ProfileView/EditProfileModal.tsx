@@ -98,8 +98,8 @@ export const EditProfileModal: React.FC<{
 
       if (imageFile) {
         tid = toast.loading('Uploading image to IPFS via web3.storage');
-        const imageHash = await uploadFiles([imageFile]);
-        toUpdate.avatarUri = `ipfs://${imageHash}`;
+        const imageUrl = await uploadFiles([imageFile]);
+        toUpdate.avatarUri = imageUrl;
         toast.dismiss(tid);
       }
 
