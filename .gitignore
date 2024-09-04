@@ -86,7 +86,7 @@ packages/contracts/broadcast/*/31337/
 packages/contracts/broadcast/**/dry-run/
 
 # dapp
-packages/dapp/web3/generated.ts
+# packages/dapp/web3/generated.ts
 pacakges/dapp/graphql/generated.ts
 
 
