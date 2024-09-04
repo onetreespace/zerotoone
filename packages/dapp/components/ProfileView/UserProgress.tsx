@@ -23,22 +23,16 @@ import { useUserProgressForAllChains } from '@/hooks/useUserProgressForAllChains
 import { QuestChainTile } from '../QuestChainTile';
 
 const QuestChainWithProgress: React.FC<{ userStatus: UserStatus }> = ({
-  userStatus: {
-    chain: { chainId, address, createdBy },
-    completed,
-    total,
-  },
+  userStatus: { chain, completed, total },
 }) => {
   return (
     <QuestChainTile
       {...{
-        address,
-        chainId,
+        ...chain,
         quests: total,
         completed,
-        createdBy: createdBy.id,
       }}
-      key={address}
+      key={chain.address}
     />
   );
 };

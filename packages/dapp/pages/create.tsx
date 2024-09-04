@@ -1,35 +1,19 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Image,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalOverlay,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Flex, Image, Text, useDisclosure } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { TwitterShareButton } from 'react-share';
 import { Address } from 'viem';
-import { useAccount, useChainId, useConfig, usePublicClient } from 'wagmi';
+import { useAccount, useChainId, usePublicClient } from 'wagmi';
 
 import { MetadataForm } from '@/components/CreateChain/MetadataForm';
 import NFTForm from '@/components/CreateChain/NFTForm';
 import { QuestsForm } from '@/components/CreateChain/QuestsForm';
 import { Member, RolesForm } from '@/components/CreateChain/RolesForm';
 import Step0 from '@/components/CreateChain/Step0';
-import { TwitterIcon } from '@/components/icons/TwitterIcon';
 import { Page } from '@/components/Layout/Page';
 import { MarkdownViewer } from '@/components/MarkdownViewer';
-import { MastodonShareButton } from '@/components/MastodonShareButton';
 import { MembersDisplay } from '@/components/MembersDisplay';
 import { NetworkDisplay } from '@/components/NetworkDisplay';
-import { QuestAdvSetting } from '@/components/QuestAdvancedSettings';
 import { HeadComponent } from '@/components/Seo';
 import { SubmitButton } from '@/components/SubmitButton';
 import { useGlobalInfo } from '@/hooks/useGlobal';
@@ -37,8 +21,8 @@ import { randomBytes } from '@/utils/byteHelpers';
 import { QUESTCHAINS_URL } from '@/utils/constants';
 import { parseQuestChainAddress, waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
-import { Metadata, uploadMetadata } from '@/utils/metadata';
-import { getQuestChainURL, ipfsUriToHttp } from '@/utils/uriHelpers';
+import { uploadMetadata } from '@/utils/metadata';
+import { ipfsUriToHttp } from '@/utils/uriHelpers';
 import { isSupportedChain, useWriteQuestChainFactoryCreate } from '@/web3';
 
 const Create: React.FC = () => {
@@ -50,7 +34,6 @@ const Create: React.FC = () => {
   const [chainName, setChainName] = useState('');
   const [chainDescription, setChainDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [slug, setSlug] = useState('');
   const [chainUri, setChainUri] = useState('');
   const [nftUri, setNFTUri] = useState('');
   const [nftUrl, setNFTUrl] = useState('');
@@ -59,23 +42,18 @@ const Create: React.FC = () => {
   const [adminAddresses, setAdminAddresses] = useState(['']);
   const [editorAddresses, setEditorAddresses] = useState(['']);
   const [reviewerAddresses, setReviewerAddresses] = useState(['']);
-  const [chainAddress, setChainAddress] = useState('');
   const [isSubmitting, setSubmitting] = useState(false);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onSubmitChainMeta = (
     name: string,
     description: string,
     metadataUri: string,
-    _slug?: string,
     _imageUrl?: string,
   ) => {
     setChainName(name);
     setChainDescription(description);
     setChainUri(metadataUri);
     setImageUrl(_imageUrl || '');
-    setSlug(_slug || '');
     setStep(2);
   };
 
@@ -194,9 +172,8 @@ const Create: React.FC = () => {
         );
         await waitUntilBlock(chainId, receipt.blockNumber);
         toast.dismiss(tid);
-        onOpen();
-
-        setChainAddress(chainAddr);
+        toast.success('Quest Chain created successfully!');
+        router.push(`/${chainId}/${chainAddr}`);
       } catch (error) {
         toast.dismiss(tid);
         handleError(error);
@@ -215,17 +192,15 @@ const Create: React.FC = () => {
       editorAddresses,
       reviewerAddresses,
       globalInfo,
-      onOpen,
     ],
   );
 
-  const QCURL = getQuestChainURL({
-    chainId: chainId ?? '',
-    slug,
-    address: chainAddress,
-  });
-  const QCmessage =
-    'I just created a quest chain! Check it out and join the fun! #questchain #DAO #web3 #gamification';
+  // const QCURL = getQuestChainURL({
+  //   chainId: chainId,
+  //   address: chainAddress,
+  // });
+  // const QCmessage =
+  //   'I just created a quest chain! Check it out and join the fun! #questchain #DAO #web3 #gamification';
 
   return (
     <Page>
@@ -371,12 +346,13 @@ const Create: React.FC = () => {
           )}
         </Flex>
       </Flex>
+      {/*
       <Modal
         isOpen={isOpen}
         onClose={() => {
           onClose();
-          if (chainId && slug) {
-            router.push(`/${chainId}/${slug}`);
+          if (chainId && address) {
+            router.push(`/${chainId}/${address}`);
           }
         }}
         scrollBehavior="inside"
@@ -423,6 +399,7 @@ const Create: React.FC = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
+*/}
     </Page>
   );
 };

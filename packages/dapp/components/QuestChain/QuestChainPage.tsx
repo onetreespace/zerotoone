@@ -34,7 +34,6 @@ import React, {
   useState,
 } from 'react';
 import { toast } from 'react-hot-toast';
-import { TwitterShareButton } from 'react-share';
 import { useAccount } from 'wagmi';
 
 import { ConfirmationModal } from '@/components/ConfirmationModal';
@@ -43,7 +42,6 @@ import NFTForm from '@/components/CreateChain/NFTForm';
 import { AwardIcon } from '@/components/icons/AwardIcon';
 import { EditIcon } from '@/components/icons/EditIcon';
 import { PowerIcon } from '@/components/icons/PowerIcon';
-import { TwitterIcon } from '@/components/icons/TwitterIcon';
 import { Page } from '@/components/Layout/Page';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { MarkdownViewer } from '@/components/MarkdownViewer';
@@ -64,6 +62,7 @@ import {
 } from '@/graphql';
 import { useDropImage } from '@/hooks/useDropFiles';
 import { useInputText } from '@/hooks/useInputText';
+import { useMetadata } from '@/hooks/useMetadata';
 import { useToggleQuestChainPauseStatus } from '@/hooks/useToggleQuestChainPauseStatus';
 import { useUserProgress } from '@/hooks/useUserProgress';
 import { useUserStatus } from '@/hooks/useUserStatus';
@@ -171,6 +170,11 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
   const setCategoriesRef = useCallback((categories: MongoCategory[]) => {
     categoriesRef.current = categories;
   }, []);
+
+  const { data: questChainData } = useMetadata(questChain.details);
+  const { data: questChainTokenData } = useMetadata(questChain.token.details);
+
+  console.log({ questChainTokenData });
 
   const checkMetadataChanged = useCallback(
     () => {
@@ -439,15 +443,15 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
   return (
     <Page>
       <HeadComponent
-        // title={questChain.name || 'Quest Chains'}
-        // description={
-        //   questChain.description ||
-        //   'Complete this quest chain to acquire its soulbound NFT!'
-        // }
+        title={questChainData.name || 'Quest Chains'}
+        description={
+          questChainData.description ||
+          'Complete this quest chain to acquire its soulbound NFT!'
+        }
         url={QCURL}
       />
       <Box
-        // bgImage={ipfsUriToHttp(questChain.imageUrl)}
+        bgImage={ipfsUriToHttp(questChainData.image_url)}
         position="fixed"
         height="100vh"
         width="100vw"
@@ -460,7 +464,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
       />
       <Fade in={visible} style={{ width: '100%' }}>
         <Head>
-          {/* <title>{`${questChain.name} - ${questChain.chainId}`}</title> */}
+          <title>{`${questChainData.name} - ${questChain.chainId}`}</title>
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"
@@ -591,8 +595,10 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                             bgColor="rgba(71, 85, 105, 0.15)"
                             onClick={() => {
                               setEditingQuestChain(true);
-                              // setChainName(questChain.name ?? '');
-                              // setChainDescription(questChain.description ?? '');
+                              setChainName(questChainData.name ?? '');
+                              setChainDescription(
+                                questChainData.description ?? '',
+                              );
                             }}
                             fontSize="xs"
                             leftIcon={<EditIcon fontSize="sm" />}
@@ -716,7 +722,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       fontFamily="heading"
                       mb={3}
                     >
-                      {/* questChain.name */}
+                      {questChainData.name}
                     </Text>
                     <Flex gap={4} justify="space-between">
                       <HStack>
@@ -737,6 +743,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                         </Tooltip>
                       </HStack>
                       <Flex align="center" gap={3}>
+                        {/*
                         <TwitterShareButton
                           url={QCURL}
                           title={QCmessage}
@@ -755,6 +762,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                         <MastodonShareButton
                           message={`${QCmessage} ${QCURL}`}
                         />
+*/}
                       </Flex>
                     </Flex>
                   </Flex>
@@ -797,21 +805,21 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       checkMetadataChanged();
                     }}
                     numberOfCategories={categoriesRef.current.length}
-                    defaultValue={[]}
-                    // (questChain?.categories?.map(c => ({
-                    //   value: c,
-                    //   label: c.charAt(0).toUpperCase() + c.slice(1),
-                    // })) as MongoCategory[]) || []
+                    defaultValue={
+                      (questChainData.categories?.map(c => ({
+                        value: c,
+                        label: c.charAt(0).toUpperCase() + c.slice(1),
+                      })) as MongoCategory[]) || []
+                    }
                   />
                 </Box>
               )}
 
-              {/* quest chain Description
-              {!isEditingQuestChain && questChain.description && (
+              {!isEditingQuestChain && questChainData.description && (
                 <Flex mb={8}>
-                  <MarkdownViewer markdown={questChain.description} />
+                  <MarkdownViewer markdown={questChainData.description} />
                 </Flex>
-              )} */}
+              )}
               {isEditingQuestChain && (
                 <MarkdownEditor
                   value={chainDescRef.current}
@@ -840,7 +848,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       width: '100%',
                       height: '16rem',
                     }}
-                    // defaultImageUri={ipfsUriToHttp(questChain.imageUrl)}
+                    defaultImageUri={ipfsUriToHttp(questChainData.image_url)}
                     onResetDefaultImage={() => setRemoveCoverImage(true)}
                     isDisabled={isSubmittingQuestChain}
                   />
@@ -854,7 +862,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                 w="100%"
                 mb={8}
               >
-                {/* questChain.token.imageUrl && (
+                {questChainTokenData.image_url && (
                   <Flex
                     align="center"
                     justify="center"
@@ -864,13 +872,13 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                     overflow="hidden"
                   >
                     <Image
-                      src={ipfsUriToHttp(questChain.token.imageUrl)}
+                      src={ipfsUriToHttp(questChainTokenData.image_url)}
                       alt="quest chain NFT badge"
                       maxW={373}
                       maxH={373}
                     />
                   </Flex>
-                ) */}
+                )}
 
                 {isAdmin &&
                   mode === Mode.MEMBER &&
@@ -1134,29 +1142,21 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       />
                     ) : (
                       <Accordion allowMultiple w="full" defaultIndex={[]}>
-                        {/* questChain.quests
-                          .filter(
-                            q =>
-                              !!q.name && (mode === Mode.MEMBER || !q.paused),
-                          )
-                          .map((q, index) => {
-                            const { name, description, questId } = q;
+                        {questChain.quests
+                          .filter(q => mode === Mode.MEMBER || !q.paused)
+                          .map(q => {
                             return (
                               <QuestTile
-                                key={questId}
-                                name={`${Number(index + 1)
-                                  .toString()
-                                  .padStart(2, '0')}. ${name}`}
-                                description={description ?? ''}
+                                key={q.questId}
                                 bgColor={getQuestBGColor(
-                                  userStatus[questId]?.status,
+                                  userStatus[q.questId]?.status,
                                   mode,
                                 )}
                                 onEditQuest={() => undefined}
                                 isMember={
                                   mode === Mode.MEMBER && (isAdmin || isEditor)
                                 }
-                                questId={questId}
+                                questId={q.questId}
                                 questChain={questChain}
                                 userStatus={userStatus}
                                 advSettings={q}
@@ -1164,7 +1164,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                                 editDisabled
                               />
                             );
-                          }) */}
+                          })}
                       </Accordion>
                     )}
                   </>
@@ -1180,7 +1180,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                 display={{ base: 'none', lg: 'flex' }}
                 mb={12}
               >
-                {/* questChain.token.imageUrl && (
+                {questChainTokenData.image_url && (
                   <Flex
                     align="center"
                     justify="center"
@@ -1190,7 +1190,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                     overflow="hidden"
                   >
                     <Image
-                      src={ipfsUriToHttp(questChain.token.imageUrl)}
+                      src={ipfsUriToHttp(questChainTokenData.image_url)}
                       alt="quest chain NFT badge"
                       maxW={373}
                       maxH={373}
@@ -1198,7 +1198,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                       cursor="pointer"
                     />
                   </Flex>
-                ) */}
+                )}
                 <NFTDetailsModal
                   isOpen={isNFTModalOpen}
                   onClose={onNFTModalClose}

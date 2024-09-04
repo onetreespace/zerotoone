@@ -66,18 +66,7 @@ export const Featured: React.FC = () => {
           maxChildrenPerSlide={maxChildrenPerSlide}
         >
           {results.map(item => (
-            <QuestChainTile
-              key={item.address}
-              quests={item.numQuests}
-              chainId={item.chainId}
-              address={item.address}
-              // name={item.name}
-              // description={item.description}
-              // imageUrl={item.imageUrl}
-              createdBy={item.createdBy.id}
-              // slug={item.slug}
-              featured
-            />
+            <QuestChainTile key={item.address} featured {...item} />
           ))}
         </Carousel>
       )}
