@@ -24,10 +24,10 @@ contract DeployScript is Script {
     bytes32 public SALT = bytes32(keccak256(abi.encode("CS")));
 
     function setUp() public {
-        // string memory mnemonic = vm.envString("MNEMONIC");
-        // if (bytes(mnemonic).length > 0) {
-        //     (deployer, deployerPrivateKey) = deriveRememberKey(mnemonic, 0);
-        // }
+        string memory mnemonic = vm.envString("MNEMONIC");
+        if (bytes(mnemonic).length > 0) {
+            (deployer, deployerPrivateKey) = deriveRememberKey(mnemonic, 0);
+        }
 
         if (deployerPrivateKey == 0) {
             deployerPrivateKey = vm.envUint("PRIVATE_KEY");

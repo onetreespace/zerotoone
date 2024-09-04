@@ -14,6 +14,7 @@
     "clean": "forge clean && rm -rf build",
     "compile": "forge compile",
     "deploy-local": "forge script DeployScript --rpc-url local --broadcast",
+    "deploy-sepolia": "forge script DeployScript --rpc-url sepolia --broadcast",
     "format": "forge fmt --root .",
     "test": "forge test"
   }
