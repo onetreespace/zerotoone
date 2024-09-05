@@ -1,5 +1,6 @@
 import { CheckIcon } from '@chakra-ui/icons';
 import {
+  Button,
   Flex,
   IconButton,
   Input,
@@ -17,7 +18,6 @@ import { isAddress } from 'viem';
 import { AddUserIcon } from '@/components/icons/AddUserIcon';
 import { TrashOutlinedIcon } from '@/components/icons/TrashOutlinedIcon';
 import { Role } from '@/components/RoleTag';
-import { SubmitButton } from '@/components/SubmitButton';
 import { UserDisplay } from '@/components/UserDisplay';
 import { QuestChainInfoFragment } from '@/graphql';
 import { waitUntilBlock } from '@/utils/graphHelpers';
@@ -142,53 +142,53 @@ export const RolesEditor: React.FC<{
     const [address, { newRole, oldRole }] = memberToSave;
 
     /*
-            if (!chainId || !provider || questChain?.chainId !== chainId) {
-              toast.error(
-                `Wrong Chain, please switch to ${
-                  AVAILABLE_NETWORK_INFO[questChain?.chainId].label
-                }`,
-              );
-              return;
-            }
-            setSaving(true);
-            let tid = toast.loading(
-              'Waiting for Confirmation - Confirm the transaction in your Wallet',
-            );
-            try {
-              const contract = getQuestChainContract(
-                questChain.address,
-                questChain.version,
-                provider.getSigner(),
-              );
-              let tx;
-              if (oldRole === newRole || !newRole) return;
-              if (!oldRole) {
-                if (!newRole || newRole === 'Remove') return;
-                tx = await contract.grantRole(QuestChainRoles[newRole], address);
-              } else if (newRole === 'Remove') {
-                tx = await contract.revokeRole(QuestChainRoles.Reviewer, address);
-              } else {
-                tx = await changeRole(contract, address, oldRole, newRole);
+              if (!chainId || !provider || questChain?.chainId !== chainId) {
+                toast.error(
+                  `Wrong Chain, please switch to ${
+                    AVAILABLE_NETWORK_INFO[questChain?.chainId].label
+                  }`,
+                );
+                return;
               }
-              toast.dismiss(tid);
-              tid = handleTxLoading(tx.hash, chainId);
-              const receipt = await tx.wait(1);
-              toast.dismiss(tid);
-              tid = toast.loading(
-                'Transaction confirmed. Waiting for The Graph to index the transaction data.',
+              setSaving(true);
+              let tid = toast.loading(
+                'Waiting for Confirmation - Confirm the transaction in your Wallet',
               );
-              await waitUntilBlock(chainId, receipt.blockNumber);
-              toast.dismiss(tid);
-              toast.success(`Successfully updated members`);
-              refresh();
-            } catch (error) {
-              toast.dismiss(tid);
-              handleError(error);
-            } finally {
-              setSaving(false);
-              onExit();
-            }
-            */
+              try {
+                const contract = getQuestChainContract(
+                  questChain.address,
+                  questChain.version,
+                  provider.getSigner(),
+                );
+                let tx;
+                if (oldRole === newRole || !newRole) return;
+                if (!oldRole) {
+                  if (!newRole || newRole === 'Remove') return;
+                  tx = await contract.grantRole(QuestChainRoles[newRole], address);
+                } else if (newRole === 'Remove') {
+                  tx = await contract.revokeRole(QuestChainRoles.Reviewer, address);
+                } else {
+                  tx = await changeRole(contract, address, oldRole, newRole);
+                }
+                toast.dismiss(tid);
+                tid = handleTxLoading(tx.hash, chainId);
+                const receipt = await tx.wait(1);
+                toast.dismiss(tid);
+                tid = toast.loading(
+                  'Transaction confirmed. Waiting for The Graph to index the transaction data.',
+                );
+                await waitUntilBlock(chainId, receipt.blockNumber);
+                toast.dismiss(tid);
+                toast.success(`Successfully updated members`);
+                refresh();
+              } catch (error) {
+                toast.dismiss(tid);
+                handleError(error);
+              } finally {
+                setSaving(false);
+                onExit();
+              }
+              */
   }, [memberToSave, questChain, onExit, refresh]);
 
   return (
@@ -302,7 +302,7 @@ export const RolesEditor: React.FC<{
 
       <Flex align="center" justify="space-between" gap={4} pt={3}>
         {isEditing && (
-          <SubmitButton
+          <Button
             onClick={onSave}
             flex={1}
             isLoading={isSaving}
@@ -311,9 +311,9 @@ export const RolesEditor: React.FC<{
             fontSize="sm"
           >
             Save
-          </SubmitButton>
+          </Button>
         )}
-        <SubmitButton
+        <Button
           onClick={onExit}
           flex={1}
           isDisabled={isSaving}
@@ -328,7 +328,7 @@ export const RolesEditor: React.FC<{
           px={6}
         >
           Cancel
-        </SubmitButton>
+        </Button>
       </Flex>
     </Flex>
   );

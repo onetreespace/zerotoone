@@ -1,101 +1,52 @@
-import { SearchIcon } from '@chakra-ui/icons';
-import {
-  Button,
-  Flex,
-  HStack,
-  Text,
-  useBreakpointValue,
-} from '@chakra-ui/react';
+import { HStack, Text, useBreakpointValue } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import NextLink from 'next/link';
 import { useAccount } from 'wagmi';
 
-export const DesktopMenu: React.FC<{ onSearchOpen: () => void }> = ({
-  onSearchOpen,
-}) => {
+export const DesktopMenu: React.FC = () => {
   const isSmallerScreen = useBreakpointValue({ base: true, xl: false });
   const { isConnected, address } = useAccount();
 
   const name = address;
 
   return (
-    <Flex zIndex={2} justify="space-between" w="full">
-      <Button
-        color="whiteAlpha.800"
-        bgColor="whiteAlpha.200"
-        border="none"
-        borderRadius={4}
-        fontWeight="light"
-        onClick={onSearchOpen}
-        minW="7.5rem"
-        justifyContent="flex-start"
-        px={8}
-        ml={16}
-      >
-        <SearchIcon color="white" mr={3} />
-        <Text fontSize="sm" color="whiteAlpha.600" fontWeight="bold">
-          {isSmallerScreen ? 'search' : 'search chains by name or description'}
-        </Text>
-      </Button>
-
-      <HStack gap={2} fontSize="sm">
-        {isConnected && (
-          <NextLink as={`/profile/${name}`} href="/profile/[name]" passHref>
-            <Text
-              px={1}
-              cursor="pointer"
-              _hover={{
-                boxShadow: '0 4px 2px -2px #1f7165',
-              }}
-              transition="0.25s"
-              fontWeight="700"
-              color="main"
-            >
-              {isSmallerScreen ? 'Profile' : 'My Profile'}
-            </Text>
-          </NextLink>
-        )}
-        <NextLink href="/explore">
+    <HStack gap={4} fontSize="sm" zIndex={2}>
+      {isConnected && (
+        <NextLink as={`/profile/${name}`} href="/profile/[name]" passHref>
           <Text
             px={1}
-            cursor="pointer"
+            fontFamily="heading"
             _hover={{
-              boxShadow: '0 4px 2px -2px #1f7165',
+              textDecoration: 'underline',
             }}
-            transition="0.25s"
-            color="main"
-            fontWeight="700"
           >
-            {isSmallerScreen ? 'Explore' : 'Explore'}
+            {isSmallerScreen ? 'Profile' : 'My Profile'}
           </Text>
         </NextLink>
-        <NextLink href="/create">
-          <Button
-            borderWidth={1}
-            borderColor="green.200"
-            bgColor="rgba(158, 252, 229, 0.15)"
-            transition="border-color 0.15s, box-shadow 0.15s"
-            _hover={{
-              background:
-                'linear-gradient(180deg, rgba(0, 0, 0, 0.3) 24.63%, rgba(0, 0, 0, 0.5) 70.9%),rgba(158, 252, 229, 0.15)',
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-              borderColor: 'main',
-              boxShadow: '0px 0px 20px rgba(45, 248, 199, 0.32);',
-            }}
-            px={5}
-            py={2}
-            borderRadius="full"
-          >
-            <Text fontWeight="700" color="green.200" fontSize="sm">
-              {isSmallerScreen ? 'Create' : 'Create a chain'}
-            </Text>
-          </Button>
-        </NextLink>
-        <Flex pl={10}>
-          <ConnectButton />
-        </Flex>
-      </HStack>
-    </Flex>
+      )}
+      <NextLink href="/courses">
+        <Text
+          px={1}
+          fontFamily="heading"
+          _hover={{
+            textDecoration: 'underline',
+          }}
+        >
+          Courses
+        </Text>
+      </NextLink>
+      <NextLink href="/gigs">
+        <Text
+          px={1}
+          fontFamily="heading"
+          _hover={{
+            textDecoration: 'underline',
+          }}
+        >
+          Gigs
+        </Text>
+      </NextLink>
+      <ConnectButton />
+    </HStack>
   );
 };

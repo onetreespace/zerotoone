@@ -10,7 +10,6 @@ import { useAccount } from 'wagmi';
 import { Page } from '@/components/Layout/Page';
 import { LoadingState } from '@/components/LoadingState';
 import { QuestChainReviewPage } from '@/components/Review/QuestChainReviewPage';
-import { HeadComponent } from '@/components/Seo';
 import {
   getQuestChainFromSlug,
   getQuestChainInfo,
@@ -20,7 +19,6 @@ import {
 } from '@/graphql';
 import { useLatestQuestChainData } from '@/hooks/useLatestQuestChainData';
 import { useLatestQuestStatusesForChainData } from '@/hooks/useLatestQuestStatusesForChainData';
-import { getQuestChainURL } from '@/utils/uriHelpers';
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
 
@@ -155,27 +153,20 @@ export const getStaticProps = async (
 
 const ReviewHead = ({ questChain }: { questChain: QuestChainInfoFragment }) => {
   return (
-    <>
-      <HeadComponent
-        title={`Review - ${questChain.address} - ${questChain.chainId}`}
-        description="Review submissions for this quest chain"
-        url={getQuestChainURL(questChain)}
-      />
-      <Flex w="full">
-        <NextLink
-          as={`/${questChain.chainId}/${questChain.address}`}
-          href="/[chainId]/[address]"
-          passHref
-        >
-          <ChakraLink display="block" _hover={{}} w="full">
-            <Flex alignItems="center" _hover={{ textDecor: 'underline' }}>
-              <ArrowBackIcon mr={2} />
-              <Text fontSize={14}>Back to quest chain details</Text>
-            </Flex>
-          </ChakraLink>
-        </NextLink>
-      </Flex>
-    </>
+    <Flex w="full">
+      <NextLink
+        as={`/course/${questChain.chainId}/${questChain.address}`}
+        href="/course/[chainId]/[address]"
+        passHref
+      >
+        <ChakraLink display="block" _hover={{}} w="full">
+          <Flex alignItems="center" _hover={{ textDecor: 'underline' }}>
+            <ArrowBackIcon mr={2} />
+            <Text fontSize={14}>Back to quest chain details</Text>
+          </Flex>
+        </ChakraLink>
+      </NextLink>
+    </Flex>
   );
 };
 

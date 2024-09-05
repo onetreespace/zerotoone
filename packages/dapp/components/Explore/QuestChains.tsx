@@ -238,7 +238,7 @@ const QuestChains: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
       )}
       {!fetching && !error && results.length > 0 && (
         <Grid
-          gap={5}
+          gap={16}
           templateColumns={{
             base: 'repeat(1, 100%)',
             md: 'repeat(2, minmax(0, 1fr))',

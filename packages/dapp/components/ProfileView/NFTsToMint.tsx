@@ -15,7 +15,6 @@ import {
 import { useAccount } from 'wagmi';
 
 import { useNFTsToMintForAllChains } from '@/hooks/useNFTsToMintForAllChains';
-import { getQuestChainURL } from '@/utils/uriHelpers';
 
 import { MintNFTTile } from '../MintNFTTile';
 
@@ -62,7 +61,6 @@ export const NFTsToMint: React.FC = () => {
                 {...ns}
                 key={ns.questChain.address + ns.questChain.chainId}
                 onSuccess={refresh}
-                QCURL={getQuestChainURL(ns.questChain)}
               />
             ))}
           </SimpleGrid>
@@ -81,7 +79,6 @@ export const NFTsToMint: React.FC = () => {
                   {...ns}
                   key={ns.questChain.address + ns.questChain.chainId}
                   onSuccess={refresh}
-                  QCURL={getQuestChainURL(ns.questChain)}
                 />
               ))}
             </SimpleGrid>

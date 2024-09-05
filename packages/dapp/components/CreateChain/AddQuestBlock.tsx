@@ -1,4 +1,5 @@
 import {
+  Button,
   Flex,
   FormControl,
   FormLabel,
@@ -10,7 +11,6 @@ import { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { MarkdownEditor } from '@/components/MarkdownEditor';
-import { SubmitButton } from '@/components/SubmitButton';
 import { useInputText } from '@/hooks/useInputText';
 
 import QuestAdvancedSettings from '../QuestAdvancedSettings';
@@ -116,7 +116,7 @@ export const AddQuestBlock: React.FC<{
           pt={2}
           px={4}
         >
-          <SubmitButton
+          <Button
             onClick={() => {
               if (!nameRef.current || !descRef.current) {
                 toast.error(
@@ -132,8 +132,8 @@ export const AddQuestBlock: React.FC<{
             flex={1}
           >
             Add quest
-          </SubmitButton>
-          <SubmitButton
+          </Button>
+          <Button
             onClick={onClose}
             flex={1}
             isDisabled={isAdding}
@@ -147,7 +147,7 @@ export const AddQuestBlock: React.FC<{
             }}
           >
             Cancel
-          </SubmitButton>
+          </Button>
         </Flex>
       </VStack>
     </form>

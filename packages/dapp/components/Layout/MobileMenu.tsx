@@ -1,4 +1,3 @@
-import { SearchIcon } from '@chakra-ui/icons';
 import {
   Button,
   Link as ChakraLink,
@@ -20,21 +19,14 @@ import { NavToggle } from './NavToggle';
 export const MobileMenu: React.FC<{
   isOpen: boolean;
   toggleOpen: () => void;
-  onSearchOpen: () => void;
-}> = ({ isOpen, toggleOpen, onSearchOpen }) => {
+}> = ({ isOpen, toggleOpen }) => {
   const { asPath } = useRouter();
   const { isConnected, address } = useAccount();
-
-  const name = address;
 
   const isProfilePath = useMemo(() => {
     if (!asPath.startsWith('/profile/')) return false;
     const param = asPath.slice('/profile/'.length);
-    return (
-      // param === user?.username ||
-      // param === ens ||
-      param.toLowerCase() === address
-    );
+    return param.toLowerCase() === address?.toLowerCase();
   }, [asPath, address]);
 
   return (
@@ -99,7 +91,7 @@ export const MobileMenu: React.FC<{
               </ChakraLink>
               {isConnected && (
                 <NextLink
-                  as={`/profile/${name}`}
+                  as={`/profile/${address}`}
                   href="/profile/[name]"
                   passHref
                 >
@@ -118,22 +110,6 @@ export const MobileMenu: React.FC<{
                   </ChakraLink>
                 </NextLink>
               )}
-              <Button
-                color="whiteAlpha.800"
-                bgColor="rgba(0, 0, 0, 0.3)"
-                border="none"
-                borderRadius="full"
-                fontWeight="light"
-                onClick={() => {
-                  toggleOpen();
-                  onSearchOpen();
-                }}
-                minW="7.5rem"
-                justifyContent="flex-start"
-              >
-                <SearchIcon color="white" mr={3} />
-                Search
-              </Button>
             </VStack>
           </ModalBody>
         </ModalContent>

@@ -27,8 +27,6 @@ import {
   IPFS_GATEWAYS,
 } from '@/utils/uriHelpers';
 
-import { SubmitButton } from '../SubmitButton';
-
 type Option = {
   readonly label: string;
   readonly value: string;
@@ -138,7 +136,7 @@ export const IPFSGatewaySettings: React.FC = () => {
             >
               Close
             </Button>
-            <SubmitButton
+            <Button
               mt={4}
               isDisabled={!value || value.value === ipfsGateway}
               onClick={() => {
@@ -148,7 +146,7 @@ export const IPFSGatewaySettings: React.FC = () => {
               }}
             >
               Submit
-            </SubmitButton>
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

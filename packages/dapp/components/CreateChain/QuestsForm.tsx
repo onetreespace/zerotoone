@@ -16,7 +16,6 @@ import { useCallback, useMemo, useState } from 'react';
 import { useInputText } from '@/hooks/useInputText';
 
 import { QuestTile } from '../QuestTile';
-import { SubmitButton } from '../SubmitButton';
 import { AddQuestBlock, defaultQuestAdvSetting } from './AddQuestBlock';
 import { EditingQuest } from './EditingQuest';
 
@@ -290,7 +289,7 @@ export const QuestsForm: React.FC<{
 
       <Box w="full">
         <Flex w="full" gap={4}>
-          <SubmitButton
+          <Button
             isDisabled={isSubmitting}
             isLoading={isSubmitting}
             onClick={() => onPublishQuestChain(quests, startAsDisabled)}
@@ -298,7 +297,7 @@ export const QuestsForm: React.FC<{
             fontSize={{ base: 12, md: 16 }}
           >
             PUBLISH QUEST CHAIN
-          </SubmitButton>
+          </Button>
         </Flex>
         {hasAdvancedSettings ? (
           <Flex

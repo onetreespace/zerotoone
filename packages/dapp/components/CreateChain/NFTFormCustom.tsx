@@ -15,7 +15,6 @@ import { handleError } from '@/utils/helpers';
 import { Metadata, uploadFiles, uploadMetadata } from '@/utils/metadata';
 
 import { EditIcon } from '../icons/EditIcon';
-import { SubmitButton } from '../SubmitButton';
 import { UploadImageForm } from '../UploadImageForm';
 
 const CustomNFTForm2D: React.FC<{
@@ -148,9 +147,9 @@ const CustomNFTForm2D: React.FC<{
           </Button>
         )}
         {!isDisabled && (
-          <SubmitButton isLoading={isLoading} onClick={exportMetadata} w="full">
+          <Button isLoading={isLoading} onClick={exportMetadata} w="full">
             {submitLabel}
-          </SubmitButton>
+          </Button>
         )}
       </Flex>
     </Flex>

@@ -12,8 +12,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useCallback, useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { TwitterShareButton } from 'react-share';
 
 import VictoryCupImage from '@/assets/victory-cup.svg';
 import { QuestChainInfoFragment } from '@/graphql';
@@ -21,19 +19,14 @@ import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
 import { ipfsUriToHttp } from '@/utils/uriHelpers';
 
-import { TwitterIcon } from './icons/TwitterIcon';
-import { MastodonShareButton } from './MastodonShareButton';
-
 type QuestChainTileProps = {
   questChain: QuestChainInfoFragment;
   onSuccess?: () => void;
-  QCURL: string;
 };
 
 export const MintNFTTile: React.FC<QuestChainTileProps> = ({
   questChain,
   onSuccess,
-  QCURL,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -136,27 +129,6 @@ export const MintNFTTile: React.FC<QuestChainTileProps> = ({
             <Text fontSize={20} mb={2} mt={4} fontWeight="semibold">
               Congrats on minting your NFT!
             </Text>
-            <Text>Now is the perfect time to let everybody know!</Text>
-            <Text mb={6}>
-              Use the buttons below to share it on Twitter and Mastodon.
-            </Text>
-            <Flex gap={3} justifyContent="center">
-              <TwitterShareButton
-                url={QCURL}
-                title={QCmessage}
-                via="questchainz"
-              >
-                <Button
-                  bgColor="#4A99E9"
-                  p={4}
-                  h={7}
-                  leftIcon={<TwitterIcon />}
-                >
-                  Tweet
-                </Button>
-              </TwitterShareButton>
-              <MastodonShareButton message={`${QCmessage} ${QCURL}`} />
-            </Flex>
           </ModalBody>
         </ModalContent>
       </Modal>

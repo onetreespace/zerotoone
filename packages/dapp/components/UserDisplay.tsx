@@ -15,7 +15,7 @@ export const UserDisplay: React.FC<{
   color?: string;
   size?: 'sm' | 'md' | 'lg' | 'xs';
   noLink?: boolean;
-}> = ({ address, color = 'white', size = 'md', noLink }) => {
+}> = ({ address, color = 'black', size = 'md', noLink }) => {
   const result = useEnsName({
     chainId: mainnet.id,
     address: address as Address,
@@ -53,6 +53,7 @@ export const UserDisplay: React.FC<{
       height={8}
       px={2}
       borderRadius="full"
+      fontFamily="body"
       _hover={noLink ? {} : undefined}
     >
       <HStack position="relative" color={color}>

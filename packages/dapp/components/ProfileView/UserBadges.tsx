@@ -17,16 +17,12 @@ import {
 } from '@chakra-ui/react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { TwitterShareButton } from 'react-share';
 
-import { MastodonShareButton } from '@/components/MastodonShareButton';
 import { NetworkDisplay } from '@/components/NetworkDisplay';
 import { TokenImageOrVideo } from '@/components/TokenImage/TokenImageOrVideo';
 import { useUserBadgesForAllChains } from '@/hooks/useUserBadgesForAllChains';
-import { getQuestChainURL } from '@/utils/uriHelpers';
 import { formatAddress } from '@/web3';
 
-import { TwitterIcon } from '../icons/TwitterIcon';
 import { NFTDetail } from '../QuestChain/NFTDetail';
 
 type QuestChainBadgeInfo = {
@@ -35,7 +31,6 @@ type QuestChainBadgeInfo = {
   description?: string | null | undefined;
   imageUrl?: string | null | undefined;
   address: string;
-  slug: string | null | undefined;
   tokenAddress: string | null | undefined;
   tokenId: string | null | undefined;
 };
@@ -73,10 +68,6 @@ export const UserBadges: React.FC<{
   const [selectedNFT, setSelectedNFT] = useState<QuestChainBadgeInfo | null>(
     null,
   );
-
-  const QCURL = selectedNFT ? getQuestChainURL(selectedNFT) : '';
-  const QCmessage =
-    'Level up your Web3 skills by completing a quest chain and earning a soulbound NFT! #QuestChains #NFTs #Web3';
 
   return (
     <VStack spacing={4} align="stretch">
@@ -165,23 +156,6 @@ export const UserBadges: React.FC<{
                   chainId={Number(selectedNFT?.chainId ?? '')}
                   asTag
                 />
-                <Flex gap={3}>
-                  <TwitterShareButton
-                    url={QCURL}
-                    title={QCmessage}
-                    via="questchainz"
-                  >
-                    <Button
-                      bgColor="#4A99E9"
-                      p={4}
-                      h={7}
-                      leftIcon={<TwitterIcon />}
-                    >
-                      Tweet
-                    </Button>
-                  </TwitterShareButton>
-                  <MastodonShareButton message={`${QCmessage} ${QCURL}`} />
-                </Flex>
               </Flex>
               <TokenImageOrVideo
                 uri={selectedNFT?.imageUrl ?? ''}

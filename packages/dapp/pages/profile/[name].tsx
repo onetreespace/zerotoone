@@ -30,7 +30,7 @@ import { HeadComponent } from '@/components/Seo';
 import { UserAvatar } from '@/components/UserAvatar';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { fetchProfileFromName } from '@/lib/profile';
-import { QUESTCHAINS_URL } from '@/utils/constants';
+import { HOME_URL } from '@/utils/constants';
 import { formatAddress, getAddressUrl, getPublicClient } from '@/web3';
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>;
@@ -72,11 +72,7 @@ const Profile: React.FC<Props> = ({
 
   return (
     <Page>
-      <HeadComponent
-        title="Profile"
-        description={`Quest Chains profile of ${displayName}`}
-        url={`${QUESTCHAINS_URL}/profile/${name}`}
-      />
+      <HeadComponent title="Profile" url={`${HOME_URL}/profile/${name}`} />
       <VStack spacing={6} pb={8}>
         <Heading color="white" fontSize={50}>
           Profile

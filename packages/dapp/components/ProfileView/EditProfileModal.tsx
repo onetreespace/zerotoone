@@ -27,7 +27,6 @@ import { uploadFiles } from '@/utils/metadata';
 import { ipfsUriToHttp } from '@/utils/uriHelpers';
 
 import { ConfirmationModal } from '../ConfirmationModal';
-import { SubmitButton } from '../SubmitButton';
 import { UploadImageForm } from '../UploadImageForm';
 
 const user = { username: 'username', avatarUri: 'avatarUri' };
@@ -275,14 +274,14 @@ export const EditProfileModal: React.FC<{
             >
               Close
             </Button>
-            <SubmitButton
+            <Button
               mt={4}
               isLoading={isLoading}
               onClick={onSubmit}
               isDisabled={!isChanged}
             >
               Submit
-            </SubmitButton>
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

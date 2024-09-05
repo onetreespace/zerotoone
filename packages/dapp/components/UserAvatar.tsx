@@ -1,9 +1,8 @@
 import { Box } from '@chakra-ui/react';
-import { Address } from 'viem';
+import { Address, zeroAddress } from 'viem';
 import { useEnsName } from 'wagmi';
 
 import { MongoUser } from '@/lib/mongodb/types';
-import { ZERO_ADDRESS } from '@/utils/constants';
 import { ipfsUriToHttp } from '@/utils/uriHelpers';
 
 import { Jazzicon } from './Jazzicon';
@@ -31,5 +30,5 @@ export const UserAvatar: React.FC<{
     );
 
   // fallback to jazzicon
-  return <Jazzicon address={address ?? ZERO_ADDRESS} size={size} />;
+  return <Jazzicon address={address ?? zeroAddress} size={size} />;
 };

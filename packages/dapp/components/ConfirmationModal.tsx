@@ -9,9 +9,7 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react';
 
-import { SubmitButton } from './SubmitButton';
-
-interface DialogProps {
+type DialogProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
@@ -21,7 +19,7 @@ interface DialogProps {
   submitLabel?: string;
   isDisabled?: boolean;
   isLoading?: boolean;
-}
+};
 
 export const ConfirmationModal: React.FC<DialogProps> = ({
   title,
@@ -45,14 +43,14 @@ export const ConfirmationModal: React.FC<DialogProps> = ({
           <Button variant="ghost" mr={3} onClick={onClose} borderRadius="full">
             {cancelLabel}
           </Button>
-          <SubmitButton
+          <Button
             mt={4}
             onClick={onSubmit}
             isDisabled={isDisabled}
             isLoading={isLoading}
           >
             {submitLabel}
-          </SubmitButton>
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

@@ -1,6 +1,7 @@
 import {
   Accordion,
   Box,
+  Button,
   Flex,
   TabPanel,
   TabPanels,
@@ -30,7 +31,6 @@ import {
   SubmissionTile,
   SubmissionType,
 } from '@/components/Review/SubmissionTile';
-import { SubmitButton } from '@/components/SubmitButton';
 import {
   QuestChainInfoFragment,
   QuestStatusInfoFragment,
@@ -342,9 +342,9 @@ export const QuestChainReviewPage: React.FC<Props> = ({
             <Text mr={12}>
               {reviewed.length} review{reviewed.length > 1 ? 's' : ''} ready
             </Text>
-            <SubmitButton isLoading={submitting} onClick={onSubmit}>
+            <Button isLoading={submitting} onClick={onSubmit}>
               Submit
-            </SubmitButton>
+            </Button>
           </Flex>
         )}
       </Flex>

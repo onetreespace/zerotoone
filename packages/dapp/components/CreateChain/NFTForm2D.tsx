@@ -32,7 +32,6 @@ import {
   gems,
 } from '@/utils/templateHelpers';
 
-import { SubmitButton } from '../SubmitButton';
 import { ImageTemplate } from './ImageTemplate';
 
 const NFTForm2D: React.FC<{
@@ -297,9 +296,9 @@ const NFTForm2D: React.FC<{
             Back
           </Button>
         )}
-        <SubmitButton isLoading={isLoading} onClick={exportMetadata} w="full">
+        <Button isLoading={isLoading} onClick={exportMetadata} w="full">
           {submitLabel}
-        </SubmitButton>
+        </Button>
       </Flex>
     </VStack>
   );

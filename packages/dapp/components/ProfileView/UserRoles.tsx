@@ -32,7 +32,6 @@ type QuestChainRoleInfo = {
   chainId: number;
   paused: boolean;
   name?: string | null | undefined;
-  slug?: string | null;
   role: Role;
 };
 
@@ -157,11 +156,11 @@ export const UserRoles: React.FC<{
 };
 
 const RoleDisplay: React.FC<{ roleInfo: QuestChainRoleInfo }> = ({
-  roleInfo: { address, chainId, name, role, paused, slug },
+  roleInfo: { address, chainId, name, role, paused },
 }) => (
   <NextLink
-    as={`/${chainId}/${slug || address}`}
-    href="/[chainId]/[address]"
+    as={`/course/${chainId}/${address}`}
+    href="/course/[chainId]/[address]"
     passHref
   >
     <ChakraLink

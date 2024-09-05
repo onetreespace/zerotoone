@@ -45,14 +45,12 @@ import { PowerIcon } from '@/components/icons/PowerIcon';
 import { Page } from '@/components/Layout/Page';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { MarkdownViewer } from '@/components/MarkdownViewer';
-import { MastodonShareButton } from '@/components/MastodonShareButton';
 import { MembersDisplay } from '@/components/MembersDisplay';
 import { MintNFTTile } from '@/components/MintNFTTile';
 import { NetworkDisplay } from '@/components/NetworkDisplay';
 import { QuestTile } from '@/components/QuestTile';
 import { Role } from '@/components/RoleTag';
 import { HeadComponent } from '@/components/Seo';
-import { SubmitButton } from '@/components/SubmitButton';
 import { UploadImageForm } from '@/components/UploadImageForm';
 import { UserDisplay } from '@/components/UserDisplay';
 import {
@@ -70,7 +68,7 @@ import { MongoCategory } from '@/lib/mongodb/types';
 import { waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
 import { Metadata, uploadFiles, uploadMetadata } from '@/utils/metadata';
-import { getQuestChainURL, ipfsUriToHttp } from '@/utils/uriHelpers';
+import { ipfsUriToHttp } from '@/utils/uriHelpers';
 
 import { NFTDetailsModal } from './NFTDetailsModal';
 import { QuestsEditor } from './QuestsEditor';
@@ -375,7 +373,6 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
 
   const QCmessage =
     'Level up your Web3 skills by completing a quest chain and earning a soulbound NFT! #QuestChains #NFTs #Web3';
-  const QCURL = getQuestChainURL(questChain);
 
   const [isSavingNFT, setSavingNFT] = useState(false);
 
@@ -448,7 +445,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
           questChainData.description ||
           'Complete this quest chain to acquire its soulbound NFT!'
         }
-        url={QCURL}
+        url={`/course/${questChain.chainId}/${questChain.address}`}
       />
       <Box
         bgImage={ipfsUriToHttp(questChainData.image_url)}
@@ -651,7 +648,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
               )}
               <Flex gap="0.5rem" direction={{ base: 'column', md: 'row' }}>
                 {hasMetadataChanged && (
-                  <SubmitButton
+                  <Button
                     fontSize="sm"
                     px={6}
                     height={10}
@@ -676,9 +673,9 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                     w="12.5rem"
                   >
                     Save changes
-                  </SubmitButton>
+                  </Button>
                 )}
-                <SubmitButton
+                <Button
                   fontSize="sm"
                   bg="transparent"
                   height={10}
@@ -698,7 +695,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                   w="12.5rem"
                 >
                   {hasMetadataChanged ? 'Exit without saving' : 'Exit'}
-                </SubmitButton>
+                </Button>
               </Flex>
             </Flex>
           )}
@@ -1051,7 +1048,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                         as={`/${questChain.chainId}/${questChain.address}/review`}
                         href={`/${questChain.chainId}/[address]/review`}
                       >
-                        <SubmitButton
+                        <Button
                           fontSize={14}
                           fontWeight="bold"
                           height={10}
@@ -1062,7 +1059,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                           ) : (
                             <>View Submissions</>
                           )}
-                        </SubmitButton>
+                        </Button>
                       </NextLink>
                     </Flex>
                   )}
@@ -1096,7 +1093,6 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                         onSuccess: refresh,
                         completed: questChain.quests.filter(q => !q.paused)
                           .length,
-                        QCURL,
                       }}
                     />
                   </Flex>
@@ -1266,8 +1262,7 @@ export const QuestChainPage: React.FC<QuestChainPageProps> = ({
                 <ModalCloseButton />
                 <ModalBody p={0}>
                   <NFTForm
-                    // chainName={questChain.name ?? ''}
-                    chainName=""
+                    chainName={questChainData.name ?? ''}
                     onSubmit={onSubmitNFT}
                     showStep={false}
                     submitLabel="Submit"

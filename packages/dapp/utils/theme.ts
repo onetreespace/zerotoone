@@ -1,25 +1,22 @@
 import { extendTheme } from '@chakra-ui/react';
 import { css } from '@emotion/react';
 
-const Input = {
+const Button = {
+  baseStyle: {
+    fontFamily: 'heading',
+    letterSpacing: '0.05em',
+  },
   variants: {
-    outline: {
-      field: {
-        _focus: {
-          borderColor: 'transparent',
-          boxShadow: '0px 0px 0px 2px #AD90FF',
-        },
+    solid: {
+      bg: 'white',
+      color: 'black',
+      border: '1px solid black',
+      boxShadow: '5px 5px 0px 0px #000000',
+      _hover: {
+        bg: 'limeGreen.200',
       },
     },
   },
-};
-
-const Button = {
-  baseStyle: { borderRadius: 'full' },
-};
-
-const Form = {
-  baseStyle: { container: { padding: '2px' } },
 };
 
 export const theme = extendTheme({
@@ -38,95 +35,64 @@ export const theme = extendTheme({
     '10xl': '120em',
   },
   fonts: {
-    heading: `'Museo Moderno', sans-serif`,
-    headingLight: `'Museo Moderno Light', sans-serif`,
-    // body: `'Baumans Regular', sans-serif`,
+    heading: `"Dela Gothic One", sans-serif`,
+    body: `"Merriweather", serif`,
   },
   colors: {
-    // TODO: replace all occurences of 'main', 'pending', 'rejected' with green, yellow and purple
-    main: '#2DF8C7',
-    'main.100': '#2DF8C710',
-    'main.200': '#2DF8C720',
-    'main.300': '#2DF8C730',
-    'main.400': '#2DF8C740',
-    'main.500': '#2DF8C750',
-    'main.600': '#2DF8C760',
-    'main.700': '#2DF8C770',
-    'main.800': '#2DF8C780',
-    'main.900': '#2DF8C790',
-    'main.950': '#2DF8C795',
-    pending: '#EFFF8F',
-    'pending.100': '#EFFF8F10',
-    'pending.200': '#EFFF8F20',
-    'pending.300': '#EFFF8F30',
-    'pending.400': '#EFFF8F40',
-    'pending.500': '#EFFF8F50',
-    'pending.600': '#EFFF8F60',
-    'pending.700': '#EFFF8F70',
-    'pending.800': '#EFFF8F80',
-    'pending.900': '#EFFF8F90',
-    'pending.950': '#EFFF8F95',
-    rejected: '#F43F5E',
-    'rejected.100': '#F43F5E10',
-    'rejected.200': '#F43F5E20',
-    'rejected.300': '#F43F5E30',
-    'rejected.400': '#F43F5E40',
-    'rejected.500': '#F43F5E50',
-    'rejected.600': '#F43F5E60',
-    'rejected.700': '#F43F5E70',
-    'rejected.800': '#F43F5E80',
-    'rejected.900': '#F43F5E90',
-    'rejected.950': '#F43F5E95',
-    neutral: '#BCBCBC',
-    green: {
-      '50': '#eafef9',
-      '100': '#befdee',
-      '200': '#9efce5',
-      '300': '#72fad9',
-      '400': '#57f9d2',
-      '500': '#2df8c7',
-      '600': '#29e2b5',
-      '700': '#20b08d',
-      '800': '#19886d',
-      '900': '#136854',
+    purplePlop: {
+      50: '#f7f6fe',
+      100: '#f2f1fe',
+      200: '#e5e2fd',
+      300: '#aaa1f7',
+      400: '#9991de',
+      500: '#8881c6',
+      600: '#8079b9',
+      700: '#666194',
+      800: '#4c486f',
+      900: '#3b3856',
     },
-    purple: {
-      '50': '#f9eafe',
-      '100': '#eebefd',
-      '200': '#e59efc',
-      '300': '#d972fa',
-      '400': '#d257f9',
-      '500': '#c72df8',
-      '600': '#b529e2',
-      '700': '#8d20b0',
-      '800': '#6d1988',
-      '900': '#541368',
+    midnightBlue: {
+      50: '#e8eaf3',
+      100: '#dcdfed',
+      200: '#b7bdda',
+      300: '#162b87',
+      400: '#14277a',
+      500: '#12226c',
+      600: '#112065',
+      700: '#0d1a51',
+      800: '#0a133d',
+      900: '#080f2f',
     },
-    yellow: {
-      '50': '#fef9ea',
-      '100': '#fdeebe',
-      '200': '#fce59e',
-      '300': '#fad972',
-      '400': '#f9d257',
-      '500': '#f8c72d',
-      '600': '#e2b529',
-      '700': '#b08d20',
-      '800': '#886d19',
-      '900': '#685413',
+    limeGreen: {
+      50: '#fafdf6',
+      100: '#f8fcf1',
+      200: '#f1f9e2',
+      300: '#d1eda0',
+      400: '#bcd590',
+      500: '#a7be80',
+      600: '#9db278',
+      700: '#7d8e60',
+      800: '#5e6b48',
+      900: '#495338',
     },
-  },
-  shadows: {
-    outline: '0px 0px 0px 2px #AD90FF',
+    blue: {
+      50: '#f4fbff',
+      100: '#eff9ff',
+      200: '#ddf4ff',
+      300: '#92daff',
+      400: '#83c4e6',
+      500: '#75aecc',
+      600: '#6ea4bf',
+      700: '#588399',
+      800: '#426273',
+      900: '#334c59',
+    },
   },
   config: {
     initialColorMode: 'light',
     useSystemColorMode: false,
   },
-  components: {
-    Input,
-    Button,
-    Form,
-  },
+  components: { Button },
 });
 
 export const globalStyles = css`
@@ -137,28 +103,28 @@ export const globalStyles = css`
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background: #444444;
+    // background: #444444;
     border-radius: 2.5px;
   }
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #2df8c7;
+    // background: #2df8c7;
     border-radius: 2.5px;
   }
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #1f7165;
+    // background: #1f7165;
   }
   body {
-    scrollbar-color: #2df8c7 #444444;
+    // scrollbar-color: #2df8c7 #444444;
     ::-webkit-scrollbar-track {
-      background: #444444;
+      // background: #444444;
       border-radius: 0px;
     }
-    overflow-y: scroll;
-    background: #111312;
+    overflow-y: auto;
+    // background: #111312;
     overflow-x: hidden;
   }
   html,

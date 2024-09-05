@@ -14,7 +14,6 @@ import { toast } from 'react-hot-toast';
 import { useAccount } from 'wagmi';
 
 import { MarkdownEditor } from '@/components/MarkdownEditor';
-import { SubmitButton } from '@/components/SubmitButton';
 import { useDropImage } from '@/hooks/useDropFiles';
 import { useInputText } from '@/hooks/useInputText';
 import { MongoCategory } from '@/lib/mongodb/types';
@@ -188,7 +187,7 @@ export const MetadataForm: React.FC<{
               Back
             </Button>
           )}
-          <SubmitButton
+          <Button
             isLoading={isSubmitting}
             isDisabled={isDisabled}
             onClick={() => {
@@ -201,7 +200,7 @@ export const MetadataForm: React.FC<{
             w="full"
           >
             Continue to Step 2
-          </SubmitButton>
+          </Button>
         </Flex>
       </form>
     </VStack>

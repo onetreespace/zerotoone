@@ -3,7 +3,7 @@ import { Heading } from '@chakra-ui/react';
 import { Page } from '@/components/Layout/Page';
 import { HeadComponent } from '@/components/Seo';
 import { IPFSGatewaySettings } from '@/components/Settings/IPFSGatewaySettings';
-import { QUESTCHAINS_URL } from '@/utils/constants';
+import { HOME_URL } from '@/utils/constants';
 
 const Settings: React.FC = () => {
   return (
@@ -11,7 +11,7 @@ const Settings: React.FC = () => {
       <HeadComponent
         title="Settings"
         description="Settings"
-        url={`${QUESTCHAINS_URL}/settings`}
+        url={`${HOME_URL}/settings`}
       />
       <Heading>Settings</Heading>
       <IPFSGatewaySettings />

@@ -21,7 +21,6 @@ import { useDropFiles, useDropImage } from '@/hooks/useDropFiles';
 import { useInputText } from '@/hooks/useInputText';
 
 import { MarkdownEditor } from './MarkdownEditor';
-import { SubmitButton } from './SubmitButton';
 import { UploadFilesForm } from './UploadFilesForm';
 import { UploadImageForm } from './UploadImageForm';
 
@@ -209,7 +208,7 @@ export const UploadProof: React.FC<{
             >
               Close
             </Button>
-            <SubmitButton
+            <Button
               mt={4}
               // onClick={() => {
               //   if (!chainId || chainId !== questChain.chainId || !provider) {
@@ -230,7 +229,7 @@ export const UploadProof: React.FC<{
               isLoading={isSubmitting}
             >
               Submit
-            </SubmitButton>
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

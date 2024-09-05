@@ -1,6 +1,6 @@
 import Head from 'next/head';
 
-import { QUESTCHAINS_URL } from '@/utils/constants';
+import { HOME_URL } from '@/utils/constants';
 
 export type HeadMetaProps = {
   title?: string;
@@ -11,10 +11,10 @@ export type HeadMetaProps = {
 };
 
 export const HeadComponent: React.FC<HeadMetaProps> = ({
-  title = 'Quest Chains',
-  description = 'Gamified web3 learning and onboarding platform. Learn & acquire soulbound NFTs!',
-  url = QUESTCHAINS_URL,
-  img = `${QUESTCHAINS_URL}/share.png`,
+  title = 'Zero to One',
+  description = 'Level up from zero to one',
+  url = HOME_URL,
+  img = `${HOME_URL}/logo.png`,
   cardStyle = 'summary',
 }) => (
   <Head>
@@ -29,7 +29,7 @@ export const HeadComponent: React.FC<HeadMetaProps> = ({
     <meta name="theme-color" property="theme-color" content="#5a32e6" />
 
     <meta name="og:type" property="og:type" content="website" />
-    <meta name="og:site_name" property="og:site_name" content="Quest Chains" />
+    <meta name="og:site_name" property="og:site_name" content="Zero To One" />
     <meta name="og:locale" property="og:locale" content="en_US" />
 
     <meta name="og:title" property="og:title" content={title} />
@@ -43,7 +43,7 @@ export const HeadComponent: React.FC<HeadMetaProps> = ({
 
     <meta name="twitter:card" property="twitter:card" content={cardStyle} />
     <meta name="twitter:url" property="twitter:url" content={url} />
-    <meta name="twitter:site" property="twitter:site" content="@questchainz" />
+    <meta name="twitter:site" property="twitter:site" content={url} />
     <meta name="twitter:title" property="twitter:title" content={title} />
     <meta
       name="twitter:description"

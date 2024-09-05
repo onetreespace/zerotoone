@@ -1,5 +1,4 @@
 // Do NOT change order of CSS files
-import '@/assets/styles/fonts.css';
 import 'react-markdown-editor-lite/lib/index.css';
 import '@/assets/styles/custom-markdown-editor.scss';
 import '@/assets/styles/react-medium-image-zoom.css';
@@ -22,7 +21,7 @@ const ForceLightMode = (): JSX.Element | null => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   useEffect(() => {
-    if (colorMode === 'dark') return;
+    if (colorMode === 'light') return;
     toggleColorMode();
   }, [colorMode, toggleColorMode]);
 

@@ -1,9 +1,15 @@
-import { Flex, FormControl, FormLabel, Input, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  Text,
+} from '@chakra-ui/react';
 import { MutableRefObject, useEffect, useState } from 'react';
 
 import { MarkdownEditor } from '../MarkdownEditor';
 import QuestAdvancedSettings from '../QuestAdvancedSettings';
-import { SubmitButton } from '../SubmitButton';
 import { defaultQuestAdvSetting } from './AddQuestBlock';
 
 export type QuestAdvSetting = {
@@ -79,7 +85,7 @@ export const EditingQuest: React.FC<{
       ) : null}
 
       <Flex align="center" justify="space-between" gap={4} w="full">
-        <SubmitButton
+        <Button
           onClick={() =>
             onSave(index, nameRef.current, descRef.current, questAdvSetting)
           }
@@ -88,8 +94,8 @@ export const EditingQuest: React.FC<{
           height={10}
         >
           Save
-        </SubmitButton>
-        <SubmitButton
+        </Button>
+        <Button
           onClick={onCancel}
           flex={1}
           fontSize="sm"
@@ -102,7 +108,7 @@ export const EditingQuest: React.FC<{
           }}
         >
           Cancel
-        </SubmitButton>
+        </Button>
       </Flex>
     </Flex>
   );

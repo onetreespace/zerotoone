@@ -7,9 +7,8 @@ export const Header: React.FC<{ children: JSX.Element }> = ({ children }) => {
       w="100%"
       h={20}
       zIndex={1000}
-      backdropFilter="blur(8px)"
       pos="fixed"
-      background="linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0) 100%)"
+      background="limeGreen.300"
       justifyContent="center"
     >
       <Flex
@@ -18,14 +17,8 @@ export const Header: React.FC<{ children: JSX.Element }> = ({ children }) => {
         maxW={{ base: '100rem', '4xl': '125rem' }}
         px={{ base: 4, md: 4, lg: 12, xl: 32 }}
       >
-        <ChakraLink
-          as={NextLink}
-          href="/explore"
-          display="block"
-          _hover={{}}
-          w={16}
-        >
-          <Image src="/logo.png" alt="Quest Chains" height={9} />
+        <ChakraLink as={NextLink} href="/" display="block" _hover={{}} w={16}>
+          <Image src="/logo.svg" alt="Zero To One" height={9} />
         </ChakraLink>
 
         {children}

@@ -1,6 +1,7 @@
 import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
+  Button,
   Flex,
   Grid,
   HStack,
@@ -14,13 +15,11 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react';
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { isAddress } from 'viem';
 
-import { SubmitButton } from '@/components/SubmitButton';
 import { UserDisplay } from '@/components/UserDisplay';
-import { isSupportedChain } from '@/web3';
 
 import { AddUserIcon } from '../icons/AddUserIcon';
 import { TrashOutlinedIcon } from '../icons/TrashOutlinedIcon';
@@ -226,13 +225,13 @@ export const RolesForm: React.FC<{
         </Grid>
       </Flex>
 
-      <SubmitButton
+      <Button
         onClick={() => onSubmit(members)}
         // isDisabled={isDisabled}
         w="full"
       >
         Continue to Step 4
-      </SubmitButton>
+      </Button>
     </VStack>
   );
 };

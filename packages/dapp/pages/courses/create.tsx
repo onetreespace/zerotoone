@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Flex, Image, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
@@ -15,10 +15,9 @@ import { MarkdownViewer } from '@/components/MarkdownViewer';
 import { MembersDisplay } from '@/components/MembersDisplay';
 import { NetworkDisplay } from '@/components/NetworkDisplay';
 import { HeadComponent } from '@/components/Seo';
-import { SubmitButton } from '@/components/SubmitButton';
 import { useGlobalInfo } from '@/hooks/useGlobal';
 import { randomBytes } from '@/utils/byteHelpers';
-import { QUESTCHAINS_URL } from '@/utils/constants';
+import { HOME_URL } from '@/utils/constants';
 import { parseQuestChainAddress, waitUntilBlock } from '@/utils/graphHelpers';
 import { handleError, handleTxLoading } from '@/utils/helpers';
 import { uploadMetadata } from '@/utils/metadata';
@@ -173,7 +172,7 @@ const Create: React.FC = () => {
         await waitUntilBlock(chainId, receipt.blockNumber);
         toast.dismiss(tid);
         toast.success('Quest Chain created successfully!');
-        router.push(`/${chainId}/${chainAddr}`);
+        router.push(`/course/${chainId}/${chainAddr}`);
       } catch (error) {
         toast.dismiss(tid);
         handleError(error);
@@ -192,6 +191,8 @@ const Create: React.FC = () => {
       editorAddresses,
       reviewerAddresses,
       globalInfo,
+      router,
+      writeContractAsync,
     ],
   );
 
@@ -217,9 +218,8 @@ const Create: React.FC = () => {
         zIndex={-1}
       />
       <HeadComponent
-        title="Create a quest chain"
-        description="You will be able create a 2D or a 3D soulbound NFT which Questers will be able to mint after completing the chain."
-        url={`${QUESTCHAINS_URL}/create`}
+        title="Create a course"
+        url={`${HOME_URL}/courses/create`}
       />
 
       {step === 0 && (
@@ -227,11 +227,11 @@ const Create: React.FC = () => {
           <Step0 />
           <Flex w="full" justifyContent="center">
             {address ? (
-              <SubmitButton onClick={() => setStep(1)} px={32}>
+              <Button onClick={() => setStep(1)} px={32}>
                 GET STARTED
-              </SubmitButton>
+              </Button>
             ) : (
-              <SubmitButton
+              <Button
                 onClick={async () => {
                   // await connectWallet();
                   setStep(1);
@@ -239,7 +239,7 @@ const Create: React.FC = () => {
                 px={32}
               >
                 Connect wallet to Get Started
-              </SubmitButton>
+              </Button>
             )}
           </Flex>
         </Flex>

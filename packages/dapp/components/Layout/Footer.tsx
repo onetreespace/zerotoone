@@ -1,7 +1,7 @@
 import {
-  ComponentWithAs,
-  HStack,
-  IconProps,
+  // ComponentWithAs,
+  // HStack,
+  // IconProps,
   Link as ChakraLink,
   Stack,
   Text,
@@ -9,12 +9,12 @@ import {
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
-import { QUESTCHAINS_LANDING_URL } from '@/utils/constants';
+import { HOME_URL } from '@/utils/constants';
 
-import { DiscordIcon } from '../icons/DiscordIcon';
-import { GithubIcon } from '../icons/GithubIcon';
-import { MediumIcon } from '../icons/MediumIcon';
-import { TwitterIcon } from '../icons/TwitterIcon';
+// import { DiscordIcon } from '../icons/DiscordIcon';
+// import { GithubIcon } from '../icons/GithubIcon';
+// import { MediumIcon } from '../icons/MediumIcon';
+// import { TwitterIcon } from '../icons/TwitterIcon';
 
 type TextLinkType = {
   label: string;
@@ -24,17 +24,18 @@ type TextLinkType = {
 
 const textLinks: TextLinkType[] = [
   {
-    label: 'What is Quest Chains?',
-    href: QUESTCHAINS_LANDING_URL,
-    external: true,
+    label: 'Zero To One',
+    href: HOME_URL,
+    external: false,
   },
-  { label: 'Explore quest chains', href: '/explore', external: false },
-  {
-    label: 'Documentation',
-    href: 'https://quest-chains.gitbook.io/app-documentation/',
-    external: true,
-  },
-  { label: 'Support', href: 'https://discord.gg/sjnh6cuVcN', external: true },
+  { label: 'Explore Courses', href: '/explore', external: false },
+  { label: 'Browse Gigs', href: '/gigs', external: false },
+  // {
+  //   label: 'Documentation',
+  //   href: 'https://quest-chains.gitbook.io/app-documentation/',
+  //   external: true,
+  // },
+  // { label: 'Support', href: 'https://discord.gg/sjnh6cuVcN', external: true },
 ];
 
 const TextLink = ({ label, href, external }: TextLinkType) => {
@@ -63,43 +64,43 @@ const TextLink = ({ label, href, external }: TextLinkType) => {
   );
 };
 
-type IconLinkType = {
-  Icon: ComponentWithAs<'svg', IconProps>;
-  href: string;
-  external: boolean;
-};
+// type IconLinkType = {
+//   Icon: ComponentWithAs<'svg', IconProps>;
+//   href: string;
+//   external: boolean;
+// };
 
-const iconLinks: IconLinkType[] = [
-  {
-    Icon: TwitterIcon,
-    href: 'https://twitter.com/questchainz',
-    external: true,
-  },
-  { Icon: GithubIcon, href: 'https://github.com/quest-chains', external: true },
-  {
-    Icon: DiscordIcon,
-    href: 'https://discord.com/invite/sjnh6cuVcN',
-    external: true,
-  },
-  { Icon: MediumIcon, href: 'https://medium.com/quest-chains', external: true },
-];
+// const iconLinks: IconLinkType[] = [
+//   {
+//     Icon: TwitterIcon,
+//     href: 'https://twitter.com/questchainz',
+//     external: true,
+//   },
+//   { Icon: GithubIcon, href: 'https://github.com/quest-chains', external: true },
+//   {
+//     Icon: DiscordIcon,
+//     href: 'https://discord.com/invite/sjnh6cuVcN',
+//     external: true,
+//   },
+//   { Icon: MediumIcon, href: 'https://medium.com/quest-chains', external: true },
+// ];
 
-const IconLink = ({ Icon, href, external }: IconLinkType) => {
-  return external ? (
-    <ChakraLink href={href} color="white" _hover={{ color: 'main' }} isExternal>
-      <Icon />
-    </ChakraLink>
-  ) : (
-    <ChakraLink
-      as={NextLink}
-      href={href}
-      color="white"
-      _hover={{ color: 'main' }}
-    >
-      <Icon />
-    </ChakraLink>
-  );
-};
+// const IconLink = ({ Icon, href, external }: IconLinkType) => {
+//   return external ? (
+//     <ChakraLink href={href} color="white" _hover={{ color: 'main' }} isExternal>
+//       <Icon />
+//     </ChakraLink>
+//   ) : (
+//     <ChakraLink
+//       as={NextLink}
+//       href={href}
+//       color="white"
+//       _hover={{ color: 'main' }}
+//     >
+//       <Icon />
+//     </ChakraLink>
+//   );
+// };
 
 export const Footer: React.FC = () => (
   <VStack
@@ -107,12 +108,11 @@ export const Footer: React.FC = () => (
     justify="center"
     align="center"
     zIndex={1000}
-    gap={2}
+    gap={12}
     pt={8}
     pb={4}
     fontSize="sm"
-    background="linear-gradient(transparent, rgba(255, 255, 255, 0.1))"
-    h={{ base: '16rem', md: '10rem' }}
+    background="limeGreen.300"
   >
     <Stack
       gap={{ base: 1, md: 2, lg: 4 }}
@@ -123,11 +123,13 @@ export const Footer: React.FC = () => (
         <TextLink key={l.href} {...l} />
       ))}
     </Stack>
+    {/*
     <HStack gap={4} fontSize="xl">
       {iconLinks.map(l => (
         <IconLink key={l.href} {...l} />
       ))}
     </HStack>
-    <Text>2023 © Quest Chains.</Text>
+*/}
+    <Text>© Zero To One, all rights reserved.</Text>
   </VStack>
 );

@@ -5,7 +5,7 @@ import {
   Grid,
   Input,
   InputGroup,
-  InputLeftElement,
+  InputRightElement,
   Spinner,
   VStack,
 } from '@chakra-ui/react';
@@ -46,37 +46,16 @@ const SearchQuestChains: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   }
 
   return (
-    <Flex alignItems="flex-start" gap={4} w="full" direction="column" mt={0}>
-      <InputGroup
-        maxW="2xl"
-        size="lg"
-        position="fixed"
-        zIndex={1}
-        w="calc(100% - 30px)"
-      >
-        <Flex
-          position="absolute"
-          w="calc(100% - 20px)"
-          h="calc(100% - 24px)"
-          bg="gray.700"
-        />
-
-        <InputLeftElement pointerEvents="none">
-          {fetching ? (
-            <Spinner size="sm" color="white" />
-          ) : (
-            <SearchIcon color="white" />
-          )}
-        </InputLeftElement>
+    <Flex alignItems="flex-start" gap={4} w="full" direction="column">
+      <InputGroup border="1px solid" boxShadow="5px 5px 0px 0px #000000">
+        <InputRightElement pointerEvents="none">
+          {fetching ? <Spinner size="sm" /> : <SearchIcon />}
+        </InputRightElement>
         <Input
           backdropFilter="blur(40px)"
-          color="white"
           border="none"
-          boxShadow="inset 0px 0px 0px 1px gray"
-          placeholder="Search chains by name or description"
+          placeholder="Search by name or description"
           onChange={e => delayedSetValue(e.target.value)}
-          mb={6}
-          width="calc(100% - 20px)"
         />
       </InputGroup>
 
