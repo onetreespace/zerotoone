@@ -69,21 +69,23 @@ export const FilterDropdown: React.FC<{
       >
         <PopoverTrigger>
           <Button
-            gap={3}
+            // gap={3}
             fontWeight="bold"
-            bgColor="whiteAlpha.100"
-            borderRadius="full"
-            size={{ base: 'md', md: 'lg' }}
+            bgColor={label === 'All Categories' ? '#A9A1F7' : '#D1EDA0'}
+            borderRadius={0}
+            p={1}
+            h={7}
+            // size={{ base: 'md', md: 'lg' }}
           >
-            <Text fontSize="sm" fontFamily="Dela Gothic One">
+            <Text fontSize="15px" fontFamily="Dela Gothic One">
               {isMultiple ? label : (trueLabel ?? label)}
             </Text>
             {isMultiple && numSelected !== 0 && showSelected && (
               <Flex
                 justify="center"
                 align="center"
-                px="6px"
-                py="2px"
+                // px="6px"
+                // py="2px"
                 fontSize="xs"
                 bgColor="#0F2E27"
                 borderRadius="full"
@@ -93,11 +95,6 @@ export const FilterDropdown: React.FC<{
                 {numSelected}
               </Flex>
             )}
-            <ChevronDownIcon
-              fontSize="md"
-              transform={isOpen ? 'rotate(180deg)' : 'rotate(0deg)'}
-              transition="all 0.15s"
-            />
           </Button>
         </PopoverTrigger>
         <PopoverContent

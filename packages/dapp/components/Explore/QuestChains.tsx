@@ -165,29 +165,28 @@ const QuestChains: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
         }}
         gap={4}
       >
+        <FilterDropdown
+          filter={categories}
+          options={categoryOptions}
+          setFilters={setCategories}
+          label="All Categories"
+        />
         <HStack>
-          <FilterDropdown
-            filter={categories}
-            options={categoryOptions}
-            setFilters={setCategories}
-            label="Categories"
-          />
           <FilterDropdown
             filter={networks}
             options={networkOptions}
             setFilters={setNetworks}
             label="Networks"
           />
-          Popover
+          <FilterDropdown
+            filter={sortBy}
+            options={SortOptions}
+            setFilters={setSortBy}
+            label=""
+            isMultiple={false}
+            placement="bottom-end"
+          />
         </HStack>
-        <FilterDropdown
-          filter={sortBy}
-          options={SortOptions}
-          setFilters={setSortBy}
-          label="Sort by"
-          isMultiple={false}
-          placement="bottom-end"
-        />
       </Flex>
 
       <HStack mb={4} wrap="wrap">
