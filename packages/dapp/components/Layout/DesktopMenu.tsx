@@ -26,6 +26,7 @@ export const DesktopMenu: React.FC = () => {
       )}
       <NextLink href="/courses">
         <Text
+          // fontSize="20px"
           px={1}
           fontFamily="heading"
           _hover={{
@@ -37,7 +38,8 @@ export const DesktopMenu: React.FC = () => {
       </NextLink>
       <NextLink href="/gigs">
         <Text
-          px={1}
+          // fontSize="20px"
+          px={2}
           fontFamily="heading"
           _hover={{
             textDecoration: 'underline',
@@ -46,7 +48,7 @@ export const DesktopMenu: React.FC = () => {
           Gigs
         </Text>
       </NextLink>
-      <ConnectButton />
+      <ConnectButton label="Sign Up" />
     </HStack>
   );
 };
