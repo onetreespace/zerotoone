@@ -27,11 +27,13 @@ export const MarkdownEditor: React.FC<
 }) => (
   <Flex w="100%" {...(isDisabled ? { cursor: 'not-allowed' } : {})} {...props}>
     <Editor
+      textColor="white"
       style={{
         pointerEvents: isDisabled ? 'none' : 'unset',
         height: height ?? '20rem',
         width: '100%',
-        background: '#0F172A',
+        background: 'white',
+        textColor: 'black',
       }}
       defaultValue={value}
       placeholder={placeholder}

@@ -43,9 +43,8 @@ const TextLink = ({ label, href, external }: TextLinkType) => {
     <ChakraLink
       href={href}
       color="main"
-      borderBottom="1px solid"
-      borderBottomColor="main"
-      _hover={{ borderBottomColor: 'white' }}
+      // _hover={{ borderBottomColor: 'white' }}
+      fontFamily="Merriweather"
       isExternal
     >
       {label}
@@ -55,9 +54,8 @@ const TextLink = ({ label, href, external }: TextLinkType) => {
       as={NextLink}
       href={href}
       color="main"
-      borderBottom="1px solid"
-      borderBottomColor="main"
-      _hover={{ borderBottomColor: 'white' }}
+      fontFamily="Merriweather"
+      // _hover={{ borderBottomColor: 'white' }}
     >
       {label}
     </ChakraLink>
@@ -130,6 +128,8 @@ export const Footer: React.FC = () => (
       ))}
     </HStack>
 */}
-    <Text>© Zero To One, all rights reserved.</Text>
+    <Text fontFamily="Merriweather" fontWeight="bold">
+      © Zero To One, all rights reserved.
+    </Text>
   </VStack>
 );

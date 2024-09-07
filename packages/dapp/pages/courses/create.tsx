@@ -206,13 +206,12 @@ const Create: React.FC = () => {
   return (
     <Page>
       <Box
-        bgImage={ipfsUriToHttp(imageUrl)}
+        // bgImage={ipfsUriToHttp(imageUrl)}
         position="fixed"
         height="100vh"
         width="100vw"
         top="0"
         left="0"
-        opacity="0.05"
         bgPos="center"
         bgSize="cover"
         zIndex={-1}
@@ -223,22 +222,31 @@ const Create: React.FC = () => {
       />
 
       {step === 0 && (
-        <Flex w="full" flexDir="column" gap={8}>
+        <Flex
+          w="full"
+          flexDir="column"
+          gap={8}
+          backgroundColor="#E9E7BD"
+          borderRadius={20}
+          py="28px"
+          px="67px"
+        >
           <Step0 />
           <Flex w="full" justifyContent="center">
             {address ? (
-              <Button onClick={() => setStep(1)} px={32}>
+              <Button onClick={() => setStep(1)} px={32} textColor="black">
                 GET STARTED
               </Button>
             ) : (
               <Button
+                textColor="black"
                 onClick={async () => {
                   // await connectWallet();
                   setStep(1);
                 }}
                 px={32}
               >
-                Connect wallet to Get Started
+                Sign Up to Get Started
               </Button>
             )}
           </Flex>

@@ -105,8 +105,8 @@ export const MetadataForm: React.FC<{
           py={1}
           px={3}
           borderWidth={1}
-          borderColor="gray.500"
-          color="gray.500"
+          borderColor="black"
+          color="black"
           borderRadius={4}
           mr={4}
         >
@@ -126,7 +126,9 @@ export const MetadataForm: React.FC<{
             <Input
               color="white"
               defaultValue={nameRef.current}
-              bg="#0F172A"
+              border="1px solid black"
+              textColor="black"
+              bg="white"
               id="name"
               maxLength={90}
               onChange={e => {
@@ -148,6 +150,9 @@ export const MetadataForm: React.FC<{
             <FormLabel htmlFor="description">Description</FormLabel>
             {/* TODO add hover effect similar to Name */}
             <MarkdownEditor
+              border="1px solid black"
+              textColor="black"
+              bg="white"
               value={descRef.current}
               placeholder="Quest chain description"
               onChange={setDescription}

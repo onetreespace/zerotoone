@@ -1,0 +1,58 @@
+import { darkTheme, Theme } from '@rainbow-me/rainbowkit';
+import merge from 'lodash.merge';
+
+export const rainbowkitTheme: Theme = {
+  blurs: {
+    modalOverlay: '',
+  },
+  colors: {
+    accentColor: 'white',
+    accentColorForeground: 'black',
+    actionButtonBorder: 'black',
+    actionButtonBorderMobile: 'black',
+    actionButtonSecondaryBackground: '#99E1FF',
+    closeButton: 'black',
+    closeButtonBackground: 'white',
+    connectButtonBackground: 'black',
+    connectButtonBackgroundError: 'black',
+    connectButtonInnerBackground: 'white',
+    connectButtonText: 'black',
+    connectButtonTextError: 'black',
+    connectionIndicator: 'black',
+    downloadBottomCardBackground: 'black',
+    downloadTopCardBackground: 'black',
+    error: 'black',
+    generalBorder: 'black',
+    generalBorderDim: 'black',
+    menuItemBackground: 'black',
+    modalBackdrop: '...',
+    modalBackground: '#E9E7BD',
+    modalBorder: 'black',
+    modalText: 'black',
+    modalTextDim: 'black',
+    modalTextSecondary: 'black',
+    profileAction: '#E9E7BD',
+    profileActionHover: 'white',
+    profileForeground: '#E9E7BD',
+    selectedOptionBorder: '1px solid black',
+    standby: 'black',
+  },
+  fonts: {
+    body: 'Dela Gothic One',
+  },
+  radii: {
+    actionButton: '...',
+    connectButton: '5px',
+    menuButton: '...',
+    modal: '5px',
+    modalMobile: '...',
+  },
+  shadows: {
+    connectButton: '5px 5px 0px 0px #000000',
+    dialog: '...',
+    profileDetailsAction: '...',
+    selectedOption: '...',
+    selectedWallet: '...',
+    walletLogo: '...',
+  },
+};

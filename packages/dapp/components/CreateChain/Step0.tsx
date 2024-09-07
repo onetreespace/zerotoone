@@ -2,10 +2,15 @@ import { Flex, Grid, Image, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 
 const Step0: React.FC = () => (
-  <VStack w="full" align="stretch" spacing={8} pt={12}>
-    <Flex w="full" justifyContent="center">
-      <Text fontFamily="heading" color="white" fontSize={40} textAlign="center">
-        Here&apos;s what&apos;s coming up
+  <VStack w="full" align="stretch" spacing={8}>
+    <Flex w="full" justifyContent="left">
+      <Text
+        fontFamily="Dela Gothic One"
+        color="main"
+        fontSize={36}
+        textAlign="left"
+      >
+        Create and design your own course <br /> with our course creator tool.
       </Text>
     </Flex>
     <Grid
@@ -51,19 +56,24 @@ const Step = ({
   description: string;
 }) => {
   return (
-    <Flex flexDir="column" alignItems="center" p={8}>
-      <Image
-        src={image}
-        alt={title}
-        filter="invert(100%)"
-        mb={6}
-        w="80%"
-        maxW="10rem"
-      />
-      <Text fontWeight="bold" mt={3} fontSize="lg" mb={2}>
+    <Flex flexDir="column" alignItems="center" p={6}>
+      <Image src={image} alt={title} mb={6} w="80%" maxW="10rem" />
+      <Text
+        fontWeight="bold"
+        fontFamily="Dela Gothic One"
+        mt={3}
+        fontSize="lg"
+        mb={2}
+      >
         {title}
       </Text>
-      <Text marginBottom="auto" fontSize="sm" textAlign="center">
+      <Text
+        marginBottom="auto"
+        fontFamily="Merriweather"
+        fontSize="sm"
+        lineHeight={7}
+        textAlign="center"
+      >
         {description}
       </Text>
     </Flex>

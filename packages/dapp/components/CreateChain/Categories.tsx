@@ -21,7 +21,7 @@ export const Categories: React.FC<{
       styles={{
         multiValue: b => ({
           ...b,
-          background: 'rgba(255, 255, 255, 0.1)',
+          background: 'white',
         }),
         multiValueLabel: b => ({
           ...b,
@@ -29,29 +29,29 @@ export const Categories: React.FC<{
         }),
         multiValueRemove: b => ({
           ...b,
-          ':hover': { background: ' rgba(255, 255, 255, 0.1)' },
+          ':hover': { background: 'white' },
         }),
         control: (b, s) => ({
           ...b,
           color: 'white',
-          background: '#0F172A',
+          background: 'white',
           borderWidth: '1px',
           width: '100%',
-          borderColor: s.isFocused ? 'transparent' : 'inherit',
+          borderColor: 'black',
           ':hover': {
-            borderColor: 'rgba(255, 255, 255, 0.24)',
+            borderColor: 'black',
           },
           boxShadow: s.isFocused ? '0px 0px 0px 2px #ad90ff' : 'none',
         }),
         menu: b => ({
           width: '100%',
           ...b,
-          background: '#0F172A',
-          border: '1px solid rgba(255, 255, 255, 0.24)',
+          background: 'white',
+          border: 'black',
         }),
         option: (b, s) => ({
           ...b,
-          background: s.isFocused ? 'rgba(255, 255, 255, 0.1)' : '#0F172A',
+          background: s.isFocused ? '#A9A1F7' : 'white',
         }),
       }}
       isLoading={fetchingCategories}

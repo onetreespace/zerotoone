@@ -45,7 +45,7 @@ export const MobileMenu: React.FC<{
         >
           <ModalBody h="100%">
             <VStack spacing={6} h="100%" w="100%" justify="center">
-              <ConnectButton />
+              <ConnectButton label="Sign Up" />
               <ChakraLink
                 as={NextLink}
                 href="/create"
