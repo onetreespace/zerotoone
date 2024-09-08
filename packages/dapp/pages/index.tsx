@@ -10,7 +10,7 @@ const Explore: React.FC = () => {
       <HeadComponent />
       <VStack w="100%" spacing={16}>
         <Image src="/banner.png" alt="banner" />
-        <SimpleGrid columns={2} w="100%" spacing={16}>
+        <SimpleGrid columns={{ base: 1, md: 2 }} w="100%" spacing={16}>
           <VStack
             spacing={4}
             bg="purplePlop.400"
