@@ -62,34 +62,19 @@ export const MobileMenu: React.FC<{
               <ConnectButton label="Sign Up" />
               <ChakraLink
                 as={NextLink}
-                href="/create"
+                href="/courses"
                 display="block"
-                _hover={{}}
                 onClick={toggleOpen}
               >
-                <Button transition="0.25s" px={5} py={2}>
-                  Create a chain
-                </Button>
+                Explore Courses
               </ChakraLink>
               <ChakraLink
                 as={NextLink}
-                href="/explore"
+                href="/gigs"
                 display="block"
-                _hover={{}}
                 onClick={toggleOpen}
               >
-                <Text
-                  color="main"
-                  boxShadow={
-                    asPath === '/explore' ? '0 4px 2px -2px #1f7165' : 'none'
-                  }
-                  _hover={{
-                    boxShadow: '0 4px 2px -2px #1f7165',
-                  }}
-                  transition="0.25s"
-                >
-                  Explore
-                </Text>
+                Browse Gigs
               </ChakraLink>
               {isConnected && (
                 <NextLink
@@ -97,19 +82,7 @@ export const MobileMenu: React.FC<{
                   href="/profile/[name]"
                   passHref
                 >
-                  <ChakraLink
-                    display="block"
-                    boxShadow={
-                      isProfilePath ? '0 4px 2px -2px #1f7165' : 'none'
-                    }
-                    _hover={{
-                      boxShadow: '0 4px 2px -2px #1f7165',
-                    }}
-                    transition="0.25s"
-                    color="main"
-                  >
-                    My Profile
-                  </ChakraLink>
+                  <ChakraLink display="block">My Profile</ChakraLink>
                 </NextLink>
               )}
             </VStack>
