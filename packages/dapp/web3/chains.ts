@@ -1,9 +1,9 @@
 import { createPublicClient, http, PublicClient } from 'viem';
-import { anvil, Chain, mainnet, sepolia } from 'wagmi/chains';
+import { Chain, mainnet, sepolia } from 'wagmi/chains';
 
 type _chains = readonly [Chain, ...Chain[]];
 
-export const CHAINS: _chains = [sepolia, anvil];
+export const CHAINS: _chains = [sepolia];
 
 export const getChain = (chainId: SupportedChainId): Chain =>
   CHAINS.find(c => c.id === chainId)!;

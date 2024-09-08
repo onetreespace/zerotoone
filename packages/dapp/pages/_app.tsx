@@ -2,7 +2,7 @@
 import 'react-markdown-editor-lite/lib/index.css';
 import '@/assets/styles/custom-markdown-editor.scss';
 import '@/assets/styles/react-medium-image-zoom.css';
-import '@rainbow-me/rainbowkit/styles.css';
+import '@/assets/styles/rainbowkit.css';
 
 import { ChakraProvider, useColorMode } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
@@ -13,9 +13,8 @@ import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { WagmiProvider } from 'wagmi';
 
-import { rainbowkitTheme } from '@/components/ConnectWalletButtonTheme';
 import { AppLayout } from '@/components/Layout/AppLayout';
-import { globalStyles, theme } from '@/utils/theme';
+import { globalStyles, rainbowkitTheme, theme } from '@/utils/theme';
 import { config } from '@/web3/config';
 
 const ForceLightMode = (): JSX.Element | null => {
