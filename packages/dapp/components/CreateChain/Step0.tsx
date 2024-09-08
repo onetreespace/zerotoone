@@ -4,12 +4,7 @@ import React from 'react';
 const Step0: React.FC = () => (
   <VStack w="full" align="stretch" spacing={8}>
     <Flex w="full" justifyContent="left">
-      <Text
-        fontFamily="Dela Gothic One"
-        color="main"
-        fontSize={36}
-        textAlign="left"
-      >
+      <Text fontFamily="heading" color="main" fontSize={36} textAlign="left">
         Create and design your own course <br /> with our course creator tool.
       </Text>
     </Flex>
@@ -58,18 +53,12 @@ const Step = ({
   return (
     <Flex flexDir="column" alignItems="center" p={6}>
       <Image src={image} alt={title} mb={6} w="80%" maxW="10rem" />
-      <Text
-        fontWeight="bold"
-        fontFamily="Dela Gothic One"
-        mt={3}
-        fontSize="lg"
-        mb={2}
-      >
+      <Text fontWeight="bold" fontFamily="heading" mt={3} fontSize="lg" mb={2}>
         {title}
       </Text>
       <Text
         marginBottom="auto"
-        fontFamily="Merriweather"
+        fontFamily="body"
         fontSize="sm"
         lineHeight={7}
         textAlign="center"

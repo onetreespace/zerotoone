@@ -40,23 +40,11 @@ const textLinks: TextLinkType[] = [
 
 const TextLink = ({ label, href, external }: TextLinkType) => {
   return external ? (
-    <ChakraLink
-      href={href}
-      color="main"
-      // _hover={{ borderBottomColor: 'white' }}
-      fontFamily="Merriweather"
-      isExternal
-    >
+    <ChakraLink href={href} color="main" fontFamily="body" isExternal>
       {label}
     </ChakraLink>
   ) : (
-    <ChakraLink
-      as={NextLink}
-      href={href}
-      color="main"
-      fontFamily="Merriweather"
-      // _hover={{ borderBottomColor: 'white' }}
-    >
+    <ChakraLink as={NextLink} href={href} color="main" fontFamily="body">
       {label}
     </ChakraLink>
   );
@@ -128,7 +116,7 @@ export const Footer: React.FC = () => (
       ))}
     </HStack>
 */}
-    <Text fontFamily="Merriweather" fontWeight="bold">
+    <Text fontFamily="body" fontWeight="bold">
       © Zero To One, all rights reserved.
     </Text>
   </VStack>

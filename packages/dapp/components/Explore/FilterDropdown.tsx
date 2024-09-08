@@ -57,7 +57,7 @@ export const FilterDropdown: React.FC<{
   return (
     <HStack spacing={4} justify="flex-end">
       {!isMultiple && trueLabel && (
-        <Text fontSize="sm" fontFamily="Dela Gothic One">
+        <Text fontSize="sm" fontFamily="heading">
           {label}
         </Text>
       )}
@@ -69,23 +69,19 @@ export const FilterDropdown: React.FC<{
       >
         <PopoverTrigger>
           <Button
-            // gap={3}
             fontWeight="bold"
             bgColor={label === 'All Categories' ? '#A9A1F7' : '#D1EDA0'}
             borderRadius={0}
             p={1}
             h={7}
-            // size={{ base: 'md', md: 'lg' }}
           >
-            <Text fontSize="15px" fontFamily="Dela Gothic One">
+            <Text fontSize="15px" fontFamily="heading">
               {isMultiple ? label : (trueLabel ?? label)}
             </Text>
             {isMultiple && numSelected !== 0 && showSelected && (
               <Flex
                 justify="center"
                 align="center"
-                // px="6px"
-                // py="2px"
                 fontSize="xs"
                 bgColor="#0F2E27"
                 borderRadius="full"
@@ -99,7 +95,7 @@ export const FilterDropdown: React.FC<{
         </PopoverTrigger>
         <PopoverContent
           bgColor="#FFFFFF"
-          fontFamily="Dela Gothic One"
+          fontFamily="heading"
           borderRadius={16}
           border="1px solid #475569"
           boxShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"

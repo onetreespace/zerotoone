@@ -81,7 +81,7 @@ export const QuestChainTile: React.FC<QuestChainTileProps> = ({
             <Text
               display="-webkit-box"
               textOverflow="ellipsis"
-              fontFamily="Dela Gothic One"
+              fontFamily="heading"
               overflow="hidden"
               maxW="calc(100%)"
               fontSize={featured ? '14px' : '13px'}
@@ -106,7 +106,7 @@ export const QuestChainTile: React.FC<QuestChainTileProps> = ({
             >
               <Text
                 fontSize="lg"
-                fontFamily="Dela Gothic One"
+                fontFamily="heading"
                 fontWeight="400"
                 lineHeight="20px"
                 display="-webkit-box"
@@ -148,7 +148,7 @@ export const QuestChainTile: React.FC<QuestChainTileProps> = ({
               <NetworkDisplay
                 chainId={Number(chainId)}
                 imageProps={{ boxSize: '1rem' }}
-                textProps={{ fontSize: '12px', fontFamily: 'Dela Gothic One' }}
+                textProps={{ fontSize: '12px', fontFamily: 'heading' }}
                 spacing={1}
               />
             </Flex>
