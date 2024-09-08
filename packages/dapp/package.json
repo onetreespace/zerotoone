@@ -56,7 +56,6 @@
     "html2canvas": "^1.4.1",
     "ipfs-http-client": "55.0.0",
     "js-base64": "^3.7.7",
-    "lodash.merge": "^4.6.2",
     "mersenne-twister": "^1.1.0",
     "mongodb": "^5.9.2",
     "next": "^14.2.8",

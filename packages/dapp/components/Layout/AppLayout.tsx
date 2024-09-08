@@ -1,5 +1,5 @@
 import { Flex, Stack, useBreakpointValue } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { Footer } from '@/components/Layout/Footer';
 import { Header } from '@/components/Layout/Header';
@@ -12,7 +12,7 @@ export const AppLayout: React.FC<{ children: JSX.Element }> = ({
 }) => {
   const [isOpen, setOpen] = useState(false);
   const toggleOpen = () => setOpen(o => !o);
-  const isSmallScreen = useBreakpointValue({ base: true, lg: false });
+  const ref = useRef<HTMLDivElement>(null);
 
   return (
     <Stack
@@ -21,13 +21,15 @@ export const AppLayout: React.FC<{ children: JSX.Element }> = ({
       minH="100vh"
       w="100%"
       justify="space-between"
+      ref={ref}
     >
       <Header>
-        {isSmallScreen ? (
-          <MobileMenu isOpen={isOpen} toggleOpen={toggleOpen} />
-        ) : (
-          <DesktopMenu />
-        )}
+        <MobileMenu
+          isOpen={isOpen}
+          toggleOpen={toggleOpen}
+          modalContainerRef={ref}
+        />
+        <DesktopMenu />
       </Header>
       <Flex
         direction="column"

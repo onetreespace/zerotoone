@@ -53,7 +53,7 @@ export const UserDisplay: React.FC<{
       height={8}
       px={2}
       borderRadius="full"
-      fontFamily="Dela Gothic One"
+      fontFamily="heading"
       fontSize={10}
       _hover={noLink ? {} : undefined}
     >

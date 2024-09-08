@@ -1,7 +1,7 @@
 import { Flex, HStack, Image, Link as ChakraLink } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
-export const Header: React.FC<{ children: JSX.Element }> = ({ children }) => {
+export const Header: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <HStack
       w="100%"

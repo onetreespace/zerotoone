@@ -9,6 +9,11 @@ export const DesktopMenu: React.FC = () => {
 
   const name = address;
 
+  const isSmallScreen = useBreakpointValue({ base: true, lg: false });
+
+  if (isSmallScreen) {
+    return null;
+  }
   return (
     <HStack gap={4} fontSize="sm" zIndex={2}>
       {isConnected && (

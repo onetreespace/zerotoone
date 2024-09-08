@@ -6,7 +6,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 
 import { ChakraProvider, useColorMode } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
-import { lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppProps } from 'next/app';
 import { useEffect } from 'react';
@@ -44,7 +44,6 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
           </div>
           <Global styles={globalStyles} />
           <RainbowKitProvider modalSize="compact" theme={rainbowkitTheme}>
-            {/* <RainbowKitProvider> */}
             <AppLayout>
               <Component {...pageProps} />
             </AppLayout>

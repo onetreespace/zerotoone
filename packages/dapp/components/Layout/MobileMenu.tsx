@@ -6,6 +6,7 @@ import {
   ModalContent,
   Portal,
   Text,
+  useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -19,7 +20,8 @@ import { NavToggle } from './NavToggle';
 export const MobileMenu: React.FC<{
   isOpen: boolean;
   toggleOpen: () => void;
-}> = ({ isOpen, toggleOpen }) => {
+  modalContainerRef: React.RefObject<HTMLDivElement | null>;
+}> = ({ isOpen, toggleOpen, modalContainerRef }) => {
   const { asPath } = useRouter();
   const { isConnected, address } = useAccount();
 
@@ -28,13 +30,25 @@ export const MobileMenu: React.FC<{
     const param = asPath.slice('/profile/'.length);
     return param.toLowerCase() === address?.toLowerCase();
   }, [asPath, address]);
+  const isSmallScreen = useBreakpointValue({ base: true, lg: false });
+
+  if (!isSmallScreen) {
+    return null;
+  }
 
   return (
     <>
       <Portal>
         <NavToggle isOpen={isOpen} onClick={toggleOpen} />
       </Portal>
-      <Modal isOpen={isOpen} onClose={toggleOpen}>
+      <Modal
+        isOpen={isOpen}
+        onClose={toggleOpen}
+        portalProps={{
+          appendToParentPortal: false,
+          containerRef: modalContainerRef,
+        }}
+      >
         <ModalContent
           minW="100%"
           h="100%"
@@ -53,20 +67,8 @@ export const MobileMenu: React.FC<{
                 _hover={{}}
                 onClick={toggleOpen}
               >
-                <Button
-                  borderWidth={1}
-                  bg="none"
-                  borderColor={asPath === '/create' ? 'main' : 'white'}
-                  _hover={{
-                    bgColor: 'whiteAlpha.100',
-                    borderColor: 'main',
-                  }}
-                  transition="0.25s"
-                  px={5}
-                  py={2}
-                  borderRadius="full"
-                >
-                  <Text color="white">Create a chain</Text>
+                <Button transition="0.25s" px={5} py={2}>
+                  Create a chain
                 </Button>
               </ChakraLink>
               <ChakraLink
